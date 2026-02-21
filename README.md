@@ -12,18 +12,20 @@ It contains:
 ---  
   
 ## 📂 Repository Structure  
+
+```text
+backend-learning-journey/
+│
+├── core-java/        # Java fundamentals and OOPS practice
+├── projects/         # Console-based Java applications
+├── spring-boot/      # Backend REST APIs (upcoming)
+├── sql-practice/     # Database exercises
+│
+└── README.md
+```  
   
-backend-learning-journey/  
-│  
-├── core-java/        # Java fundamentals and OOPS practice  
-├── projects/         # Console-based Java applications  
-├── spring-boot/      # Backend REST APIs (upcoming)  
-├── sql-practice/     # Database exercises  
-│  
-└── README.md  
-
 ---  
-
+  
 ## 🎯 Objective  
 
 - Strengthen Java and OOPS foundations.  
