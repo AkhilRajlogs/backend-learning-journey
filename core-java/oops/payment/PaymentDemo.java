@@ -5,7 +5,8 @@ public class PaymentDemo {
         PaymentMethod[] payments = {
             new CreditCardPayment(),
             new UPIPayment(),
-            new WalletPayment()
+            new WalletPayment(), 
+            new NetBankingPayment()
         };
 
         for (PaymentMethod payment : payments) {
