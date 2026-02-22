@@ -3,7 +3,7 @@ package oops.payment;
 public class CreditCardPayment extends BasePayment {
 
     public CreditCardPayment() {
-        super("TXN1001");        
+        super();        
     }
 
     @Override

@@ -3,7 +3,7 @@ package oops.payment;
 public class UPIPayment extends BasePayment {
 
     public UPIPayment() {
-        super("TXN1002");        
+        super();        
     }
 
     @Override

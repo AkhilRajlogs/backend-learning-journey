@@ -5,7 +5,7 @@ public class WalletPayment extends BasePayment {
     private double walletBalance = 12000; 
     
     public WalletPayment() {
-        super("TXN1003");
+        super();
     }
 
     @Override

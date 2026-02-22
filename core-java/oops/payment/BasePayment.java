@@ -2,9 +2,10 @@ package oops.payment;
 
 public abstract class BasePayment implements PaymentMethod {
     protected String transactionId;
+    private static int counter = 1;
 
-    public BasePayment(String transactionId) {
-        this.transactionId = transactionId;
+    public BasePayment() {
+        this.transactionId = "TXN00" + counter++;
     }
 
     public final void pay(double amount) {
