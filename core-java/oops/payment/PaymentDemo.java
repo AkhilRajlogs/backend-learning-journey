@@ -2,12 +2,16 @@ package oops.payment;
 
 public class PaymentDemo {
     public static void main(String[] args) {
-        PaymentMethod payment;
-        payment = new CreditCardPayment();
-        payment.pay(5000);
+        PaymentMethod[] payments = {
+            new CreditCardPayment(),
+            new UPIPayment(),
+            new WalletPayment()
+        };
 
-        payment = new UPIPayment();
-        payment.pay(3000);
+        for (PaymentMethod payment : payments) {
+            payment.pay(2000);
+            System.out.println("----------------------");
+        }
     }
         
 }
