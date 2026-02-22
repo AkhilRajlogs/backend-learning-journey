@@ -23,6 +23,12 @@ backend-learning-journey/
 │
 └── README.md
 ```  
+
+---
+
+### 📌 Project Note
+
+The Othello and TicTacToe projects were initially developed as standalone repositories and later consolidated here as part of this structured backend learning journey.
   
 ---  
   
