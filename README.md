@@ -22,7 +22,22 @@ backend-learning-journey/
 ├── sql-practice/     # Database exercises
 │
 └── README.md
-```  
+```
+
+---
+
+## ▶ Running the OOP Payment Demo  
+  
+> Requires Java 17+ installed and added to PATH.  
+  
+Navigate to the project root and run:  
+  
+### Compile  
+javac -d bin core-java/oops/payment/*.java  
+
+### Run  
+java -cp bin oops.payment.PaymentDemo  
+  
 
 ---
 
