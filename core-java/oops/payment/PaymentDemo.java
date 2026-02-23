@@ -10,9 +10,16 @@ public class PaymentDemo {
         };
 
         for (PaymentMethod payment : payments) {
+
             payment.pay(2000);
             System.out.println("----------------------");
+
+            if (payment instanceof Refundable refundable) {
+                refundable.refund(500);
+                System.out.println("----------------------");
+            }
         }
+
     }
         
 }

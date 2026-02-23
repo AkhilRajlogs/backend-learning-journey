@@ -1,6 +1,6 @@
 package oops.payment;
 
-public class WalletPayment extends BasePayment {
+public class WalletPayment extends BasePayment implements Refundable {
     
     private double walletBalance = 12000; 
     
@@ -24,4 +24,13 @@ public class WalletPayment extends BasePayment {
         }
     }
     
+    @Override
+    public void refund(double amount) {
+        
+        System.out.println("Refund accepted. \nProcessing wallet refund of : " + amount);
+        walletBalance += amount;
+        System.out.println("Wallet balance after refund: " + walletBalance);
+        
+    }
+
 }
