@@ -1,12 +1,13 @@
 package collections;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ArrayListDemo {
 
     public static void main(String[] args) {
             
-        ArrayList<Integer> list = new ArrayList<>(5);
+        List<Integer> list = new ArrayList<>(5);
 
         list.add(10);
         list.add(20);
@@ -27,7 +28,7 @@ public class ArrayListDemo {
 
     }
 
-    private static void printArrayList(ArrayList<Integer> list) {
+    private static void printArrayList(List<Integer> list) {
         for (int i = 0; i < list.size(); i ++) {
             System.out.print( list.get(i) + " " );
         }
