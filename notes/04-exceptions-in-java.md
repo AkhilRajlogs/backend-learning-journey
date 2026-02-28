@@ -67,3 +67,27 @@ Typically used to release resources (files, database connections, etc.)
 - `throw` is used to explicitly throw an exception.  
 - `throws` is used in method signature to declare that a method may pass an exception to the calling method.  
   
+---  
+  
+## Exception Hierarchy and Important Methods  
+  
+All exceptions in Java extend from the `Throwable` class.  
+  
+Hierarchy (simplified):  
+  
+Object  
+└── Throwable  
+  ├── Error  
+  └── Exception  
+    ├── RuntimeException  
+    └── Other Checked Exceptions  
+  
+Important methods available in exception objects:  
+  
+- `getMessage()` – returns the exception message.  
+- `toString()` – returns class name + message.  
+- `printStackTrace()` – prints detailed stack trace.  
+- `getCause()` – returns the cause of exception.  
+  
+An exception object is created using `new`, but execution is interrupted only when `throw` is used.  
+  
