@@ -1,65 +1,75 @@
-# Backend Learning Journey 🚀  
+# Backend Learning Journey   
   
 This repository documents my structured transition into Java Backend Development.  
   
 It contains:  
   
-- Core Java concepts (OOPS, Collections, DSA fundamentals).  
-- Console-based Java projects (Othello, TicTacToe).  
-- Spring Boot applications (upcoming).  
-- SQL practice and database concepts.  
+- Core Java concepts (OOPS, Collections, DSA fundamentals)  
+- Console-based Java projects (Othello, TicTacToe)  
+- Spring Boot applications (in-progress)    
+- SQL practice and database concepts    
   
 ---  
   
-## 📂 Repository Structure  
-
+## Repository Structure  
+  
 ```text
-backend-learning-journey/
+backend-learning-journey/  
 │
-├── core-java/        # Java fundamentals and OOPS practice
-├── projects/         # Console-based Java applications
-├── spring-boot/      # Backend REST APIs (upcoming)
-├── sql-practice/     # Database exercises
+├── core-java/
+│   ├── collections/
+│   ├── dsa-basics/
+│   ├── exceptionhandling/
+│   ├── multithreading/
+│   └── oops/payment/
+│
+├── notes/
+├── projects/
+├── spring-boot/
+├── sql-practice/
 │
 └── README.md
-```
-
----
-
-## ▶ Running the OOP Payment Demo  
+```  
+  
+---  
+  
+## Running Core Java Example  
   
 > Requires Java 17+ installed and added to PATH.  
   
-Navigate to the project root and run:  
+From project root:  
   
-### Compile  
+### Compile:  
 javac -d bin core-java/oops/payment/*.java  
-
-### Run  
+  
+### Run:  
 java -cp bin oops.payment.PaymentDemo  
   
+---  
+  
+## Project Status  
+  
+- TicTacToe – Playable console implementation.  
+- Othello – Core board logic implemented. Further development paused while focusing on foundational backend concepts.  
+  
+TicTacToe and Othello were originally developed as standalone repositories and later consolidated here to maintain a unified backend learning workspace.  
+  
+---
+
+## Objectives  
+
+- Strengthen Java and OOPS foundations.
+- Build backend systems using Spring Boot.
+- Practice database integration using SQL and JPA.
+- Improve problem-solving and system design skills.
 
 ---
 
-### 📌 Project Note
-
-The Othello and TicTacToe projects were initially developed as standalone repositories and later consolidated here as part of this structured backend learning journey.
-  
----  
-  
-## 🎯 Objective  
-
-- Strengthen Java and OOPS foundations.  
-- Build production-ready backend systems using Spring Boot.  
-- Improve problem-solving and system design thinking.  
-- Maintain consistent Git commits and structured growth.  
-
----  
-
-## 🛠 Tech Stack (Current & Upcoming)  
+## Tech Stack  
 
 - Java  
 - OOPS  
+- Multithreading & Concurrency  
 - Git & GitHub  
 - Spring Boot  
 - SQL / JPA / Hibernate  
