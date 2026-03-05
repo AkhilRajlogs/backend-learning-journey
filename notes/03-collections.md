@@ -3,6 +3,7 @@
 ## Why Collections?  
   
 Arrays are fixed size.  
+  
 Collections provide dynamic resizing and common data structures.  
   
 ---  
@@ -14,7 +15,7 @@ Collection interface:
 - Set  
 - Queue  
   
-Map is a separate hierarchy.  
+Map is part of the Java Collections Framework but does not extend the Collection interface.  
   
 ---  
   
@@ -70,4 +71,20 @@ Benefits:
 - Improves flexibility  
 - Makes switching implementations easier  
 - Supports Dependency Inversion Principle  
+  
+---  
+  
+## HashMap  
+  
+Characteristics:  
+- Stores key-value pairs  
+- Keys are unique  
+- Not ordered  
+- Allows one null key (Java default)  
+- Backed by a hash table (array of buckets).  
+  
+Time Complexity:  
+- put(): O(1) average  
+- get(): O(1) average  
+- Worst case: O(n)  
   
