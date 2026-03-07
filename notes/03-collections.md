@@ -88,3 +88,48 @@ Time Complexity:
 - get(): O(1) average  
 - Worst case: O(n)  
   
+---
+  
+## Set  
+  
+A Set represents a collection that **does not allow duplicate elements**.  
+  
+Characteristics:  
+  
+- Stores unique elements  
+- No index-based access  
+- Different implementations provide different ordering guarantees  
+  
+Common implementations:  
+  
+- HashSet  
+- LinkedHashSet  
+- TreeSet  
+  
+---  
+  
+## HashSet  
+  
+HashSet is the most commonly used Set implementation.  
+  
+Characteristics:  
+  
+- Stores only unique elements  
+- Does not maintain insertion order  
+- Allows one null element  
+- Backed internally by a HashMap  
+  
+### Time Complexity:  
+  
+- add(): O(1) average  
+- remove(): O(1) average  
+- contains(): O(1) average  
+  
+Internally, HashSet stores elements as **keys in a HashMap** with a dummy value.  
+  
+Detailed internal implementation explanation:  
+  
+See: `03.5-hashset.md`  
+  
+---    
+  
