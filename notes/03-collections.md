@@ -1,10 +1,103 @@
 # Java Collections Framework  
   
+## Overview  
+  
+The Java Collections Framework is a unified architecture for storing and manipulating groups of objects.  
+  
+It provides ready-to-use data structures and algorithms that simplify data management in Java applications.  
+  
+Collections are part of the **java.util** package.  
+  
+---  
+    
 ## Why Collections?  
   
-Arrays are fixed size.  
+Arrays have fixed size.  
   
 Collections provide dynamic resizing and common data structures.  
+   
+---  
+  
+## Components of the Collections Framework  
+  
+The framework mainly consists of:  
+  
+### 1. Interfaces  
+  
+These define the core data structure types.  
+  
+Examples:  
+  
+- List  
+- Set  
+- Queue  
+- Deque  
+- Map (part of the framework but not a subtype of Collection)  
+  
+### 2. Implementations (Classes)  
+  
+Concrete classes that implement these interfaces.  
+  
+Examples:  
+  
+- ArrayList  
+- Vector  
+- LinkedList  
+- PriorityQueue  
+- HashSet  
+- LinkedHashSet  
+- TreeSet  
+- HashMap  
+- LinkedHashMap  
+- TreeMap  
+  
+### 3. Algorithms  
+  
+The **Collections utility class** provides algorithms for common operations such as:  
+  
+- Sorting  
+- Searching  
+- Reversing  
+- Shuffling  
+  
+Examples:  
+  
+    Collections.sort()  
+    Collections.binarySearch()  
+  
+---  
+   
+## Advantages of Using Collections  
+  
+- Reduces programming effort  
+- Improves program performance and reliability  
+- Provides reusable data structures  
+- Includes many built-in methods for data manipulation  
+  
+---  
+  
+## Common Methods in Collection Interface  
+  
+Some frequently used methods include:  
+  
+- add()  
+- remove()  
+- size()  
+- clear()  
+- contains()  
+- isEmpty()  
+  
+---  
+  
+## Iterable Relationship  
+  
+The **Collection interface extends the Iterable interface**.  
+  
+This allows collections to be used with the **for-each loop**:  
+  
+    for (String item : collection) {  
+        System.out.println(item);  
+    }  
   
 ---  
   
@@ -61,8 +154,7 @@ Time Complexity:
   
 ## Programming to Interface  
   
-Programming to an interface means referring to objects by their interface type
-rather than their concrete implementation.  
+Programming to an interface means referring to objects by their interface type rather than their concrete implementation.  
   
 Example:  
 List<Integer> list = new ArrayList<>();  
@@ -81,7 +173,7 @@ Characteristics:
 - Keys are unique  
 - Not ordered  
 - Allows one null key (Java default)  
-- Backed by a hash table (array of buckets).  
+- Backed by a hash table (an array of buckets).  
   
 Time Complexity:  
 - put(): O(1) average  
@@ -132,4 +224,21 @@ Detailed internal implementation explanation:
 See: `03.5-hashset.md`  
   
 ---    
+  
+## LinkedHashSet  
+  
+LinkedHashSet is a Set implementation that **maintains insertion order**.  
+  
+Characteristics:  
+  
+- Maintains insertion order of elements  
+- Internally backed by **LinkedHashMap**  
+- Slightly slower than HashSet due to maintaining a linked structure  
+- Useful when removing duplicates while preserving the original order  
+  
+### Time Complexity:  
+  
+- add(): O(1) average    
+- remove(): O(1) average  
+- contains(): O(1) average  
   
