@@ -12,7 +12,7 @@ Collections are part of the **java.util** package.
     
 ## Why Collections?  
   
-Arrays have fixed size.  
+Arrays have a fixed size.  
   
 Collections provide dynamic resizing and common data structures.  
    
@@ -32,7 +32,7 @@ Examples:
 - Set  
 - Queue  
 - Deque  
-- Map (part of the framework but not a subtype of Collection)  
+- Map (part of the framework but does not extend the Collection interface)  
   
 ### 2. Implementations (Classes)  
   
@@ -258,7 +258,7 @@ Characteristics:
 - Does not allow null elements because comparison is required  
 - Slower than hash-based sets due to sorting operations  
   
-### Time Complexity  
+### Time Complexity:  
   
 - add(): O(log n)  
 - remove(): O(log n)  
@@ -268,3 +268,44 @@ Detailed internal implementation explanation:
   
 See: `03.7-treeset.md`  
   
+---  
+  
+## Sorting in Collections  
+  
+Java provides two mechanisms for sorting objects.  
+
+### Comparable  
+  
+Comparable defines the **natural ordering of objects**.  
+  
+Classes implement Comparable and override:  
+  
+    compareTo()  
+  
+Example use cases:  
+  
+- TreeSet  
+- TreeMap  
+- Collections.sort()  
+  
+See:  
+  
+`03.8-comparable.md`  
+  
+---  
+  
+### Comparator  
+  
+Comparator allows **custom sorting logic outside the class**.  
+  
+It supports **multiple sorting strategies**.  
+  
+Used with:  
+  
+- TreeSet  
+- Collections.sort()  
+- Streams  
+  
+See:  
+  
+`03.9-comparator.md`    
