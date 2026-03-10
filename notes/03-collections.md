@@ -242,3 +242,29 @@ Characteristics:
 - remove(): O(1) average  
 - contains(): O(1) average  
   
+---  
+  
+## TreeSet  
+  
+TreeSet is a Set implementation that **stores elements in sorted order**.  
+  
+Unlike HashSet and LinkedHashSet, TreeSet maintains elements according to their **natural ordering** or a **custom comparator**.  
+  
+Characteristics:  
+  
+- Stores unique elements  
+- Maintains sorted order  
+- Internally backed by a **Red-Black Tree**  
+- Does not allow null elements because comparison is required  
+- Slower than hash-based sets due to sorting operations  
+  
+### Time Complexity  
+  
+- add(): O(log n)  
+- remove(): O(log n)  
+- contains(): O(log n)  
+  
+Detailed internal implementation explanation:  
+  
+See: `03.7-treeset.md`  
+  
