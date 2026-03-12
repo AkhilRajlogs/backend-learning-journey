@@ -6,7 +6,7 @@ The Java Collections Framework is a unified architecture for storing and manipul
   
 It provides ready-to-use data structures and algorithms that simplify data management in Java applications.  
   
-Collections are part of the **java.util** package.  
+Most collection classes and interfaces are part of the java.util package.  
   
 ---  
     
@@ -157,12 +157,15 @@ Time Complexity:
 Programming to an interface means referring to objects by their interface type rather than their concrete implementation.  
   
 Example:  
+  
+```  
 List<Integer> list = new ArrayList<>();  
+```    
   
 Benefits:  
 - Improves flexibility  
 - Makes switching implementations easier  
-- Supports Dependency Inversion Principle  
+- Supports Dependency Inversion Principle    
   
 ---  
   
@@ -270,6 +273,31 @@ See: `03.7-treeset.md`
   
 ---  
   
+## Queue  
+  
+A **Queue** represents a collection designed for **holding elements prior to processing**.  
+  
+Most queue implementations follow the **FIFO (First-In-First-Out)** principle.  
+  
+### Characteristics  
+  
+- Elements are processed in insertion order   
+- Typically used for task scheduling and processing pipelines   
+- Allows duplicate elements    
+- Does not support index-based access  
+  
+### Common Implementations  
+  
+- LinkedList  
+- PriorityQueue  
+- ArrayDeque  
+  
+Detailed internal explanation:  
+  
+See: `03.10-queue.md`   
+  
+---  
+   
 ## Sorting in Collections  
   
 Java provides two mechanisms for sorting objects.  
