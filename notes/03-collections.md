@@ -298,6 +298,13 @@ See: `03.10-queue.md`
   
 ---  
    
+Choosing the correct collection depends on ordering requirements,   
+performance needs, and allowed operations.  
+  
+See: `03.14-choosing-the-right-collection.md`  
+  
+---  
+   
 ## Sorting in Collections  
   
 Java provides two mechanisms for sorting objects.  
