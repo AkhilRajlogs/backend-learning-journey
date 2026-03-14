@@ -78,3 +78,46 @@ TicTacToe and Othello were originally developed as standalone repositories and l
 ---  
 
 This repository will evolve continuously as I progress deeper into backend engineering.  
+  
+---  
+  
+## Learning Progress  
+  
+### Phase 1 — Core Java Foundations  
+    
+Completed Topics  
+  
+- OOP fundamentals  
+- ArrayList  
+- LinkedList  
+- HashMap  
+- HashMap internals  
+- equals() and hashCode() contract  
+- LinkedHashSet  
+- TreeSet  
+- Comparable  
+- Comparator  
+- Queue fundamentals  
+  
+In Progress  
+  
+- PriorityQueue  
+- ArrayDeque  
+- Queue implementations  
+  
+---  
+  
+### Phase 2 — Backend Development (Upcoming)  
+  
+- Spring Boot fundamentals  
+- REST API development  
+- PostgreSQL integration  
+- JPA / Hibernate  
+  
+---  
+  
+### Phase 3 — Portfolio Projects (Planned)  
+  
+- Expense Tracker API  
+- Production-style backend architecture  
+  
