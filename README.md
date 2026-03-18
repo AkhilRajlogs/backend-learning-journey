@@ -45,7 +45,7 @@ backend-learning-journey/
   
 ### Hello API (Spring Boot)  
   
-Location:  
+#### Location:  
   
 spring-boot/hello-api  
   
@@ -53,19 +53,19 @@ A minimal Spring Boot service built to understand backend service structure and 
   
 Status: Completed (Basic Version)  
   
-Features:  
+#### Features:  
   
 - Spring Boot project setup using Maven  
 - REST controller implementation  
 - JSON response generation  
 - Embedded server execution  
   
-Endpoints:  
+#### Endpoints:  
   
-GET /hello    
+GET `/hello`    
 Returns a plain text response.  
   
-GET /status    
+GET `/status`    
 Returns a JSON response indicating service health.  
   
 Example Response:  
@@ -74,14 +74,73 @@ Example Response:
   "status": "running"  
 }  
   
-Run locally:  
+#### Run locally:  
   
-mvn spring-boot:run  
+`mvn spring-boot:run`  
   
 Server runs on:  
+http://localhost:8080  
+
+---
+
+### Task Manager API (Spring Boot)
+
+#### Location:
+
+spring-boot/task-manager-api
+
+A RESTful backend service implementing full CRUD operations using Spring Boot.
+
+Status: Completed (Version 1 - In-Memory)
+
+#### Features:
+
+- Layered architecture (Controller, Service, Model)
+- REST API design using proper HTTP methods
+- JSON request/response handling
+- Error handling for invalid resources
+- API testing using REST Client (.http)
+
+#### Endpoints:
+
+POST `/tasks`  
+Create a new task  
+
+GET `/tasks`  
+Fetch all tasks  
+
+GET` /tasks/{id}`  
+Fetch a task by ID  
+
+PUT `/tasks/{id}`  
+Update an existing task  
+
+DELETE `/tasks/{id}`  
+Delete a task  
+
+#### Run locally:
+
+`mvn spring-boot:run`  
   
+Server runs on:  
 http://localhost:8080  
   
+#### Example Response:  
+  
+{
+  "id": 1,
+  "title": "Learn Spring Boot",
+  "completed": false
+}
+
+#### Note:
+
+Currently uses in-memory storage (ArrayList) for simplicity.
+
+Planned improvement:
+- Integrate PostgreSQL for persistent storage
+- Use Spring Data JPA for database operations
+
 ---  
   
 ## Running a Core Java Example  
@@ -131,7 +190,7 @@ Development was paused while focusing on backend engineering fundamentals.
 - Java Collections Framework  
 - Multithreading & Concurrency  
 - Git & GitHub  
-- Spring Boot (Fundamentals completed, building APIs)  
+- Spring Boot (Fundamentals completed, actively building REST APIs)  
 - SQL  
 - JPA / Hibernate  
 - REST APIs  
