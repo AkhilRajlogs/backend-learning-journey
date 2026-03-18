@@ -1,0 +1,40 @@
+### Get all tasks
+GET http://localhost:8080/tasks
+
+###
+
+### Add new task
+POST http://localhost:8080/tasks
+Content-Type: application/json
+
+{
+  "id": 3,
+  "title": "Practice DSA",
+  "completed": false
+}
+
+###
+
+### Get task by ID
+GET http://localhost:8080/tasks/1
+
+###
+
+### Delete task
+DELETE http://localhost:8080/tasks/2
+
+###
+
+### Get non-existing task
+GET http://localhost:8080/tasks/999
+
+###
+
+### Update task
+PUT http://localhost:8080/tasks/1
+Content-Type: application/json
+
+{
+  "title": "Learn Spring Boot Deeply",
+  "completed": true
+}
