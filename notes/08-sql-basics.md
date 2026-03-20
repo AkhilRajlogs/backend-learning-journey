@@ -65,9 +65,7 @@ WHERE id = 1;
 
 ---
 
-## Table Example
-
-Example table: tasks
+## Example Table: tasks
 
 | id | title              | completed |
 |----|--------------------|----------|
@@ -91,3 +89,23 @@ Example table: tasks
 - Learn JDBC basics
 - Use Spring Data JPA
 - Replace in-memory storage with database
+
+---
+
+## How SQL Connects to My Backend Project
+
+In the Task Manager API:
+
+- Tasks will be stored in PostgreSQL instead of in-memory storage (ArrayList)
+- Each task will be a row in a database table
+- SQL operations map to backend operations:
+
+| Backend Action | SQL Operation |
+|---------------|--------------|
+| Create Task   | INSERT       |
+| Get Tasks     | SELECT       |
+| Update Task   | UPDATE       |
+| Delete Task   | DELETE       |
+
+- This will be implemented using Spring Data JPA, where SQL is generated automatically
+- JPA abstracts SQL, but understanding SQL is important for debugging and performance optimization
