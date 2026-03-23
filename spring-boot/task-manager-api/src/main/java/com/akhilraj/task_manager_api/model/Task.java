@@ -1,23 +1,33 @@
 package com.akhilraj.task_manager_api.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+
+@Entity
 public class Task {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
     private boolean completed;
 
-    // Default constructor (VERY IMPORTANT)
+    // Default constructor
     public Task() {}
 
-    public Task(int id, String title, boolean completed) {
-        this.id = id;
+    public Task(String title, boolean completed) {
         this.title = title;
         this.completed = completed;
     }
 
-    // Getters
-    public int getId() {
+    public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -28,12 +38,7 @@ public class Task {
         return completed;
     }
 
-    // Setters
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setTitle(String title) {   // 🔥 THIS WAS MISSING
+    public void setTitle(String title) {   
         this.title = title;
     }
 

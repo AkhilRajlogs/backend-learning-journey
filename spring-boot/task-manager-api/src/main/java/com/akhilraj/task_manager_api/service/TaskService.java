@@ -12,8 +12,8 @@ public class TaskService {
     private List<Task> tasks = new ArrayList<>();
 
     public TaskService() {
-        tasks.add(new Task(1, "Learn Spring Boot", false));
-        tasks.add(new Task(2, "Build REST API", false));
+        tasks.add(new Task("Learn Spring", false));
+        tasks.add(new Task("Build API", false));
     }
 
     public List<Task> getAllTasks() {
