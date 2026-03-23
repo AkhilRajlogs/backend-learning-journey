@@ -37,3 +37,6 @@ DELETE http://localhost:8080/tasks/1
 
 ### 6. Verify deletion
 GET http://localhost:8080/tasks/1
+
+### Get non-existing task
+GET http://localhost:8080/tasks/999

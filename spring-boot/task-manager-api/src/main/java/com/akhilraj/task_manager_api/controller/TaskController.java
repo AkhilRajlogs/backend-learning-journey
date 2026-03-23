@@ -6,6 +6,7 @@ import com.akhilraj.task_manager_api.service.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 
 @RestController
@@ -29,6 +30,7 @@ public class TaskController {
         return ResponseEntity.status(201).body(createdTask);
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<Task> getTaskById(@PathVariable int id) {
         Task task = taskService.getTaskById(id);
@@ -49,12 +51,11 @@ public class TaskController {
         }
 
         taskService.deleteTask(id);
-        return ResponseEntity.ok("Task deleted successfully");
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable int id, @RequestBody Task updatedTask) {
-        System.out.println(updatedTask);  // DEBUG
         Task task = taskService.updateTask(id, updatedTask);
 
         if (task == null) {
