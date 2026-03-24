@@ -54,7 +54,7 @@ Examples:
 
 When you run:
 
-mvn spring-boot:run
+    mvn spring-boot:run
 
 - Tomcat starts automatically on port 8080  
 
@@ -76,11 +76,11 @@ Client → Tomcat → Spring Boot → Response
 
 Example:
 
-{
-  "id": 1,
-  "title": "Learn Spring Boot",
-  "completed": false
-}
+    {
+      "id": 1,
+      "title": "Learn Spring Boot",
+      "completed": false
+    }
 
 Spring Boot automatically:
 - Converts Java → JSON (response)  
@@ -117,11 +117,11 @@ Java App → PostgreSQL → Data stored in tables
 
 Instead of writing SQL:
 
-SELECT * FROM tasks;
+    SELECT * FROM tasks;
 
 You write:
 
-taskRepository.findAll();
+    taskRepository.findAll();
 
 ---
 
@@ -144,10 +144,11 @@ taskRepository.findAll();
 Example:
 
 Java Object:
-Task {
-  id = 1  
-  title = "Learn"  
-}
+
+    Task {
+      id = 1  
+      title = "Learn"  
+    }
 
 Database Table:
 
@@ -157,21 +158,89 @@ Database Table:
 
 ---
 
-## Full Backend Flow
+## 4. Layers in My Project
 
-Client (Postman / Browser)  
-        ↓  
-Tomcat Server  
-        ↓  
-@RestController  
-        ↓  
-Service Layer  
-        ↓  
-Repository (JPA)  
-        ↓  
-Hibernate (ORM)  
-        ↓  
-PostgreSQL (Database)  
+    Controller → Service → Repository → Database
+
+- Controller: Handles HTTP requests/responses  
+- Service: Contains business logic  
+- Repository: Handles database operations using JPA  
+
+💡 Example from my project:
+
+- Controller: TaskController  
+- Service: TaskService  
+- Repository: TaskRepository  
+
+---
+
+## 5. DTO (Data Transfer Object)
+
+- DTO is used to transfer data between client and backend  
+
+Why used:
+
+- Prevent exposing database structure  
+- Control request/response format  
+- Improve security and flexibility  
+
+Flow:
+
+    Client → DTO → Service → Entity → Database  
+
+---
+
+## 6. Validation and Error Handling
+
+### Validation
+
+- Ensures only valid data enters the system  
+
+Examples:
+
+- @NotBlank → field cannot be empty  
+- @Size → restrict length  
+
+---
+
+### Error Handling
+
+- Used to return proper HTTP responses  
+
+Examples:
+
+- 400 → Bad Request (invalid input)  
+- 404 → Not Found (resource missing)  
+- 201 → Created (new resource created)  
+- 200 → OK (successful request)  
+
+---
+
+## 7. Full Backend Flow (Updated)
+
+    Client (REST Client / Browser)
+            ↓
+    Tomcat Server
+            ↓
+    Controller (receives request)
+            ↓
+    DTO (validates input)
+            ↓
+    Service (business logic)
+            ↓
+    Entity (converted from DTO)
+            ↓
+    Repository (JPA)
+            ↓
+    Hibernate (ORM)
+            ↓
+    PostgreSQL (Database)
+            ↓
+    Entity
+            ↓
+    Response DTO
+            ↓
+    Controller → Client
 
 ---
 
@@ -181,3 +250,4 @@ PostgreSQL (Database)
 - JPA reduces the need to write SQL manually  
 - Understanding SQL is important for debugging and performance  
 - Backend flow should always be understood end-to-end  
+- DTO helps maintain clean architecture and separation of concerns  
