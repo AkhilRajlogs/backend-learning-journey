@@ -38,5 +38,14 @@ DELETE http://localhost:8080/tasks/1
 ### 6. Verify deletion
 GET http://localhost:8080/tasks/1
 
-### Get non-existing task
+### 7. Get non-existing task
 GET http://localhost:8080/tasks/999
+
+### 8. Invalid task (empty title)
+POST http://localhost:8080/tasks
+Content-Type: application/json
+
+{
+  "title": "",
+  "completed": false
+}

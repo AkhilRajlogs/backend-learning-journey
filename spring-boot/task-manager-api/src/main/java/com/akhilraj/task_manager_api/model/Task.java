@@ -5,13 +5,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 @Entity
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Title cannot be empty")
+    @Size(min = 3, message = "Title must be at least 3 characters")
     private String title;
+
     private boolean completed;
 
     // Default constructor
@@ -38,7 +45,7 @@ public class Task {
         return completed;
     }
 
-    public void setTitle(String title) {   
+    public void setTitle(String title) {
         this.title = title;
     }
 

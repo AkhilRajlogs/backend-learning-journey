@@ -5,6 +5,7 @@ import com.akhilraj.task_manager_api.service.TaskService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
+    public ResponseEntity<Task> createTask(@Valid @RequestBody Task task) {
         Task createdTask = taskService.addTask(task);
         return ResponseEntity.status(201).body(createdTask);
     }
@@ -55,7 +56,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable int id, @RequestBody Task updatedTask) {
+    public ResponseEntity<Task> updateTask(@PathVariable int id, @Valid @RequestBody Task updatedTask) {
         Task task = taskService.updateTask(id, updatedTask);
 
         if (task == null) {
