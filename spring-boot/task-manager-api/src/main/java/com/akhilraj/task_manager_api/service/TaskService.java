@@ -1,6 +1,7 @@
 package com.akhilraj.task_manager_api.service;
 
 import com.akhilraj.task_manager_api.repository.TaskRepository;
+import com.akhilraj.task_manager_api.dto.TaskDTO;
 import com.akhilraj.task_manager_api.model.Task;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +20,16 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public Task addTask(Task task) {
+    public Task addTask(TaskDTO dto) {
+        Task task = new Task();
+        task.setTitle(dto.getTitle());
+        task.setCompleted(dto.isCompleted());
+
         return taskRepository.save(task);
     }
 
     public Task getTaskById(int id) {
-    return taskRepository.findById(id).orElse(null);
+        return taskRepository.findById(id).orElse(null);
     }
 
     public void deleteTask(int id) {

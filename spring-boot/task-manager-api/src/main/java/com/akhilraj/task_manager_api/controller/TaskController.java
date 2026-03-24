@@ -1,5 +1,6 @@
 package com.akhilraj.task_manager_api.controller;
 
+import com.akhilraj.task_manager_api.dto.TaskDTO;
 import com.akhilraj.task_manager_api.model.Task;
 import com.akhilraj.task_manager_api.service.TaskService;
 
@@ -26,8 +27,8 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@Valid @RequestBody Task task) {
-        Task createdTask = taskService.addTask(task);
+    public ResponseEntity<Task> createTask(@RequestBody @Valid TaskDTO taskDTO) {
+        Task createdTask = taskService.addTask(taskDTO);
         return ResponseEntity.status(201).body(createdTask);
     }
 
