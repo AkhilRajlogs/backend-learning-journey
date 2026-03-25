@@ -5,6 +5,7 @@ import com.akhilraj.task_manager_api.dto.TaskDTO;
 import com.akhilraj.task_manager_api.dto.TaskResponseDTO;
 import com.akhilraj.task_manager_api.model.Task;
 import org.springframework.stereotype.Service;
+import com.akhilraj.task_manager_api.exception.TaskNotFoundException;
 
 import java.util.List;
 
@@ -30,11 +31,15 @@ public class TaskService {
     }
 
     public Task getTaskById(Long id) {
-        return taskRepository.findById(id).orElse(null);
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     public void deleteTask(Long id) {
-        taskRepository.deleteById(id);
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
+
+        taskRepository.delete(task);
     }
 
     public Task updateTask(Long id, TaskDTO dto) {
@@ -42,7 +47,7 @@ public class TaskService {
             task.setTitle(dto.getTitle());
             task.setCompleted(dto.isCompleted());
             return taskRepository.save(task);
-        }).orElse(null);
+        }).orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     public TaskResponseDTO mapToResponseDTO(Task task) {
