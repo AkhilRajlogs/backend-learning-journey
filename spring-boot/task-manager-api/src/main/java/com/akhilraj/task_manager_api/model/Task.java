@@ -5,9 +5,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-
 @Entity
 public class Task {
 
@@ -19,7 +16,6 @@ public class Task {
 
     private String title;
 
-    // Default constructor
     public Task() {}
 
     public Task(String title, boolean completed) {
@@ -31,16 +27,16 @@ public class Task {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getTitle() {
         return title;
     }
 
     public boolean isCompleted() {
         return completed;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setTitle(String title) {
