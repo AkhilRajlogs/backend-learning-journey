@@ -15,11 +15,9 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Title cannot be empty")
-    @Size(min = 3, message = "Title must be at least 3 characters")
-    private String title;
-
     private boolean completed;
+
+    private String title;
 
     // Default constructor
     public Task() {}

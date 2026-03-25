@@ -2,6 +2,7 @@ package com.akhilraj.task_manager_api.service;
 
 import com.akhilraj.task_manager_api.repository.TaskRepository;
 import com.akhilraj.task_manager_api.dto.TaskDTO;
+import com.akhilraj.task_manager_api.dto.TaskResponseDTO;
 import com.akhilraj.task_manager_api.model.Task;
 import org.springframework.stereotype.Service;
 
@@ -28,19 +29,27 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task getTaskById(int id) {
+    public Task getTaskById(Long id) {
         return taskRepository.findById(id).orElse(null);
     }
 
-    public void deleteTask(int id) {
+    public void deleteTask(Long id) {
         taskRepository.deleteById(id);
     }
 
-    public Task updateTask(int id, Task updatedTask) {
+    public Task updateTask(Long id, TaskDTO dto) {
         return taskRepository.findById(id).map(task -> {
-            task.setTitle(updatedTask.getTitle());
-            task.setCompleted(updatedTask.isCompleted());
+            task.setTitle(dto.getTitle());
+            task.setCompleted(dto.isCompleted());
             return taskRepository.save(task);
         }).orElse(null);
+    }
+
+    public TaskResponseDTO mapToResponseDTO(Task task) {
+    return new TaskResponseDTO(
+            task.getId(),
+            task.getTitle(),
+            task.isCompleted()
+        );
     }
 }

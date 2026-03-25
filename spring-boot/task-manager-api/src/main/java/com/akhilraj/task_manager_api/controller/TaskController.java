@@ -1,6 +1,7 @@
 package com.akhilraj.task_manager_api.controller;
 
 import com.akhilraj.task_manager_api.dto.TaskDTO;
+import com.akhilraj.task_manager_api.dto.TaskResponseDTO;
 import com.akhilraj.task_manager_api.model.Task;
 import com.akhilraj.task_manager_api.service.TaskService;
 
@@ -22,30 +23,33 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> getTasks() {
-        return taskService.getAllTasks();
+    public List<TaskResponseDTO> getTasks() {
+        return taskService.getAllTasks()
+                .stream()
+                .map(taskService::mapToResponseDTO)
+                .toList();
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody @Valid TaskDTO taskDTO) {
-        Task createdTask = taskService.addTask(taskDTO);
-        return ResponseEntity.status(201).body(createdTask);
+    public ResponseEntity<TaskResponseDTO> createTask(@RequestBody @Valid TaskDTO taskDTO) {
+        Task task = taskService.addTask(taskDTO);
+        return ResponseEntity.status(201).body(taskService.mapToResponseDTO(task));
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable int id) {
+    public ResponseEntity<TaskResponseDTO> getTaskById(@PathVariable Long id) {
         Task task = taskService.getTaskById(id);
 
         if (task == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(task);
+        return ResponseEntity.ok(taskService.mapToResponseDTO(task));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTask(@PathVariable int id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         Task task = taskService.getTaskById(id);
 
         if (task == null) {
@@ -57,15 +61,17 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable int id, @Valid @RequestBody Task updatedTask) {
-        Task task = taskService.updateTask(id, updatedTask);
+    public ResponseEntity<TaskResponseDTO> updateTask(
+            @PathVariable Long id,
+            @Valid @RequestBody TaskDTO taskDTO) {
+
+        Task task = taskService.updateTask(id, taskDTO);
 
         if (task == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(task);
+        return ResponseEntity.ok(taskService.mapToResponseDTO(task));
     }
-
     
 }
