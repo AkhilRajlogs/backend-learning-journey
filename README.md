@@ -91,7 +91,7 @@ spring-boot/task-manager-api
 
 A RESTful backend service implementing full CRUD operations using Spring Boot.
 
-Status: Completed (Version 1 - In-Memory)
+Status: Completed (Version 2 - Database + DTO + Validation)
 
 #### Features:
 
@@ -100,6 +100,7 @@ Status: Completed (Version 1 - In-Memory)
 - JSON request/response handling
 - Error handling for invalid resources
 - API testing using REST Client (.http)
+- Exception-based error handling (instead of null checks)
 
 #### Endpoints:
 
@@ -109,7 +110,7 @@ Create a new task
 GET `/tasks`  
 Fetch all tasks  
 
-GET` /tasks/{id}`  
+GET `/tasks/{id}`  
 Fetch a task by ID  
 
 PUT `/tasks/{id}`  
@@ -135,11 +136,14 @@ http://localhost:8080
 
 #### Note:
 
-Currently uses in-memory storage (ArrayList) for simplicity.
+Now uses PostgreSQL with Spring Data JPA for persistent storage.
 
-Planned improvement:
-- Integrate PostgreSQL for persistent storage
-- Use Spring Data JPA for database operations
+Key improvements:
+- DTO pattern (Request + Response separation)
+- Validation using Jakarta annotations
+- Global exception handling
+- Proper HTTP status codes (400, 404)
+- Consistent ID type using Long
 
 ---  
   

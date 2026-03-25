@@ -3,6 +3,7 @@
 ## Overview
 
 This document explains how a single HTTP request is processed internally in a Spring Boot application.
+This flow is specific to Spring Boot (Spring MVC architecture)
 
 ---
 
@@ -57,13 +58,10 @@ This document explains how a single HTTP request is processed internally in a Sp
 
 ---
 
-### 6. Data Layer
-
-Current:
-- ArrayList (temporary)
-
-Future:
-- PostgreSQL via JPA
+### 6. Data Layer  
+  
+- Uses PostgreSQL via Spring Data JPA  
+- Repository layer handles database interaction  
 
 ---
 
