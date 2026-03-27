@@ -1,249 +1,240 @@
 # Backend Learning Journey  
-  
-This repository documents my structured transition from Mechanical Engineering to Backend Development using Java.
-  
-With 6+ years of experience in the engineering industry, I am now focused on building production-oriented backend development skills using Java, Spring Boot, SQL, and REST APIs.  
-  
-The goal of this repository is to demonstrate practical backend development knowledge through:  
-  
-- Core Java fundamentals  
-- Backend system design concepts  
-- Console-based Java projects  
-- Spring Boot backend services  
-- Database integration using SQL and JPA  
-  
----  
-   
-## Repository Structure  
 
-```  
-backend-learning-journey/  
-│
-├── core-java/
-│   ├── collections/
-│   ├── dsa-basics/
-│   ├── exceptionhandling/
-│   ├── multithreading/
-│   └── oops/payment/
-│
-├── notes/
-│
-├── projects/
-│   ├── TicTacToe/
-│   └── Othello/
-│
-├── spring-boot/
-│
-├── sql-practice/
-│
-└── README.md
-```  
-  
----  
-  
-## Backend Services  
-  
-### Hello API (Spring Boot)  
-  
-#### Location:  
-  
-spring-boot/hello-api  
-  
-A minimal Spring Boot service built to understand backend service structure and REST API development.  
-  
-Status: Completed (Basic Version)  
-  
-#### Features:  
-  
-- Spring Boot project setup using Maven  
-- REST controller implementation  
-- JSON response generation  
-- Embedded server execution  
-  
-#### Endpoints:  
-  
-GET `/hello`    
-Returns a plain text response.  
-  
-GET `/status`    
-Returns a JSON response indicating service health.  
-  
-Example Response:  
-  
-{  
-  "status": "running"  
-}  
-  
-#### Run locally:  
-  
-`mvn spring-boot:run`  
-  
-Server runs on:  
-http://localhost:8080  
+This repository documents my transition from Mechanical Engineering to Backend Development using Java.
+
+With 6+ years of experience in the engineering industry, I am now focused on building production-oriented backend systems using Java, Spring Boot, SQL, and REST APIs.
 
 ---
 
-### Task Manager API (Spring Boot)
+## What This Repository Demonstrates
 
-#### Location:
+This repository is a structured backend learning workspace focused on:
 
-spring-boot/task-manager-api
+- Core Java fundamentals and internals  
+- Backend architecture (layered design, DTO pattern, exception handling)  
+- REST API development using Spring Boot  
+- Database integration using PostgreSQL and JPA/Hibernate  
+- Writing clean, maintainable backend code  
 
-A RESTful backend service implementing full CRUD operations using Spring Boot.
+---
 
-Status: Completed (Version 2 - Database + DTO + Validation)
+## Repository Structure  
 
-#### Features:
+backend-learning-journey/  
+│  
+├── core-java/  
+│   ├── collections/  
+│   ├── dsa/  
+│   ├── exceptionhandling/  
+│   ├── multithreading/  
+│   └── oops/  
+│  
+├── notes/  
+│  
+├── projects/  
+│   ├── TicTacToe-Java/  
+│   └── Othello-Java/  
+│  
+├── spring-boot/  
+│   ├── hello-api/  
+│   └── task-manager-api/  
+│  
+├── sql-practice/  
+│  
+└── README.md  
 
-- Layered architecture (Controller, Service, Model)
-- REST API design using proper HTTP methods
-- JSON request/response handling
-- Error handling for invalid resources
-- API testing using REST Client (.http)
-- Exception-based error handling (instead of null checks)
+---
 
-#### Endpoints:
+## Backend Services  
+
+### Hello API (Spring Boot)
+
+Location: `spring-boot/hello-api`  
+
+A minimal Spring Boot service built to understand REST API fundamentals and application structure.
+
+Status: Completed (Basic Version)
+
+Features:
+
+- Spring Boot project setup using Maven  
+- REST controller implementation  
+- JSON response handling  
+- Embedded server execution  
+
+Endpoints:
+
+GET `/hello`  
+GET `/status`  
+
+Example response:
+
+{
+  "status": "running"
+}
+
+---
+
+### Task Manager API
+
+Location: `spring-boot/task-manager-api`  
+
+A structured backend service implementing full CRUD operations with database persistence.
+
+Status: Version 2 Completed
+
+---
+
+### Architecture
+
+Controller → Service → Repository → Database
+
+---
+
+### Key Features
+
+- Full CRUD REST API  
+- PostgreSQL integration using Spring Data JPA  
+- DTO pattern:
+  - Request DTO for input validation  
+  - Response DTO for controlled output  
+- Validation using Jakarta annotations  
+- Global exception handling using `@RestControllerAdvice`  
+- Logging using SLF4J  
+- Proper HTTP status codes (201, 400, 404)  
+- Exception-driven flow (no null checks)
+
+---
+
+### Endpoints
 
 POST `/tasks`  
-Create a new task  
-
 GET `/tasks`  
-Fetch all tasks  
-
 GET `/tasks/{id}`  
-Fetch a task by ID  
-
 PUT `/tasks/{id}`  
-Update an existing task  
-
 DELETE `/tasks/{id}`  
-Delete a task  
 
-#### Run locally:
+---
 
-`mvn spring-boot:run`  
-  
-Server runs on:  
-http://localhost:8080  
-  
-#### Example Response:  
-  
+### Example Response
+
 {
   "id": 1,
   "title": "Learn Spring Boot",
   "completed": false
 }
 
-#### Note:
+---
 
-Now uses PostgreSQL with Spring Data JPA for persistent storage.
+### Tech Stack
 
-Key improvements:
-- DTO pattern (Request + Response separation)
-- Validation using Jakarta annotations
-- Global exception handling
-- Proper HTTP status codes (400, 404)
-- Consistent ID type using Long
+- Java 17  
+- Spring Boot  
+- Spring Web  
+- Spring Data JPA  
+- PostgreSQL  
+- Maven  
 
----  
-  
-## Running a Core Java Example  
-  
-Requires **Java 17+** installed and added to PATH.  
-  
-From the project root:  
-  
-Compile:  
-  
-javac -d bin core-java/oops/payment/*.java  
-  
-Run:  
-  
-java -cp bin oops.payment.PaymentDemo  
-  
----  
-  
-## Projects  
-  
-### TicTacToe  
-  
-A playable console-based TicTacToe implementation demonstrating:  
-   
-- Object-Oriented Design  
-- Game loop logic  
-- Board state management  
-  
----  
-  
-### Othello (Work In Progress)  
-  
-Implementation of the classic Othello board game with focus on:  
-  
-- Game board modeling  
-- Move validation logic  
-- Turn-based gameplay structure  
-  
-Development was paused while focusing on backend engineering fundamentals.  
-  
----  
-  
-## Tech Stack  
-  
-- Java  
-- Object-Oriented Programming  
+---
+
+### Recent Improvements
+
+- Introduced DTO pattern (Request and Response separation)  
+- Added validation using Jakarta annotations  
+- Implemented global exception handling  
+- Refactored ID handling to use Long consistently  
+- Added structured logging (INFO for flow, ERROR for exceptions)  
+
+---
+
+### Next Step
+
+API response standardization:
+
+Target format:
+
+{
+  "status": "success",
+  "message": "Task fetched successfully",
+  "data": { ... }
+}
+
+Goal:
+
+- Consistent API responses  
+- Better frontend integration  
+- Production-style API design  
+
+---
+
+## Core Java Coverage  
+
+- OOP fundamentals  
 - Java Collections Framework  
-- Multithreading & Concurrency  
-- Git & GitHub  
-- Spring Boot (Fundamentals completed, actively building REST APIs)  
-- SQL  
-- JPA / Hibernate  
-- REST APIs  
-  
----  
-  
+- HashMap internals and implementation  
+- equals() and hashCode() contract  
+- HashSet, LinkedHashSet, TreeSet  
+- Comparable and Comparator  
+- Queue, PriorityQueue, ArrayDeque  
+- Exception handling (custom and best practices)  
+- Multithreading fundamentals  
+- Executor Framework  
+
+---
+
+## Console Projects  
+
+### TicTacToe  
+
+- Object-oriented design  
+- Game loop and state handling  
+
+### Othello (Paused)  
+
+- Board modeling  
+- Move validation logic  
+
+---
+
 ## Learning Progress  
-  
-### Phase 1 — Core Java Foundations  
-  
+
+### Phase 1 — Core Java  
 Completed  
-  
-✔ OOP fundamentals    
-✔ Java Collections Framework    
-✔ ArrayList and LinkedList    
-✔ HashMap and HashMap internals  
-✔ equals() and hashCode() contract  
-✔ HashSet and LinkedHashSet  
-✔ TreeSet  
-✔ Comparable and Comparator  
-✔ Queue fundamentals  
-✔ PriorityQueue  
-✔ ArrayDeque  
-✔ Exception Handling  
-✔ Multithreading fundamentals  
-✔ Executor Framework  
-  
----  
-  
-### Phase 2 — Backend Development (In Progress)  
-  
-- Spring Boot fundamentals   
+
+### Phase 2 — Backend Development  
+In Progress  
+
+Completed:
+
+- Spring Boot fundamentals  
 - REST API development  
 - PostgreSQL integration  
-- JPA / Hibernate  
-- Backend architecture patterns
-  
----  
-  
-### Phase 3 — Portfolio Projects (Planned)  
-  
-- Task Manager REST API   
-- Expense Tracker Backend   
-- Production-style backend architecture with Spring Boot  
-  
----  
-  
-## Purpose of This Repository  
-  
-This repository serves as a long-term backend learning workspace and portfolio demonstrating the progression from core Java foundations to real backend system development.  
-  
-The repository will continue to evolve as more backend systems and projects are built.  
+- DTO pattern  
+- Validation  
+- Exception handling  
+- Logging  
+
+---
+
+### Phase 3 — Portfolio Projects (Planned)
+
+- Task Manager (refined production version)  
+- Expense Tracker API  
+- Production-style backend architecture  
+
+---
+
+## Goal  
+
+To become a job-ready backend developer capable of building real-world backend systems using:
+
+- Java  
+- Spring Boot  
+- SQL  
+- REST APIs  
+
+---
+
+## Purpose  
+
+This repository serves as a long-term backend learning workspace and portfolio demonstrating progression from core Java foundations to backend system development.
