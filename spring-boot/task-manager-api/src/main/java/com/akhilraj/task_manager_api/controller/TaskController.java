@@ -1,5 +1,6 @@
 package com.akhilraj.task_manager_api.controller;
 
+import com.akhilraj.task_manager_api.dto.ApiResponse;
 import com.akhilraj.task_manager_api.dto.TaskDTO;
 import com.akhilraj.task_manager_api.dto.TaskResponseDTO;
 import com.akhilraj.task_manager_api.model.Task;
@@ -31,17 +32,29 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskResponseDTO> createTask(@RequestBody @Valid TaskDTO taskDTO) {
+    public ResponseEntity<ApiResponse<TaskResponseDTO>> createTask(
+            @RequestBody @Valid TaskDTO taskDTO) {
+
         Task task = taskService.addTask(taskDTO);
-        return ResponseEntity.status(201).body(taskService.mapToResponseDTO(task));
+        TaskResponseDTO dto = taskService.mapToResponseDTO(task);
+
+        ApiResponse<TaskResponseDTO> response =
+                new ApiResponse<>("success", "Task created successfully", dto);
+
+        return ResponseEntity.status(201).body(response);
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> getTaskById(@PathVariable Long id) {
-        Task task = taskService.getTaskById(id);
+    public ResponseEntity<ApiResponse<TaskResponseDTO>> getTaskById(@PathVariable Long id) {
 
-        return ResponseEntity.ok(taskService.mapToResponseDTO(task));
+        Task task = taskService.getTaskById(id);
+        TaskResponseDTO dto = taskService.mapToResponseDTO(task);
+
+        ApiResponse<TaskResponseDTO> response =
+                new ApiResponse<>("success", "Task fetched successfully", dto);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
