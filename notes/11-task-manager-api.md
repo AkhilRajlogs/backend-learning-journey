@@ -1,70 +1,120 @@
 # Task Manager API - Spring Boot
 
-## What I Learned
+## Overview
 
-- How to build a full CRUD REST API
-- How to structure backend using Controller → Service → Repository
-- How to integrate PostgreSQL with Spring Boot
-- How to use JPA/Hibernate for database operations
-- How to implement DTO pattern (Request + Response)
-- How to handle validation using Jakarta annotations
-- How to implement global exception handling
+This project is a production-style backend service built using Spring Boot.
+
+It demonstrates how a real-world backend application is structured, including layered architecture, database integration, validation, and exception handling.
 
 ---
 
-## Key Concepts
+## What This Project Demonstrates
 
-### Layered Architecture
-
-Controller → Handles HTTP requests  
-Service → Business logic  
-Repository → Database interaction  
-
----
-
-### DTO (Data Transfer Object)
-
-- Used to transfer data between client and backend  
-- Request DTO → Input validation  
-- Response DTO → Controlled output  
+- Building a full CRUD REST API  
+- Structuring backend using layered architecture  
+- Integrating PostgreSQL using JPA/Hibernate  
+- Using DTO pattern for clean API design  
+- Implementing validation using Jakarta annotations  
+- Handling errors using global exception handling  
 
 ---
 
-### Validation
+## Architecture
 
-- Implemented using:
-  - @NotBlank
-  - @Size
+Controller → Service → Repository → Database  
 
-- Applied on DTO (not Entity)
+### Why this structure?
+
+- Controller handles HTTP requests  
+- Service contains business logic  
+- Repository interacts with database  
+
+This separation ensures:
+
+- Clean code  
+- Maintainability  
+- Testability  
 
 ---
 
-### Global Exception Handling
+## DTO (Data Transfer Object)
 
-- Implemented using @RestControllerAdvice  
-- Handles validation errors  
-- Returns HTTP 400 with meaningful message  
+DTO is used to transfer data between client and backend.
+
+### Types used:
+
+- Request DTO → Validates incoming data  
+- Response DTO → Controls outgoing data  
+
+### Why not return Entity?
+
+- Prevents exposing database structure  
+- Avoids tight coupling  
+- Improves security and flexibility  
 
 ---
 
-### JPA + Hibernate
+## Validation
+
+Implemented using Jakarta annotations:
+
+- `@NotBlank` → Prevents empty values  
+- `@Size` → Ensures minimum length  
+
+### Key Decision
+
+Validation is applied on DTO instead of Entity.
+
+### Why?
+
+- Keeps validation at API boundary  
+- Separates persistence from input validation  
+
+---
+
+## Global Exception Handling
+
+Implemented using `@RestControllerAdvice`
+
+### Handles:
+
+- Validation errors (400 Bad Request)  
+- Resource not found (404 Not Found)  
+
+### Why?
+
+- Centralized error handling  
+- Consistent error responses  
+- Cleaner controller code  
+
+---
+
+## JPA + Hibernate
 
 - Entity maps Java object to database table  
-- Repository extends JpaRepository  
+- Repository extends `JpaRepository`  
+- Provides built-in CRUD operations  
+
+### Benefit:
+
 - No need to write SQL manually  
+- Faster development  
 
 ---
 
-### ID Type Consistency
+## ID Type Decision
 
-- Used Long instead of int  
-- Matches database BIGINT type  
+Used `Long` instead of `int`
+
+### Why?
+
+- Matches database `BIGINT`  
+- Prevents overflow issues  
 - Ensures consistency across layers  
 
 ---
 
-## Endpoints
+## API Endpoints
 
 POST /tasks → Create task  
 GET /tasks → Get all tasks  
@@ -76,41 +126,47 @@ DELETE /tasks/{id} → Delete task
 
 ## Request Flow
 
-Client → DispatcherServlet → Controller → Service → Repository → Database  
-Database → Repository → Service → Controller → Response  
+Client  
+→ DispatcherServlet  
+→ Controller  
+→ Service  
+→ Repository  
+→ Database  
+
+Response flows back in reverse order.
 
 ---
 
-## Improvements Made
+## Key Improvements Made
 
 - Introduced DTO pattern  
 - Moved validation from Entity to DTO  
 - Added global exception handling  
 - Refactored ID type to Long  
-- Ensured consistent API responses  
+- Standardized API responses  
 
 ---
 
-## Notes
+## Real-World Learnings
 
-- Avoid returning Entity directly  
-- Always validate input using DTO  
-- Use global exception handling for clean error responses  
-- Maintain consistency across all layers  
-  
-## Connection to Request Flow  
-  
-This project implements the Spring Boot request lifecycle:  
-  
-Client → Tomcat → DispatcherServlet → Controller → Service → Repository → Database → Response  
-  
-This reinforces concepts from:  
-- spring-boot-request-flow.md  
-- backend-core-concepts.md  
-  
-## Design Decisions  
-  
-- Used DTO instead of Entity to decouple API from database  
-- Kept Controller thin to follow best practices  
-- Centralized validation using annotations  
-- Used global exception handling for consistent error responses  
+- Never expose Entity directly in APIs  
+- Always validate input at API level  
+- Use exception handling instead of scattered error checks  
+- Keep controller thin and focused  
+
+---
+
+## Connection to Core Concepts
+
+This project reinforces:
+
+- Spring Boot request lifecycle  
+- Layered architecture  
+- Clean code principles  
+- API design best practices  
+
+---
+
+## Summary
+
+This project demonstrates how to build a structured, maintainable, and production-ready backend service using Spring Boot.
