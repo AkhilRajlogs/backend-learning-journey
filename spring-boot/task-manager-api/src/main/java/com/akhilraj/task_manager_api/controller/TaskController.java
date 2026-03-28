@@ -1,5 +1,6 @@
 package com.akhilraj.task_manager_api.controller;
 
+import com.akhilraj.task_manager_api.dto.ApiConstants;
 import com.akhilraj.task_manager_api.dto.ApiResponse;
 import com.akhilraj.task_manager_api.dto.TaskDTO;
 import com.akhilraj.task_manager_api.dto.TaskResponseDTO;
@@ -24,11 +25,17 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<TaskResponseDTO> getTasks() {
-        return taskService.getAllTasks()
+    public ResponseEntity<ApiResponse<List<TaskResponseDTO>>> getTasks() {
+
+        List<TaskResponseDTO> tasks = taskService.getAllTasks()
                 .stream()
                 .map(taskService::mapToResponseDTO)
                 .toList();
+
+        ApiResponse<List<TaskResponseDTO>> response =
+                new ApiResponse<>(ApiConstants.SUCCESS, "Tasks fetched successfully", tasks);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
@@ -39,7 +46,7 @@ public class TaskController {
         TaskResponseDTO dto = taskService.mapToResponseDTO(task);
 
         ApiResponse<TaskResponseDTO> response =
-                new ApiResponse<>("success", "Task created successfully", dto);
+                new ApiResponse<>(ApiConstants.SUCCESS, "Task created successfully", dto);
 
         return ResponseEntity.status(201).body(response);
     }
@@ -52,25 +59,34 @@ public class TaskController {
         TaskResponseDTO dto = taskService.mapToResponseDTO(task);
 
         ApiResponse<TaskResponseDTO> response =
-                new ApiResponse<>("success", "Task fetched successfully", dto);
+                new ApiResponse<>(ApiConstants.SUCCESS, "Task fetched successfully", dto);
 
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteTask(@PathVariable Long id) {
+
         taskService.deleteTask(id);
-        return ResponseEntity.noContent().build();
+
+        ApiResponse<Void> response =
+                new ApiResponse<>(ApiConstants.SUCCESS, "Task deleted successfully", null);
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> updateTask(
+    public ResponseEntity<ApiResponse<TaskResponseDTO>> updateTask(
             @PathVariable Long id,
             @Valid @RequestBody TaskDTO taskDTO) {
 
         Task task = taskService.updateTask(id, taskDTO);
+        TaskResponseDTO dto = taskService.mapToResponseDTO(task);
 
-        return ResponseEntity.ok(taskService.mapToResponseDTO(task));
+        ApiResponse<TaskResponseDTO> response =
+                new ApiResponse<>(ApiConstants.SUCCESS, "Task updated successfully", dto);
+
+        return ResponseEntity.ok(response);
     }
     
 }

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import com.akhilraj.task_manager_api.dto.ApiConstants;
 import com.akhilraj.task_manager_api.dto.ApiResponse;
 import com.akhilraj.task_manager_api.exception.TaskNotFoundException;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class GlobalExceptionHandler {
         logger.error("Validation failed: {}", errors);
 
         ApiResponse<Map<String, String>> response =
-                new ApiResponse<>("error", "Validation failed", errors);
+                new ApiResponse<>(ApiConstants.ERROR, "Validation failed", errors);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
@@ -41,7 +42,7 @@ public class GlobalExceptionHandler {
         logger.error("Task not found exception: {}", ex.getMessage());
 
         ApiResponse<Void> response =
-                new ApiResponse<>("error", ex.getMessage(), null);
+                new ApiResponse<>(ApiConstants.ERROR, ex.getMessage(), null);
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
