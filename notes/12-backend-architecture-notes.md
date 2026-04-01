@@ -192,3 +192,15 @@ Service throws exception
 - DispatcherServlet → manages entire flow
 
 ---
+
+## Validation Flow
+
+- Validation is defined in DTO using annotations
+- Triggered using @Valid in controller
+- If validation fails → MethodArgumentNotValidException
+- Handled using @RestControllerAdvice
+
+Flow:
+
+Client → Controller → @Valid → Validation  
+→ Exception → ExceptionHandler → Response
