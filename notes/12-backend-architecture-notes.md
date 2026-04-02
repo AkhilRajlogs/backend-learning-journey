@@ -204,3 +204,23 @@ Flow:
 
 Client → Controller → @Valid → Validation  
 → Exception → ExceptionHandler → Response
+
+---
+
+## JSON Flow (Jackson)
+
+- @RequestBody converts JSON → Java object
+- Uses Jackson internally
+- Field names must match JSON keys
+- After conversion → validation runs
+
+Flow:
+
+Client  
+→ DispatcherServlet  
+→ @RequestBody (Jackson: JSON → DTO)  
+→ @Valid (Validation)  
+→ Service  
+→ Controller  
+→ Jackson (Java → JSON)  
+→ Client  
