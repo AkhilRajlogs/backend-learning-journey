@@ -30,7 +30,7 @@ In REST APIs:
 
 ---
 
-## 3. Why DispatcherServlet? (Interview)
+## 3. Why DispatcherServlet Exists
 
 - Centralizes request handling
 - Avoids tight coupling
@@ -169,7 +169,7 @@ Service throws exception
 
 ---
 
-### Interview Points:
+### Key Notes:
 
 - @ControllerAdvice → for MVC (views)
 - @RestControllerAdvice → for REST APIs (JSON)
@@ -240,3 +240,22 @@ Client
 9. DB returns saved entity
 10. Jackson converts to JSON
 11. Response sent to client
+
+## How Routing Works
+
+- HTTP request has:
+  - Method (GET, POST, etc.)
+  - URL (/tasks)
+
+- @PostMapping("/tasks") registers:
+  (POST, "/tasks") → method
+
+- DispatcherServlet:
+  - Receives request
+  - Uses HandlerMapping to find matching method
+  - Calls that method
+
+Example:
+
+POST /tasks → createTask()
+GET /tasks/5 → getTask(5)
