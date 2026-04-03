@@ -224,3 +224,19 @@ Client
 → Controller  
 → Jackson (Java → JSON)  
 → Client  
+
+---
+
+## Request Walkthrough (POST /tasks)
+
+1. Request reaches Tomcat
+2. DispatcherServlet receives it
+3. Finds matching controller
+4. @RequestBody → JSON to DTO
+5. @Valid → validation runs
+6. Controller calls service
+7. Service converts DTO → Entity
+8. Repository saves to DB
+9. DB returns saved entity
+10. Jackson converts to JSON
+11. Response sent to client
