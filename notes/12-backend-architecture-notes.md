@@ -259,3 +259,17 @@ Example:
 
 POST /tasks → createTask()
 GET /tasks/5 → getTask(5)
+
+## Request Walkthrough (GET /tasks/{id})
+
+1. Request reaches Tomcat
+2. DispatcherServlet receives it
+3. HandlerMapping finds matching method
+4. @PathVariable extracts id from URL
+5. Controller calls service with id
+6. Service calls repository
+7. Repository fetches from DB
+8. DB returns entity
+9. Controller returns entity
+10. Jackson converts to JSON
+11. Response sent to client
