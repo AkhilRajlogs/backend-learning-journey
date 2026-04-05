@@ -270,6 +270,21 @@ GET /tasks/5 → getTask(5)
 6. Service calls repository
 7. Repository fetches from DB
 8. DB returns entity
-9. Controller returns entity
-10. Jackson converts to JSON
-11. Response sent to client
+9. Controller maps Entity → DTO
+10. DTO wrapped in ApiResponse
+11. ResponseEntity returned
+12. Jackson converts to JSON
+13. Response sent to client
+
+---
+
+## Real Controller Flow (Using ResponseEntity + ApiResponse)
+
+- Controller does not return Entity directly
+- Entity is converted to DTO
+- DTO is wrapped inside ApiResponse
+- ResponseEntity controls HTTP status
+
+Flow:
+
+Entity → DTO → ApiResponse → ResponseEntity → JSON
