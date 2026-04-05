@@ -288,3 +288,19 @@ GET /tasks/5 → getTask(5)
 Flow:
 
 Entity → DTO → ApiResponse → ResponseEntity → JSON
+
+---
+
+## Exception Walkthrough (GET /tasks/{id} - Not Found)
+
+1. Request reaches controller
+2. Controller calls service
+3. Service calls repository
+4. DB returns empty result
+5. Service throws TaskNotFoundException
+6. DispatcherServlet catches exception
+7. HandlerExceptionResolver processes it
+8. @RestControllerAdvice handles exception
+9. ApiResponse created with error message
+10. ResponseEntity returns HTTP 404
+11. JSON response sent to client
