@@ -2,6 +2,7 @@ package com.akhilraj.task_manager_api.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,17 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInvalidJson(HttpMessageNotReadableException ex) {
+
+        logger.error("Malformed JSON request: {}", ex.getMessage());
+
+        ApiResponse<Void> response =
+                new ApiResponse<>(ApiConstants.ERROR, "Malformed JSON request", null);
+
+        return ResponseEntity.badRequest().body(response);
+        }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationErrors(
