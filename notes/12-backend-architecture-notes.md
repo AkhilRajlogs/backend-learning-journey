@@ -304,3 +304,66 @@ Entity → DTO → ApiResponse → ResponseEntity → JSON
 9. ApiResponse created with error message
 10. ResponseEntity returns HTTP 404
 11. JSON response sent to client
+
+---
+
+## JSON Parsing vs Validation (IMPORTANT)
+
+There are two different failure points in request processing:
+
+1. JSON Parsing (Jackson)
+2. Validation (Jakarta Validation)
+
+---
+
+### Case 1: Invalid JSON (Parsing Failure)
+
+Example: malformed JSON (missing brace, invalid syntax)
+
+Flow:
+
+Client  
+→ DispatcherServlet  
+→ HandlerAdapter  
+→ HttpMessageConverter (Jackson)  
+→ ❌ Parsing fails  
+→ Exception: HttpMessageNotReadableException  
+→ HandlerExceptionResolver  
+→ @RestControllerAdvice  
+→ Response (400 Bad Request)
+
+---
+
+### Case 2: Valid JSON but Validation Fails
+
+Example: empty title, short description
+
+Flow:
+
+Client  
+→ DispatcherServlet  
+→ HandlerAdapter  
+→ HttpMessageConverter (Jackson)  
+→ ✅ DTO created  
+→ @Valid triggers validation  
+→ ❌ Validation fails  
+→ Exception: MethodArgumentNotValidException  
+→ HandlerExceptionResolver  
+→ @RestControllerAdvice  
+→ Response (400 Bad Request)
+
+---
+
+### Key Difference
+
+- Jackson → Converts JSON to DTO  
+- Validation → Checks DTO correctness  
+
+---
+
+### Important Notes
+
+- If JSON is invalid → DTO is NOT created → Validation does NOT run  
+- If JSON is valid → DTO is created → Validation runs  
+- Extra fields in JSON → ignored by default  
+- Wrong data type → treated as parsing error (Jackson fails)  
