@@ -17,13 +17,13 @@ In REST APIs:
 
 - Front controller of Spring MVC
 - Receives all incoming HTTP requests from Tomcat
-- Routes request to correct controller using HandlerMapping
-- Delegates execution using HandlerAdapter
+- Routes request using HandlerMapping
+- Executes controller using HandlerAdapter
 
 ### Responsibilities:
 
 - Routing (URL → controller)
-- Request parsing (JSON → Java object)
+- Request parsing (JSON → Java object via HttpMessageConverter)
 - Triggering validation
 - Handling exceptions
 - Response conversion (Java → JSON via Jackson)
@@ -36,10 +36,6 @@ In REST APIs:
 - Avoids tight coupling
 - Enables routing, validation, interceptors, exception handling
 
-Without it:
-- Manual routing required
-- Code becomes unmaintainable
-
 ---
 
 ## 4. Request Flow (Complete)
@@ -48,6 +44,7 @@ Client
 → Tomcat  
 → DispatcherServlet  
 → HandlerMapping  
+→ HandlerAdapter  
 → Controller  
 → Service  
 → Repository  
@@ -55,7 +52,8 @@ Client
 → Entity  
 → Response DTO  
 → DispatcherServlet  
-→ JSON (via Jackson)  
+→ HttpMessageConverter (Jackson)  
+→ JSON  
 → Client  
 
 ---
@@ -68,12 +66,11 @@ Controller → Service → Repository → Database
 
 - Controller
   - Handles HTTP layer
-  - Maps requests/responses
+  - Uses DTOs
 
 - Service
   - Contains business logic
-  - Makes application decisions
-  - Coordinates between layers
+  - Works with Entities
 
 - Repository
   - Handles database operations using JPA
@@ -82,53 +79,54 @@ Controller → Service → Repository → Database
 
 ## 6. What SHOULD NOT be in Service Layer
 
-- HTTP-specific logic:
-  - @RequestBody
-  - @PathVariable
-  - ResponseEntity
-  - HTTP status codes
-  - API response formatting
+- @RequestBody
+- @PathVariable
+- ResponseEntity
+- HTTP status codes
 
-Service should remain independent of web layer
+Service must remain independent of web layer
 
 ---
 
 ## 7. Entity vs DTO
 
-### Entity (Task.java)
+### Entity
 - Represents database table
-- Holds data structure
 
 ### DTO
-- Controls API request/response
+- Defines API request/response structure
 - Used for validation
-- Prevents exposing internal structure
+- Hides internal fields
 
 ---
 
 ## 8. Why DTO is Used
 
 - Prevents exposing database structure
-- Decouples API from database
+- Decouples API from DB
+- Enables validation
 - Improves security
-- Enables validation at API boundary
-
-DTO protects entity and gives control over API
+- Allows custom API contracts
 
 ---
 
 ## 9. Backend Flow (Detailed)
 
 Client  
+→ DispatcherServlet  
+→ HandlerMapping  
+→ HandlerAdapter  
+→ @RequestBody (Jackson → DTO)  
+→ @Valid (Validation)  
 → Controller  
-→ DTO (validation)  
 → Service  
 → Entity  
 → Repository  
 → Database  
 → Entity  
 → Response DTO  
-→ Controller  
+→ DispatcherServlet  
+→ Jackson → JSON  
 → Client  
 
 ---
@@ -137,233 +135,144 @@ Client
 
 ### Flow:
 
-Service throws exception  
-→ DispatcherServlet catches it  
-→ HandlerExceptionResolver processes it  
-→ @ExceptionHandler executes  
+Exception occurs  
+→ DispatcherServlet catches  
+→ HandlerExceptionResolver  
+→ @ExceptionHandler / @RestControllerAdvice  
 → Response returned  
 
 ---
 
 ### Key Components:
 
-- DispatcherServlet → receives exception
-- HandlerExceptionResolver → resolves exception
-- ExceptionHandlerExceptionResolver → processes @ExceptionHandler
-
----
-
-### Why NOT handle in Service?
-
-- Violates separation of concerns
-- Leads to repetitive try-catch blocks
-- Mixes business logic with error handling
+- DispatcherServlet
+- HandlerExceptionResolver
+- ExceptionHandlerExceptionResolver
 
 ---
 
 ### Why @RestControllerAdvice?
 
-- Centralized exception handling
-- Clean controller and service
+- Centralized handling
+- Clean controllers
 - Consistent API responses
 
 ---
 
 ### Key Notes:
 
-- @ControllerAdvice → for MVC (views)
-- @RestControllerAdvice → for REST APIs (JSON)
+- @ControllerAdvice → for views
+- @RestControllerAdvice → for JSON APIs
 
-- If no handler found:
-  → DefaultHandlerExceptionResolver → returns 500
+- DefaultHandlerExceptionResolver:
+  - Handles standard Spring exceptions (405, 415, etc.)
 
-- Multiple handlers:
-  → Most specific exception is chosen
-
----
-
-## 11. Key Design Summary
-
-- Controller → handles HTTP
-- Service → contains business logic
-- Repository → interacts with database
-- Entity → represents data
-- DTO → shapes API data
-- DispatcherServlet → manages entire flow
+- Most specific exception handler is chosen
 
 ---
 
 ## Validation Flow
 
-- Validation is defined in DTO using annotations
-- Triggered using @Valid in controller
-- If validation fails → MethodArgumentNotValidException
-- Handled using @RestControllerAdvice
-
-Flow:
-
-Client → Controller → @Valid → Validation  
-→ Exception → ExceptionHandler → Response
+Client  
+→ DispatcherServlet  
+→ HandlerAdapter  
+→ @RequestBody (JSON → DTO)  
+→ @Valid  
+→ ❌ MethodArgumentNotValidException (if fails)  
+→ ExceptionHandler  
+→ Response  
 
 ---
 
 ## JSON Flow (Jackson)
 
-- @RequestBody converts JSON → Java object
-- Uses Jackson internally
-- Field names must match JSON keys
-- After conversion → validation runs
-
-Flow:
-
 Client  
 → DispatcherServlet  
-→ @RequestBody (Jackson: JSON → DTO)  
-→ @Valid (Validation)  
-→ Service  
+→ HandlerAdapter  
+→ HttpMessageConverter  
+→ Jackson (JSON → DTO)  
 → Controller  
-→ Jackson (Java → JSON)  
+→ Jackson (DTO → JSON)  
 → Client  
 
 ---
 
-## Request Walkthrough (POST /tasks)
+## JSON Parsing vs Validation
 
-1. Request reaches Tomcat
-2. DispatcherServlet receives it
-3. Finds matching controller
-4. @RequestBody → JSON to DTO
-5. @Valid → validation runs
-6. Controller calls service
-7. Service converts DTO → Entity
-8. Repository saves to DB
-9. DB returns saved entity
-10. Jackson converts to JSON
-11. Response sent to client
+### Invalid JSON
 
-## How Routing Works
-
-- HTTP request has:
-  - Method (GET, POST, etc.)
-  - URL (/tasks)
-
-- @PostMapping("/tasks") registers:
-  (POST, "/tasks") → method
-
-- DispatcherServlet:
-  - Receives request
-  - Uses HandlerMapping to find matching method
-  - Calls that method
-
-Example:
-
-POST /tasks → createTask()
-GET /tasks/5 → getTask(5)
-
-## Request Walkthrough (GET /tasks/{id})
-
-1. Request reaches Tomcat
-2. DispatcherServlet receives it
-3. HandlerMapping finds matching method
-4. @PathVariable extracts id from URL
-5. Controller calls service with id
-6. Service calls repository
-7. Repository fetches from DB
-8. DB returns entity
-9. Controller maps Entity → DTO
-10. DTO wrapped in ApiResponse
-11. ResponseEntity returned
-12. Jackson converts to JSON
-13. Response sent to client
+→ Jackson fails  
+→ HttpMessageNotReadableException  
+→ ExceptionHandler  
+→ 400 Response  
 
 ---
 
-## Real Controller Flow (Using ResponseEntity + ApiResponse)
+### Valid JSON but Validation Fails
 
-- Controller does not return Entity directly
-- Entity is converted to DTO
-- DTO is wrapped inside ApiResponse
-- ResponseEntity controls HTTP status
-
-Flow:
-
-Entity → DTO → ApiResponse → ResponseEntity → JSON
-
----
-
-## Exception Walkthrough (GET /tasks/{id} - Not Found)
-
-1. Request reaches controller
-2. Controller calls service
-3. Service calls repository
-4. DB returns empty result
-5. Service throws TaskNotFoundException
-6. DispatcherServlet catches exception
-7. HandlerExceptionResolver processes it
-8. @RestControllerAdvice handles exception
-9. ApiResponse created with error message
-10. ResponseEntity returns HTTP 404
-11. JSON response sent to client
-
----
-
-## JSON Parsing vs Validation (IMPORTANT)
-
-There are two different failure points in request processing:
-
-1. JSON Parsing (Jackson)
-2. Validation (Jakarta Validation)
-
----
-
-### Case 1: Invalid JSON (Parsing Failure)
-
-Example: malformed JSON (missing brace, invalid syntax)
-
-Flow:
-
-Client  
-→ DispatcherServlet  
-→ HandlerAdapter  
-→ HttpMessageConverter (Jackson)  
-→ ❌ Parsing fails  
-→ Exception: HttpMessageNotReadableException  
-→ HandlerExceptionResolver  
-→ @RestControllerAdvice  
-→ Response (400 Bad Request)
-
----
-
-### Case 2: Valid JSON but Validation Fails
-
-Example: empty title, short description
-
-Flow:
-
-Client  
-→ DispatcherServlet  
-→ HandlerAdapter  
-→ HttpMessageConverter (Jackson)  
-→ ✅ DTO created  
-→ @Valid triggers validation  
-→ ❌ Validation fails  
-→ Exception: MethodArgumentNotValidException  
-→ HandlerExceptionResolver  
-→ @RestControllerAdvice  
-→ Response (400 Bad Request)
-
----
-
-### Key Difference
-
-- Jackson → Converts JSON to DTO  
-- Validation → Checks DTO correctness  
+→ DTO created  
+→ Validation fails  
+→ MethodArgumentNotValidException  
+→ ExceptionHandler  
+→ 400 Response  
 
 ---
 
 ### Important Notes
 
-- If JSON is invalid → DTO is NOT created → Validation does NOT run  
-- If JSON is valid → DTO is created → Validation runs  
-- Extra fields in JSON → ignored by default  
-- Wrong data type → treated as parsing error (Jackson fails)  
+- Invalid JSON → DTO NOT created  
+- Valid JSON → DTO created → validation runs  
+- Wrong data type → Jackson error  
+- Extra fields → ignored by default  
+
+---
+
+## Request Walkthrough (POST /tasks)
+
+1. Request → Tomcat  
+2. DispatcherServlet  
+3. HandlerMapping  
+4. HandlerAdapter  
+5. @RequestBody → DTO  
+6. @Valid → validation  
+7. Controller  
+8. Service  
+9. Repository  
+10. DB  
+11. Entity returned  
+12. Response DTO  
+13. Jackson → JSON  
+14. Response sent  
+
+---
+
+## Exception Walkthrough (Task Not Found)
+
+1. Controller calls service  
+2. Service throws exception  
+3. DispatcherServlet catches  
+4. HandlerExceptionResolver  
+5. @RestControllerAdvice  
+6. ResponseEntity (404)  
+7. JSON response sent  
+
+---
+
+## Interview Quick Summary
+
+- DispatcherServlet is the front controller
+- HandlerMapping finds the controller
+- HandlerAdapter executes the controller
+- HttpMessageConverter (Jackson) handles JSON conversion
+- @Valid triggers validation
+- Service contains business logic
+- Repository interacts with database
+- @RestControllerAdvice handles exceptions globally
+
+--- 
+
+## Common Exceptions
+
+- HttpMessageNotReadableException → Invalid JSON
+- MethodArgumentNotValidException → Validation failure
+- TaskNotFoundException → Custom business exception
