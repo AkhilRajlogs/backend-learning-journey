@@ -126,9 +126,10 @@ Client
 → Entity  
 → Response DTO  
 → DispatcherServlet  
-→ Jackson → JSON  
+→ HttpMessageConverter  
+→ Jackson (Java → JSON)  
 → Client  
-
+  
 ---
 
 ## 10. Exception Handling (Deep Dive)
@@ -171,14 +172,15 @@ Exception occurs
 
 ---
 
-## Validation Flow
-
+## Validation Flow (Jakarta Validation)  
+  
 Client  
 → DispatcherServlet  
+→ HandlerMapping  
 → HandlerAdapter  
 → @RequestBody (JSON → DTO)  
 → @Valid  
-→ ❌ MethodArgumentNotValidException (if fails)  
+→ MethodArgumentNotValidException (if fails)  
 → ExceptionHandler  
 → Response  
 
@@ -188,8 +190,9 @@ Client
 
 Client  
 → DispatcherServlet  
+→ HandlerMapping  
 → HandlerAdapter  
-→ HttpMessageConverter  
+→ HttpMessageConverter    
 → Jackson (JSON → DTO)  
 → Controller  
 → Jackson (DTO → JSON)  
@@ -227,6 +230,39 @@ Client
 
 ---
 
+## @RequestBody Internals
+
+- @RequestBody is handled by RequestResponseBodyMethodProcessor
+- It uses HttpMessageConverter to convert request body
+- For JSON, MappingJackson2HttpMessageConverter is used
+- Jackson ObjectMapper converts JSON → DTO
+
+### Flow:
+
+Client  
+→ DispatcherServlet  
+→ HandlerMapping  
+→ HandlerAdapter  
+→ RequestResponseBodyMethodProcessor  
+→ HttpMessageConverter  
+→ Jackson (JSON → DTO)  
+→ @Valid (optional validation)  
+→ Controller  
+
+---
+
+## Important Validation Note
+
+- Validation annotations (@NotBlank, @Size, etc.) do NOT run automatically
+- @Valid (or @Validated) is REQUIRED to trigger validation
+
+Without @Valid:
+- Invalid data is accepted
+- No exception is thrown
+- Controller receives raw data
+
+---
+
 ## Request Walkthrough (POST /tasks)
 
 1. Request → Tomcat  
@@ -241,7 +277,7 @@ Client
 10. DB  
 11. Entity returned  
 12. Response DTO  
-13. Jackson → JSON  
+13. Jackson (Java → JSON)  
 14. Response sent  
 
 ---
@@ -276,3 +312,24 @@ Client
 - HttpMessageNotReadableException → Invalid JSON
 - MethodArgumentNotValidException → Validation failure
 - TaskNotFoundException → Custom business exception
+
+---
+
+## Response Flow (IMPORTANT)
+
+After controller returns response:
+
+→ DispatcherServlet receives return value  
+→ HandlerAdapter processes it  
+→ ResponseBodyAdvice (optional)  
+→ HttpMessageConverter selected  
+→ Jackson converts Java object → JSON  
+→ HTTP response sent to client  
+
+---
+
+### Key Notes:
+
+- @ResponseBody or @RestController enables JSON response
+- Same HttpMessageConverter is used for request and response
+- Jackson ObjectMapper handles serialization
