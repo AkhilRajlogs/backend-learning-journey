@@ -78,3 +78,48 @@ This flow is specific to Spring Boot (Spring MVC architecture)
 - Controller should remain thin
 - Service handles logic
 - Data layer handles persistence
+
+---
+
+## Enhanced Internal Flow 
+
+Client  
+→ Tomcat  
+→ DispatcherServlet  
+→ HandlerMapping  
+→ HandlerAdapter  
+→ HttpMessageConverter (JSON → DTO using Jackson)  
+→ @Valid (Validation)  
+→ Controller  
+→ Service  
+→ Repository  
+→ Database  
+
+Response:
+
+Database  
+→ Entity  
+→ Service  
+→ Controller  
+→ DispatcherServlet  
+→ HttpMessageConverter (DTO → JSON using Jackson)  
+→ Client  
+
+---
+
+## Failure Scenarios
+
+### 1. Invalid JSON
+
+→ Jackson fails  
+→ HttpMessageNotReadableException  
+→ ExceptionHandler  
+→ 400 Response  
+
+### 2. Validation Failure
+
+→ DTO created  
+→ Validation fails  
+→ MethodArgumentNotValidException  
+→ ExceptionHandler  
+→ 400 Response  
