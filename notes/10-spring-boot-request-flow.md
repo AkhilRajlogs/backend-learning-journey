@@ -11,7 +11,7 @@ This flow is specific to Spring Boot (Spring MVC architecture)
 
 1. Client sends HTTP request
 2. Tomcat receives the request
-3. DispatcherServlet routes request
+3. DispatcherServlet receives and routes request
 4. Controller handles request
 5. Service processes logic
 6. Data layer interacts with storage
@@ -88,7 +88,9 @@ Client
 → DispatcherServlet  
 → HandlerMapping  
 → HandlerAdapter  
-→ HttpMessageConverter (JSON → DTO using Jackson)  
+→ @RequestBody  
+→ HttpMessageConverter  
+→ Jackson (JSON → DTO)  
 → @Valid (Validation)  
 → Controller  
 → Service  
@@ -102,7 +104,7 @@ Database
 → Service  
 → Controller  
 → DispatcherServlet  
-→ HttpMessageConverter (DTO → JSON using Jackson)  
+→ HttpMessageConverter → Jackson (DTO → JSON)
 → Client  
 
 ---
@@ -115,6 +117,7 @@ Database
 → HttpMessageNotReadableException  
 → ExceptionHandler  
 → 400 Response  
+→ DTO is NOT created
 
 ### 2. Validation Failure
 
@@ -123,3 +126,47 @@ Database
 → MethodArgumentNotValidException  
 → ExceptionHandler  
 → 400 Response  
+
+---
+
+## Request Data Binding Annotations
+
+### @RequestParam
+
+- Used for query parameters  
+- Example: /tasks?completed=true  
+- Binds simple values from URL  
+
+---
+
+### @PathVariable
+
+- Used for URL path variables  
+- Example: /tasks/{id}  
+- Identifies specific resource  
+
+---
+
+### @RequestBody
+
+- Used for JSON request body  
+- Converts JSON → DTO using Jackson  
+- Supports validation with @Valid  
+
+---
+
+### Key Difference
+
+- @RequestParam → Query data  
+- @PathVariable → URL data  
+- @RequestBody → Body data  
+
+---
+
+### Internal Flow Difference
+
+- @RequestBody:
+  → HttpMessageConverter → Jackson → DTO  
+
+- @RequestParam / @PathVariable:
+  → ArgumentResolver → Direct binding  
