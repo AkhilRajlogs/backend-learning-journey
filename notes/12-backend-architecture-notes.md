@@ -227,6 +227,7 @@ Client
 - Valid JSON → DTO created → validation runs  
 - Wrong data type → Jackson error  
 - Extra fields → ignored by default  
+- Unknown JSON fields are ignored by default (can be configured using Jackson)
 
 ---
 
