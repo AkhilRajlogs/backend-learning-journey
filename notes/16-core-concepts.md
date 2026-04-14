@@ -15,3 +15,21 @@ Persist means saving an entity permanently into the database.
 ## What is HandlerAdapter?
 
 HandlerAdapter is responsible for executing the controller method identified by HandlerMapping.
+
+---
+
+## What is @Entity?
+
+@Entity marks a class as a JPA entity. It tells Hibernate to map this class to a database table.
+
+---
+
+## What is JPA?
+
+JPA (Java Persistence API) is a specification that defines how Java objects are mapped to database tables.
+
+---
+
+## What is Hibernate?
+
+Hibernate is the implementation of JPA. It handles ORM and generates SQL queries automatically.
