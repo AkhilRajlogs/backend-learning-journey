@@ -33,3 +33,21 @@ JPA (Java Persistence API) is a specification that defines how Java objects are 
 ## What is Hibernate?
 
 Hibernate is the implementation of JPA. It handles ORM and generates SQL queries automatically.
+
+---
+
+## What is HandlerAdapter?
+
+HandlerAdapter is responsible for executing the controller method identified by HandlerMapping.
+
+---
+
+## What does persist mean?
+
+Persist means saving an entity permanently into the database.
+
+---
+
+## What is @Id?
+
+@Id marks the primary key of an entity and is used to uniquely identify each record in the database.  
