@@ -51,3 +51,9 @@ Persist means saving an entity permanently into the database.
 ## What is @Id?
 
 @Id marks the primary key of an entity and is used to uniquely identify each record in the database.  
+
+---
+
+## What is HttpMessageConverter?
+
+HttpMessageConverter is responsible for converting HTTP request body to Java objects and Java objects to HTTP response using libraries like Jackson.
