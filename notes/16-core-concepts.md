@@ -3,6 +3,7 @@
 ## What does save() do?
 
 The save() method is provided by JpaRepository. It uses JPA and Hibernate to persist the entity into the database. If the entity is new, it performs an insert; otherwise, it performs an update and returns the saved entity.
+Internally, Hibernate decides whether to perform insert or update based on the entity state.
 
 ---
 
@@ -20,7 +21,7 @@ HandlerAdapter is responsible for executing the controller method identified by 
 
 ## What is @Entity?
 
-@Entity marks a class as a JPA entity. It tells Hibernate to map this class to a database table.
+@Entity marks a class as a JPA entity. It marks a class as a JPA entity and maps it to a database table. Baiscally, it tells Hibernate to map this class to a database table.
 
 ---
 
@@ -33,18 +34,6 @@ JPA (Java Persistence API) is a specification that defines how Java objects are 
 ## What is Hibernate?
 
 Hibernate is the implementation of JPA. It handles ORM and generates SQL queries automatically.
-
----
-
-## What is HandlerAdapter?
-
-HandlerAdapter is responsible for executing the controller method identified by HandlerMapping.
-
----
-
-## What does persist mean?
-
-Persist means saving an entity permanently into the database.
 
 ---
 
