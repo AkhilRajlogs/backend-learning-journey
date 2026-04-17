@@ -46,3 +46,24 @@ Hibernate is the implementation of JPA. It handles ORM and generates SQL queries
 ## What is HttpMessageConverter?
 
 HttpMessageConverter is responsible for converting HTTP request body to Java objects and Java objects to HTTP response using libraries like Jackson.
+
+---
+
+## Validation vs JSON Parsing Failure
+
+### Invalid JSON
+
+- Occurs during HttpMessageConverter (Jackson)
+- Exception: HttpMessageNotReadableException
+- DTO is NOT created
+- Returns 400 Bad Request
+
+---
+
+### Validation Failure
+
+- Occurs after DTO creation
+- Triggered by @Valid
+- Exception: MethodArgumentNotValidException
+- DTO is created but invalid
+- Returns 400 Bad Request
