@@ -67,3 +67,29 @@ HttpMessageConverter is responsible for converting HTTP request body to Java obj
 - Exception: MethodArgumentNotValidException
 - DTO is created but invalid
 - Returns 400 Bad Request
+
+---  
+
+## What does findById() do?
+
+findById() is a method provided by JpaRepository.
+
+It is used to fetch a record from the database using its primary key (id).
+
+It returns an Optional<Entity>.
+
+Example:
+taskRepository.findById(id)
+
+If the record exists:
+→ Optional contains the entity
+
+If not:
+→ Optional is empty
+
+In the project, we use:
+.orElseThrow(() -> new TaskNotFoundException(id))
+
+This ensures:
+- If task exists → return it
+- If not → throw custom exception
