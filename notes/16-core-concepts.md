@@ -93,3 +93,12 @@ In the project, we use:
 This ensures:
 - If task exists → return it
 - If not → throw custom exception
+
+## Why Optional is used in findById()
+
+findById() returns Optional to avoid null values.
+
+It forces the developer to explicitly handle the case when data is not found, preventing NullPointerException.
+
+It also makes the API more expressive by clearly indicating that the value may or may not be present.
+  
