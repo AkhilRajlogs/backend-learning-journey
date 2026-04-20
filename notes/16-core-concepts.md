@@ -21,7 +21,7 @@ HandlerAdapter is responsible for executing the controller method identified by 
 
 ## What is @Entity?
 
-@Entity marks a class as a JPA entity. It marks a class as a JPA entity and maps it to a database table. Baiscally, it tells Hibernate to map this class to a database table.
+@Entity marks a class as a JPA entity and maps it to a database table. Baiscally, it tells Hibernate to map this class to a database table.
 
 ---
 
@@ -102,3 +102,29 @@ It forces the developer to explicitly handle the case when data is not found, pr
 
 It also makes the API more expressive by clearly indicating that the value may or may not be present.
   
+---  
+  
+## What happens if we skip save()?
+
+Without calling save(), changes to the entity are not guaranteed to be persisted to the database.
+
+save() ensures that the entity state is synchronized with the database.
+
+---
+
+## How does JPA decide INSERT vs UPDATE?
+
+JPA decides based on the entity’s ID:
+
+- If ID is null → INSERT operation
+- If ID exists → UPDATE operation
+
+Hibernate internally determines the entity state and generates the appropriate SQL.
+
+---
+
+## Why use map() with Optional?
+
+map() is used to transform the value inside an Optional if present, without explicit null checks.
+
+It helps in writing cleaner and more readable code compared to using if-else for null handling.
