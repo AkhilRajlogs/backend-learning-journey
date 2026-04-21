@@ -128,3 +128,22 @@ Hibernate internally determines the entity state and generates the appropriate S
 map() is used to transform the value inside an Optional if present, without explicit null checks.
 
 It helps in writing cleaner and more readable code compared to using if-else for null handling.
+
+## updateTask Flow
+
+- findById() returns Optional
+- map() updates entity if present
+- save() persists changes (UPDATE if ID exists)
+- orElseThrow() handles not found case
+
+---
+
+## What is DispatcherServlet?
+
+DispatcherServlet is the front controller in Spring MVC.
+
+It receives all incoming HTTP requests from the server and coordinates the request lifecycle.
+
+It uses HandlerMapping to find the correct controller method and HandlerAdapter to execute it.
+
+It also handles request processing tasks like data binding, validation, and response conversion before sending the response back to the client.
