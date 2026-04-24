@@ -147,3 +147,11 @@ It receives all incoming HTTP requests from the server and coordinates the reque
 It uses HandlerMapping to find the correct controller method and HandlerAdapter to execute it.
 
 It also handles request processing tasks like data binding, validation, and response conversion before sending the response back to the client.
+
+---
+  
+## What does delete() do?
+
+delete() is provided by JpaRepository.
+
+It removes the given entity from the database.
