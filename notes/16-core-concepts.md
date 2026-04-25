@@ -155,3 +155,9 @@ It also handles request processing tasks like data binding, validation, and resp
 delete() is provided by JpaRepository.
 
 It removes the given entity from the database.
+
+## What does findAll() do?
+
+findAll() is provided by JpaRepository.
+
+It retrieves all records from the database table and returns them as a List of entities.
