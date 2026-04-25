@@ -161,3 +161,7 @@ It removes the given entity from the database.
 findAll() is provided by JpaRepository.
 
 It retrieves all records from the database table and returns them as a List of entities.
+
+## What does deleteById() do?
+
+deleteById() deletes a record from the database using its primary key.
