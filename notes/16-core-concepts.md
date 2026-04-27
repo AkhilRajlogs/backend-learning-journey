@@ -165,3 +165,9 @@ It retrieves all records from the database table and returns them as a List of e
 ## What does deleteById() do?
 
 deleteById() deletes a record from the database using its primary key.
+
+## What does existsById() do?
+
+existsById() is provided by JpaRepository.
+
+It checks whether a record exists in the database for the given ID and returns true or false.
