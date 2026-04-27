@@ -171,3 +171,9 @@ deleteById() deletes a record from the database using its primary key.
 existsById() is provided by JpaRepository.
 
 It checks whether a record exists in the database for the given ID and returns true or false.
+
+## Why use ResponseEntity?
+
+ResponseEntity is used to control HTTP response details like status code, headers, and body.
+
+It allows sending proper responses such as 200 OK, 201 Created, or 404 Not Found.
