@@ -177,3 +177,10 @@ It checks whether a record exists in the database for the given ID and returns t
 ResponseEntity is used to control HTTP response details like status code, headers, and body.
 
 It allows sending proper responses such as 200 OK, 201 Created, or 404 Not Found.
+
+## save() vs saveAndFlush()
+
+- save() stores the entity but may delay writing to the database until transaction commit
+- saveAndFlush() immediately writes changes to the database
+
+In most cases, save() is sufficient. saveAndFlush() is used when immediate DB synchronization is required.
