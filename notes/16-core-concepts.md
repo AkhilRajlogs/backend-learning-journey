@@ -2,7 +2,11 @@
 
 ## What does save() do?
 
-The save() method is provided by JpaRepository. It uses JPA and Hibernate to persist the entity into the database. If the entity is new, it performs an insert; otherwise, it performs an update and returns the saved entity.
+The save() method is provided by JpaRepository. It uses JPA and Hibernate to persist the entity into the database.
+
+- If the entity is new → INSERT operation  
+- If the entity already exists → UPDATE operation  
+
 Internally, Hibernate decides whether to perform insert or update based on the entity state.
 
 ---
@@ -21,7 +25,9 @@ HandlerAdapter is responsible for executing the controller method identified by 
 
 ## What is @Entity?
 
-@Entity marks a class as a JPA entity and maps it to a database table. Baiscally, it tells Hibernate to map this class to a database table.
+@Entity marks a class as a JPA entity and maps it to a database table.
+
+It tells Hibernate to treat this class as a table and its fields as columns.
 
 ---
 
@@ -39,13 +45,18 @@ Hibernate is the implementation of JPA. It handles ORM and generates SQL queries
 
 ## What is @Id?
 
-@Id marks the primary key of an entity and is used to uniquely identify each record in the database.  
+@Id marks the primary key of an entity and is used to uniquely identify each record in the database.
 
 ---
 
 ## What is HttpMessageConverter?
 
-HttpMessageConverter is responsible for converting HTTP request body to Java objects and Java objects to HTTP response using libraries like Jackson.
+HttpMessageConverter is responsible for converting:
+
+- HTTP request body → Java objects  
+- Java objects → HTTP response  
+
+It uses libraries like Jackson for JSON conversion.
 
 ---
 
@@ -68,45 +79,46 @@ HttpMessageConverter is responsible for converting HTTP request body to Java obj
 - DTO is created but invalid
 - Returns 400 Bad Request
 
----  
+---
 
 ## What does findById() do?
 
 findById() is a method provided by JpaRepository.
 
-It is used to fetch a record from the database using its primary key (id).
-
-It returns an Optional<Entity>.
+- Fetches a record using its primary key (id)
+- Returns Optional<Entity>
 
 Example:
 taskRepository.findById(id)
 
-If the record exists:
-→ Optional contains the entity
+If record exists:
+→ Optional contains the entity  
 
 If not:
-→ Optional is empty
+→ Optional is empty  
 
 In the project, we use:
+
 .orElseThrow(() -> new TaskNotFoundException(id))
 
 This ensures:
 - If task exists → return it
 - If not → throw custom exception
 
+---
+
 ## Why Optional is used in findById()
 
-findById() returns Optional to avoid null values.
+- Avoids null values  
+- Forces explicit handling of missing data  
+- Prevents NullPointerException  
+- Makes API more expressive  
 
-It forces the developer to explicitly handle the case when data is not found, preventing NullPointerException.
+---
 
-It also makes the API more expressive by clearly indicating that the value may or may not be present.
-  
----  
-  
 ## What happens if we skip save()?
 
-Without calling save(), changes to the entity are not guaranteed to be persisted to the database.
+Without calling save(), changes to the entity will NOT be persisted to the database.
 
 save() ensures that the entity state is synchronized with the database.
 
@@ -116,8 +128,8 @@ save() ensures that the entity state is synchronized with the database.
 
 JPA decides based on the entity’s ID:
 
-- If ID is null → INSERT operation
-- If ID exists → UPDATE operation
+- If ID is null → INSERT  
+- If ID exists → UPDATE  
 
 Hibernate internally determines the entity state and generates the appropriate SQL.
 
@@ -125,16 +137,19 @@ Hibernate internally determines the entity state and generates the appropriate S
 
 ## Why use map() with Optional?
 
-map() is used to transform the value inside an Optional if present, without explicit null checks.
+map() transforms the value inside an Optional if present.
 
-It helps in writing cleaner and more readable code compared to using if-else for null handling.
+- Avoids explicit null checks  
+- Makes code cleaner and more readable  
+
+---
 
 ## updateTask Flow
 
-- findById() returns Optional
-- map() updates entity if present
-- save() persists changes (UPDATE if ID exists)
-- orElseThrow() handles not found case
+- findById() returns Optional  
+- map() updates entity if present  
+- save() persists changes (UPDATE if ID exists)  
+- orElseThrow() handles not found case  
 
 ---
 
@@ -142,45 +157,83 @@ It helps in writing cleaner and more readable code compared to using if-else for
 
 DispatcherServlet is the front controller in Spring MVC.
 
-It receives all incoming HTTP requests from the server and coordinates the request lifecycle.
+- Receives all incoming HTTP requests  
+- Uses HandlerMapping to find the correct controller  
+- Uses HandlerAdapter to execute the controller method  
 
-It uses HandlerMapping to find the correct controller method and HandlerAdapter to execute it.
-
-It also handles request processing tasks like data binding, validation, and response conversion before sending the response back to the client.
+It also handles:
+- Data binding  
+- Validation  
+- Response conversion  
 
 ---
-  
+
 ## What does delete() do?
 
 delete() is provided by JpaRepository.
 
 It removes the given entity from the database.
 
+---
+
 ## What does findAll() do?
 
-findAll() is provided by JpaRepository.
+findAll() retrieves all records from the database table and returns them as a List of entities.
 
-It retrieves all records from the database table and returns them as a List of entities.
+---
 
 ## What does deleteById() do?
 
 deleteById() deletes a record from the database using its primary key.
 
+---
+
 ## What does existsById() do?
 
-existsById() is provided by JpaRepository.
+existsById() checks whether a record exists for the given ID and returns true or false.
 
-It checks whether a record exists in the database for the given ID and returns true or false.
+---
 
 ## Why use ResponseEntity?
 
-ResponseEntity is used to control HTTP response details like status code, headers, and body.
+ResponseEntity is used to control:
 
-It allows sending proper responses such as 200 OK, 201 Created, or 404 Not Found.
+- HTTP status code  
+- Headers  
+- Response body  
+
+It allows sending proper responses like:
+- 200 OK  
+- 201 Created  
+- 404 Not Found  
+
+---
 
 ## save() vs saveAndFlush()
 
-- save() stores the entity but may delay writing to the database until transaction commit
-- saveAndFlush() immediately writes changes to the database
+- save() → may delay DB write until transaction commit  
+- saveAndFlush() → immediately writes to database  
 
-In most cases, save() is sufficient. saveAndFlush() is used when immediate DB synchronization is required.
+In most cases, save() is sufficient.
+
+---
+
+## Entity Lifecycle (JPA)
+
+An entity goes through different states in JPA:
+
+- **Transient**
+  - Created using `new`
+  - Not associated with persistence context
+  - Not saved in database
+
+- **Persistent**
+  - After calling `save()`
+  - Managed by Hibernate (inside persistence context)
+  - Changes are automatically tracked and synchronized with database
+
+- **Detached**
+  - No longer tracked (after persistence context/session ends)
+  - Changes will NOT be automatically persisted unless reattached
+
+This lifecycle helps Hibernate determine whether to perform INSERT or UPDATE operations.
