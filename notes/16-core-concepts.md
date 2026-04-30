@@ -237,3 +237,21 @@ An entity goes through different states in JPA:
   - Changes will NOT be automatically persisted unless reattached
 
 This lifecycle helps Hibernate determine whether to perform INSERT or UPDATE operations.
+
+---
+
+## Why DTO is Preferred Over Entity
+
+DTO (Data Transfer Object) is used instead of Entity in API communication.
+
+### Reasons:
+
+- Prevents exposing internal database structure  
+- Decouples API from database  
+- Allows custom request/response formats  
+- Improves security and maintainability  
+
+### Key Idea:
+
+Entity → database layer  
+DTO → API layer
