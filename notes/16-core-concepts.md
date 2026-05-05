@@ -255,3 +255,32 @@ DTO (Data Transfer Object) is used instead of Entity in API communication.
 
 Entity → database layer  
 DTO → API layer
+
+---
+
+## Controller Design Best Practices
+
+A controller should be thin and focused only on handling HTTP-related concerns.
+
+### Responsibilities of Controller:
+
+- Accept HTTP requests
+- Validate input using DTOs
+- Call Service layer
+- Return appropriate HTTP response
+
+### What SHOULD NOT be in Controller:
+
+- Business logic
+- Database operations
+- Entity manipulation
+
+### Why?
+
+- Improves separation of concerns
+- Makes code easier to maintain and test
+- Keeps API layer independent of business logic
+
+### Flow Reminder:
+
+Controller → Service → Repository → Database
