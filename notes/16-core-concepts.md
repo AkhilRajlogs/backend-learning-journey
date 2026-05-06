@@ -284,3 +284,28 @@ A controller should be thin and focused only on handling HTTP-related concerns.
 ### Flow Reminder:
 
 Controller → Service → Repository → Database
+
+---
+
+---
+
+## @RequestBody vs @PathVariable vs @RequestParam (Quick Summary)
+
+- @RequestBody
+  - Used to read JSON from request body
+  - Converted to DTO using HttpMessageConverter (Jackson)
+  - Supports validation using @Valid
+
+- @PathVariable
+  - Used to extract values from URL path
+  - Example: /tasks/{id}
+
+- @RequestParam
+  - Used to read query parameters
+  - Example: /tasks?completed=true
+
+### Key Difference:
+
+- @RequestBody → Body data (JSON)
+- @PathVariable → URL path
+- @RequestParam → Query parameters
