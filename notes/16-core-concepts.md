@@ -309,3 +309,26 @@ Controller → Service → Repository → Database
 - @RequestBody → Body data (JSON)
 - @PathVariable → URL path
 - @RequestParam → Query parameters
+
+---
+
+---
+
+## PUT vs PATCH (API Design)
+
+- PUT
+  - Used to update the entire resource
+  - Replaces all fields
+
+- PATCH
+  - Used to partially update a resource
+  - Only modifies specified fields
+
+### In my project:
+
+- PUT is used for updating tasks
+- Entire task object is updated
+
+### Key Insight:
+
+Choosing between PUT and PATCH depends on whether full or partial updates are required.
