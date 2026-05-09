@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
                 new ApiResponse<>(ApiConstants.ERROR, "Malformed JSON request", null);
 
         return ResponseEntity.badRequest().body(response);
-        }
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationErrors(
@@ -69,6 +69,21 @@ public class GlobalExceptionHandler {
                 new ApiResponse<>(ApiConstants.ERROR, "Content-Type not supported", null);
 
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(response);
-        }
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
+
+        logger.error("Unexpected error occurred", ex);
+
+        ApiResponse<Void> response =
+                new ApiResponse<>(
+                        ApiConstants.ERROR,
+                        "Internal server error",
+                        null
+                );
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
 
 }
