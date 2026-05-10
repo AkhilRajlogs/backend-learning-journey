@@ -107,6 +107,10 @@ notes/
 - 11-task-manager-api.md  
 - 12-backend-architecture-notes.md  
 - 13-spring-boot-auto-configuration.md  
+- 14-request-lifecycle-interview.md
+- 16-core-concepts.md
+- 17-service-layer-deep-dive.md
+- 18-interview-preparation-roadmap.md
 
 ---
 
