@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.akhilraj.task_manager_api.exception.TaskNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,6 +34,7 @@ public class TaskService {
         Task task = new Task();
         task.setTitle(dto.getTitle());
         task.setCompleted(dto.isCompleted());
+        task.setCreatedAt(LocalDateTime.now());
 
         Task savedTask = taskRepository.save(task);
 
@@ -76,9 +79,10 @@ public class TaskService {
 
     public TaskResponseDTO mapToResponseDTO(Task task) {
     return new TaskResponseDTO(
-            task.getId(),
-            task.getTitle(),
-            task.isCompleted()
+        task.getId(),
+        task.getTitle(),
+        task.isCompleted(),
+        task.getCreatedAt()
         );
     }
 }
