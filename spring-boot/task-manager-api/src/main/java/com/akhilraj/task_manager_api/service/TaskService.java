@@ -70,6 +70,7 @@ public class TaskService {
         return taskRepository.findById(id).map(task -> {
             task.setTitle(dto.getTitle());
             task.setCompleted(dto.isCompleted());
+            task.setUpdatedAt(LocalDateTime.now());
 
             logger.info("Task updated successfully: {}", id);
 
@@ -82,7 +83,8 @@ public class TaskService {
         task.getId(),
         task.getTitle(),
         task.isCompleted(),
-        task.getCreatedAt()
+        task.getCreatedAt(),
+        task.getUpdatedAt()
         );
     }
 }

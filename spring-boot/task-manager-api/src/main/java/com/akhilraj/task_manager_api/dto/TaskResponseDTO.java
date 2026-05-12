@@ -8,13 +8,16 @@ public class TaskResponseDTO {
     private String title;
     private boolean completed;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public TaskResponseDTO(Long id, String title, boolean completed, LocalDateTime createdAt){
+    public TaskResponseDTO(Long id, String title, boolean completed, LocalDateTime createdAt, LocalDateTime updatedAt){
 
         this.id = id;
         this.title = title;
         this.completed = completed;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+
     }
 
     public Long getId() {
@@ -30,6 +33,10 @@ public class TaskResponseDTO {
     }
 
     public LocalDateTime getCreatedAt() {
-    return createdAt;
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

@@ -19,6 +19,8 @@ public class Task {
 
     private LocalDateTime createdAt;
 
+    private LocalDateTime updatedAt;
+
     public Task() {}
 
     public Task(String title, boolean completed) {
@@ -57,5 +59,13 @@ public class Task {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+    return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
