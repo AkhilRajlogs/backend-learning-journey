@@ -86,3 +86,11 @@ Content-Type: application/json
   "title": "",
   "completed": false
 }
+
+### 12. Get completed tasks
+GET http://localhost:8080/tasks?completed=true
+
+###
+
+### 13. Get incomplete tasks
+GET http://localhost:8080/tasks?completed=false

@@ -25,10 +25,17 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<TaskResponseDTO>>> getTasks() {
+    public ResponseEntity<ApiResponse<List<TaskResponseDTO>>> getTasks(@RequestParam(required = false) Boolean completed) {
 
-        List<TaskResponseDTO> tasks = taskService.getAllTasks()
-                .stream()
+        List<Task> taskList;
+
+        if (completed != null) {
+            taskList = taskService.getTasksByCompletionStatus(completed);
+        } else {
+            taskList = taskService.getAllTasks();
+        }
+
+        List<TaskResponseDTO> tasks = taskList.stream()
                 .map(taskService::mapToResponseDTO)
                 .toList();
 

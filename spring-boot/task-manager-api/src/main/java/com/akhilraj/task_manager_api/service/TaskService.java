@@ -87,4 +87,11 @@ public class TaskService {
         task.getUpdatedAt()
         );
     }
+
+    public List<Task> getTasksByCompletionStatus(boolean completed) {
+
+        logger.info("Fetching tasks with completed status: {}", completed);
+
+        return taskRepository.findByCompleted(completed);
+    }
 }
