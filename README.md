@@ -51,7 +51,10 @@ Controller → Service → Repository → Database
 
 ### Key Features
 
-- Full CRUD REST API  
+- Full CRUD REST API
+- Task filtering using query parameters
+- Pagination support using Pageable and PageRequest
+- Timestamp tracking (createdAt / updatedAt)
 - PostgreSQL integration using Spring Data JPA  
 - DTO pattern (Request / Response separation)  
 - Validation using Jakarta annotations  
@@ -69,6 +72,8 @@ Controller → Service → Repository → Database
 | POST | /tasks | Create task |
 | GET | /tasks | Get all tasks |
 | GET | /tasks/{id} | Get task by ID |
+| GET | /tasks?completed=true | Filter completed tasks |
+| GET | /tasks?page=0&size=5 | Get paginated tasks |
 | PUT | /tasks/{id} | Update task |
 | DELETE | /tasks/{id} | Delete task |
 

@@ -116,12 +116,16 @@ Used `Long` instead of `int`
 
 ## API Endpoints
 
-POST /tasks → Create task  
-GET /tasks → Get all tasks  
-GET /tasks/{id} → Get task by ID  
-PUT /tasks/{id} → Update task  
-DELETE /tasks/{id} → Delete task  
-
+| Method | Endpoint | Description |
+|--------|-----------|-------------|
+| POST | /tasks | Create task |
+| GET | /tasks | Get all tasks |
+| GET | /tasks/{id} | Get task by ID |
+| GET | /tasks?completed=true | Filter tasks by completion status |
+| GET | /tasks?page=0&size=5 | Get paginated tasks |
+| PUT | /tasks/{id} | Update task |
+| DELETE | /tasks/{id} | Delete task |
+  
 ---
 
 ## Request Flow
@@ -144,6 +148,47 @@ Response flows back in reverse order.
 - Added global exception handling  
 - Refactored ID type to Long  
 - Standardized API responses  
+
+---
+
+## Additional Backend Features
+
+### Task Filtering
+
+Implemented filtering using query parameters:
+
+```http
+GET /tasks?completed=true
+```
+
+### Why?
+
+- Allows clients to fetch only required data
+- Reduces unnecessary response payload
+- Improves API usability
+
+---
+
+### Pagination
+
+Implemented pagination using Spring Data JPA:
+
+```http
+GET /tasks?page=0&size=5
+```
+
+### Technologies Used
+
+- `Page`
+- `Pageable`
+- `PageRequest`
+
+### Why Pagination Matters
+
+- Prevents loading huge datasets at once
+- Improves scalability
+- Reduces memory usage
+- Common real-world backend requirement
 
 ---
 
