@@ -94,3 +94,13 @@ GET http://localhost:8080/tasks?completed=true
 
 ### 13. Get incomplete tasks
 GET http://localhost:8080/tasks?completed=false
+
+### 14. Get paginated tasks
+GET http://localhost:8080/tasks?page=0&size=2
+
+###
+
+### 15. Get second page of tasks
+GET http://localhost:8080/tasks?page=1&size=2
+
+###
