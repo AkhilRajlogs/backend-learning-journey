@@ -29,3 +29,34 @@ If validation passes, the controller calls the Service layer, where business log
 The Service converts the DTO to an Entity and passes it to the Repository, which uses JPA to persist the data into the database.
 
 The saved Entity is then converted back to a response DTO, returned through the same path, converted to JSON, and sent back to the client.
+
+---
+
+## Validation vs JSON Parsing Failure
+
+### Invalid JSON
+- Jackson fails during parsing
+- DTO is not created
+- HttpMessageNotReadableException occurs
+
+### Validation Failure
+- DTO is created successfully
+- @Valid triggers validation
+- MethodArgumentNotValidException occurs
+
+---
+
+## Pagination in Spring Boot
+
+Pagination is implemented using:
+
+- Page
+- Pageable
+- PageRequest
+
+### Why Pagination Matters
+
+- Avoids loading huge datasets
+- Improves scalability
+- Reduces memory usage
+- Common production requirement

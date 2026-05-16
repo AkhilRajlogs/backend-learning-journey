@@ -131,6 +131,42 @@ You write:
 
 ---
 
+## What is Pagination?
+
+Pagination is the process of splitting large datasets into smaller chunks (pages).
+
+In Spring Data JPA:
+
+- Pageable defines pagination information
+- PageRequest creates Pageable object
+- Page contains paginated result
+
+Example:
+
+Pageable pageable = PageRequest.of(page, size);
+
+### Why Pagination Matters
+
+- Improves performance
+- Reduces memory usage
+- Common in production APIs
+
+---
+
+## Pagination Flow
+
+Controller
+→ receives page and size using @RequestParam
+→ Service creates Pageable using PageRequest
+→ Repository executes paginated query using findAll(pageable)
+
+Benefits:
+- Efficient data retrieval
+- Prevents large response payloads
+- Improves scalability
+
+---
+
 ### ORM (Object Relational Mapping)
 
 - Converts Java objects ↔ database tables  

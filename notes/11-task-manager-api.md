@@ -192,6 +192,24 @@ GET /tasks?page=0&size=5
 
 ---
 
+## Query Parameters
+
+The API supports query parameters for filtering and pagination.
+
+### Examples
+
+GET /tasks?completed=true  
+GET /tasks?page=0&size=5
+
+### Benefits
+
+- Flexible API usage
+- Reduced response payload
+- Improved scalability
+- Better client-side control
+
+---
+
 ## Real-World Learnings
 
 - Never expose Entity directly in APIs  

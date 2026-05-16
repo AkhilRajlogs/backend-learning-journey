@@ -172,8 +172,8 @@ Exception occurs
 
 ---
 
-## Validation Flow (Jakarta Validation)  
-  
+## Validation Flow (Spring Boot + Jakarta Validation)
+    
 Client  
 → DispatcherServlet  
 → HandlerMapping  
