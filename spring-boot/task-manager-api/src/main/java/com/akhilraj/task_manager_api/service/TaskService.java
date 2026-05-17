@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -98,11 +99,23 @@ public class TaskService {
         return taskRepository.findByCompleted(completed);
     }
 
-    public Page<Task> getPaginatedTasks(int page, int size) {
 
-        logger.info("Fetching tasks with pagination - page: {}, size: {}", page, size);
+    public Page<Task> getPaginatedTasks(
+        int page,
+        int size,
+        String sortBy,
+        String direction) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        logger.info(
+            "Fetching tasks with pagination - page: {}, size: {}, sortBy: {}, direction: {}",
+            page, size, sortBy, direction
+        );
+
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         return taskRepository.findAll(pageable);
     }

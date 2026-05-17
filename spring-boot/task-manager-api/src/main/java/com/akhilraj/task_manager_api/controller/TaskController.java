@@ -25,16 +25,21 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<TaskResponseDTO>>> getTasks(@RequestParam(required = false) Boolean completed,
+    public ResponseEntity<ApiResponse<List<TaskResponseDTO>>> getTasks(
+        @RequestParam(required = false) Boolean completed,
         @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "5") int size) {
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "id") String sortBy,
+        @RequestParam(defaultValue = "asc") String direction) {
 
         List<Task> taskList;
 
         if (completed != null) {
             taskList = taskService.getTasksByCompletionStatus(completed);
         } else {
-            taskList = taskService.getPaginatedTasks(page, size).getContent();
+            taskList = taskService
+        .getPaginatedTasks(page, size, sortBy, direction)
+        .getContent();
         }
 
         List<TaskResponseDTO> tasks = taskList.stream()

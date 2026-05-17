@@ -104,3 +104,6 @@ GET http://localhost:8080/tasks?page=0&size=2
 GET http://localhost:8080/tasks?page=1&size=2
 
 ###
+
+### 16. Get paginated and sorted tasks
+GET http://localhost:8080/tasks?page=0&size=5&sortBy=title&direction=asc

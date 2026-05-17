@@ -62,6 +62,7 @@ Controller → Service → Repository → Database
 - Structured logging (SLF4J)  
 - Proper HTTP status codes (200, 201, 400, 404)  
 - Consistent API response format  
+- Sorting support using query parameters  
 
 ---
 
@@ -74,6 +75,7 @@ Controller → Service → Repository → Database
 | GET | /tasks/{id} | Get task by ID |
 | GET | /tasks?completed=true | Filter completed tasks |
 | GET | /tasks?page=0&size=5 | Get paginated tasks |
+| GET | /tasks?page=0&size=5&sortBy=title&direction=asc | Get sorted tasks |
 | PUT | /tasks/{id} | Update task |
 | DELETE | /tasks/{id} | Delete task |
 
@@ -127,6 +129,7 @@ Completed:
 - Validation  
 - Exception handling  
 - Logging  
+- Pagination and sorting    
 
 ---
 
