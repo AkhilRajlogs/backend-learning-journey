@@ -73,7 +73,7 @@ GET http://localhost:8080/tasks/1
 
 ###
 
-### 10. Get non-existing task
+### 10. Get non-existing task (404)
 GET http://localhost:8080/tasks/999
 
 ###

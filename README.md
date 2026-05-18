@@ -54,6 +54,7 @@ Controller → Service → Repository → Database
 - Full CRUD REST API
 - Task filtering using query parameters
 - Pagination support using Pageable and PageRequest
+- Custom pagination response with metadata
 - Timestamp tracking (createdAt / updatedAt)
 - PostgreSQL integration using Spring Data JPA  
 - DTO pattern (Request / Response separation)  
@@ -101,6 +102,12 @@ Controller → Service → Repository → Database
 
 ---
 
+### Pagination Response
+
+![Pagination Response](spring-boot/task-manager-api/screenshots/pagination-response.png)
+
+---
+
 ## Tech Stack
 
 - Java 17  
@@ -130,6 +137,20 @@ Completed:
 - Exception handling  
 - Logging  
 - Pagination and sorting    
+
+---
+
+## Future Improvements
+
+Planned enhancements for this project:
+
+- Spring Security + JWT Authentication
+- Unit and Integration Testing using JUnit and Mockito
+- Dockerization
+- API Documentation using Swagger / OpenAPI
+- Deployment to cloud platforms
+- Role-based authorization
+- CI/CD pipeline integration
 
 ---
 

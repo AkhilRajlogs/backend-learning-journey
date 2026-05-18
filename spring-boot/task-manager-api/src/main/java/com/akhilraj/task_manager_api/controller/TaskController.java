@@ -2,6 +2,7 @@ package com.akhilraj.task_manager_api.controller;
 
 import com.akhilraj.task_manager_api.dto.ApiConstants;
 import com.akhilraj.task_manager_api.dto.ApiResponse;
+import com.akhilraj.task_manager_api.dto.PaginationResponseDTO;
 import com.akhilraj.task_manager_api.dto.TaskDTO;
 import com.akhilraj.task_manager_api.dto.TaskResponseDTO;
 import com.akhilraj.task_manager_api.model.Task;
@@ -25,7 +26,7 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<TaskResponseDTO>>> getTasks(
+    public ResponseEntity<ApiResponse<?>> getTasks(
         @RequestParam(required = false) Boolean completed,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "5") int size,
@@ -37,10 +38,38 @@ public class TaskController {
         if (completed != null) {
             taskList = taskService.getTasksByCompletionStatus(completed);
         } else {
-            taskList = taskService
-        .getPaginatedTasks(page, size, sortBy, direction)
-        .getContent();
-        }
+
+        var taskPage = taskService.getPaginatedTasks(
+                page,
+                size,
+                sortBy,
+                direction
+        );
+
+        List<TaskResponseDTO> tasks = taskPage.getContent()
+                .stream()
+                .map(taskService::mapToResponseDTO)
+                .toList();
+
+        PaginationResponseDTO<TaskResponseDTO> paginationResponse =
+                new PaginationResponseDTO<>(
+                        tasks,
+                        taskPage.getNumber(),
+                        taskPage.getSize(),
+                        taskPage.getTotalElements(),
+                        taskPage.getTotalPages(),
+                        taskPage.isLast()
+                );
+
+        ApiResponse<PaginationResponseDTO<TaskResponseDTO>> response =
+                new ApiResponse<>(
+                        ApiConstants.SUCCESS,
+                        "Tasks fetched successfully",
+                        paginationResponse
+                );
+
+        return ResponseEntity.ok(response);
+    }
 
         List<TaskResponseDTO> tasks = taskList.stream()
                 .map(taskService::mapToResponseDTO)
