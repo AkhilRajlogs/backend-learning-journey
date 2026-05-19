@@ -42,7 +42,7 @@ Content-Type: application/json
 
 ###
 
-### 5. Get all tasks
+### 5. Get all tasks (default pagination)
 GET http://localhost:8080/tasks
 
 ###
@@ -87,6 +87,34 @@ Content-Type: application/json
   "completed": false
 }
 
+###
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### 12. Get completed tasks
 GET http://localhost:8080/tasks?completed=true
 
@@ -94,6 +122,8 @@ GET http://localhost:8080/tasks?completed=true
 
 ### 13. Get incomplete tasks
 GET http://localhost:8080/tasks?completed=false
+
+###
 
 ### 14. Get paginated tasks
 GET http://localhost:8080/tasks?page=0&size=2
@@ -106,4 +136,4 @@ GET http://localhost:8080/tasks?page=1&size=2
 ###
 
 ### 16. Get paginated and sorted tasks
-GET http://localhost:8080/tasks?page=0&size=5&sortBy=title&direction=asc
+GET http://localhost:8080/tasks?page=0&size=2&sortBy=title&direction=asc

@@ -72,11 +72,11 @@ Controller → Service → Repository → Database
 | Method | Endpoint | Description |
 |-------|--------|------------|
 | POST | /tasks | Create task |
-| GET | /tasks | Get all tasks |
+| GET | /tasks | Get paginated tasks |
 | GET | /tasks/{id} | Get task by ID |
 | GET | /tasks?completed=true | Filter completed tasks |
-| GET | /tasks?page=0&size=5 | Get paginated tasks |
-| GET | /tasks?page=0&size=5&sortBy=title&direction=asc | Get sorted tasks |
+| GET | /tasks?page=0&size=5 | Customize pagination |
+| GET | /tasks?page=0&size=5&sortBy=title&direction=asc | Get sorted and paginated tasks |
 | PUT | /tasks/{id} | Update task |
 | DELETE | /tasks/{id} | Delete task |
 
@@ -84,9 +84,9 @@ Controller → Service → Repository → Database
 
 ## API Preview
 
-### Get All Tasks
+### Get Tasks with Pagination
 
-![Get All Tasks](spring-boot/task-manager-api/screenshots/get-all-tasks.png)
+![Get Tasks](spring-boot/task-manager-api/screenshots/get-tasks-pagination.png)
 
 ---
 
@@ -99,12 +99,6 @@ Controller → Service → Repository → Database
 ### Validation Error (400)
 
 ![Validation Error](spring-boot/task-manager-api/screenshots/validation-error.png)
-
----
-
-### Pagination Response
-
-![Pagination Response](spring-boot/task-manager-api/screenshots/pagination-response.png)
 
 ---
 
