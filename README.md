@@ -102,6 +102,14 @@ Controller → Service → Repository → Database
 
 ---
 
+## API Documentation
+
+Interactive API documentation is available using Swagger UI when the application is running locally:
+
+http://localhost:8080/swagger-ui/index.html
+
+---
+
 ## Tech Stack
 
 - Java 17  
@@ -141,7 +149,7 @@ Planned enhancements for this project:
 - Spring Security + JWT Authentication
 - Unit and Integration Testing using JUnit and Mockito
 - Dockerization
-- API Documentation using Swagger / OpenAPI
+- Enhanced API documentation and endpoint annotations
 - Deployment to cloud platforms
 - Role-based authorization
 - CI/CD pipeline integration
