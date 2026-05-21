@@ -64,6 +64,7 @@ Controller → Service → Repository → Database
 - Proper HTTP status codes (200, 201, 400, 404)  
 - Consistent API response format  
 - Sorting support using query parameters  
+- Interactive API documentation using Swagger/OpenAPI
 
 ---
 

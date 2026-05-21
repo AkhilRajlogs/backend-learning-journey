@@ -12,9 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
+@Tag(name = "Task Management", description = "APIs for managing tasks")
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
@@ -25,6 +28,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    @Operation(summary = "Get all tasks with pagination and sorting")
     @GetMapping
     public ResponseEntity<ApiResponse<?>> getTasks(
         @RequestParam(required = false) Boolean completed,
@@ -81,6 +85,7 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Create a new task")
     @PostMapping
     public ResponseEntity<ApiResponse<TaskResponseDTO>> createTask(
             @RequestBody @Valid TaskDTO taskDTO) {
@@ -95,6 +100,7 @@ public class TaskController {
     }
 
 
+    @Operation(summary = "Get task by ID")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TaskResponseDTO>> getTaskById(@PathVariable Long id) {
 
@@ -107,6 +113,7 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Delete task by ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteTask(@PathVariable Long id) {
 
@@ -118,6 +125,7 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Update existing task")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<TaskResponseDTO>> updateTask(
             @PathVariable Long id,
