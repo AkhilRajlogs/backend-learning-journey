@@ -22,6 +22,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 @WebMvcTest(TaskController.class)
 public class TaskControllerTest {
 
@@ -55,5 +57,21 @@ public class TaskControllerTest {
 
         mockMvc.perform(get("/tasks/999"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturn400WhenTitleIsEmpty() throws Exception {
+
+        String invalidTaskJson = """
+                {
+                    "title": "",
+                    "completed": false
+                }
+                """;
+
+        mockMvc.perform(post("/tasks")
+                .contentType("application/json")
+                .content(invalidTaskJson))
+                .andExpect(status().isBadRequest());
     }
 }
