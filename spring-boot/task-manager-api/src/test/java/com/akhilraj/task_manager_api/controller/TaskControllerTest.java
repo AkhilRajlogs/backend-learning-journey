@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -73,5 +74,28 @@ public class TaskControllerTest {
                 .contentType("application/json")
                 .content(invalidTaskJson))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn201WhenCreatingTask() throws Exception {
+
+        Task task = new Task();
+        task.setId(1L);
+        task.setTitle("Learn Spring Boot");
+        task.setCompleted(false);
+
+        when(taskService.addTask(any())).thenReturn(task);
+
+        String taskJson = """
+                {
+                    "title": "Learn Spring Boot",
+                    "completed": false
+                }
+                """;
+
+        mockMvc.perform(post("/tasks")
+                .contentType("application/json")
+                .content(taskJson))
+                .andExpect(status().isCreated());
     }
 }
