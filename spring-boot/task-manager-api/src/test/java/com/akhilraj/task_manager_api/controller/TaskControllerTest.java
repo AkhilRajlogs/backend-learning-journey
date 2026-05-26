@@ -84,8 +84,9 @@ public class TaskControllerTest {
         task.setTitle("Learn Spring Boot");
         task.setCompleted(false);
 
-        when(taskService.addTask(any())).thenReturn(task);
+        when(taskService.addTask(any())).thenReturn(task); //Without any(), Mockito would expect an exact object match.
 
+        //The method expects a JSON response from client and tests @Valid etc, so similar response structure has to be passed in test.
         String taskJson = """
                 {
                     "title": "Learn Spring Boot",
@@ -94,8 +95,26 @@ public class TaskControllerTest {
                 """;
 
         mockMvc.perform(post("/tasks")
-                .contentType("application/json")
+                .contentType("application/json")//tells Spring the request type is JSON to avoid 415 Unsupported Media Type error
                 .content(taskJson))
                 .andExpect(status().isCreated());
     }
+
+    @Test
+    void shouldReturn200WhenGettingTaskById() throws Exception {
+        Task task = new Task();
+        task.setId(1L);
+        task.setTitle("Complete backend testing");
+        task.setCompleted(false);
+
+        when(taskService.getTaskById(1L))
+                .thenReturn(task);
+        // mocked service simulates successful task retrieval
+
+        mockMvc.perform(get("/tasks/1"))
+                .andExpect(status().isOk());
+        // expects HTTP 200 when task exists
+    }
+
 }
+    
