@@ -114,9 +114,11 @@ public class TaskControllerTest {
         // mocked service simulates successful task retrieval
 
         mockMvc.perform(get("/tasks/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message")
-                        .value("Task fetched successfully"));
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message")
+                .value("Task fetched successfully"))
+        .andExpect(jsonPath("$.data.title")
+                .value("Complete backend testing"));
         // validates both HTTP status and JSON response message
     }
 
