@@ -103,7 +103,6 @@ public class TaskControllerTest {
 
     @Test
     void shouldReturn200WhenGettingTaskById() throws Exception {
-
         Task task = new Task();
         task.setId(1L);
         task.setTitle("Complete backend testing");
@@ -111,13 +110,11 @@ public class TaskControllerTest {
 
         when(taskService.getTaskById(1L))
                 .thenReturn(task);
-        // mocked service simulates successful task retrieval
 
         mockMvc.perform(get("/tasks/1"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.message")
-                .value("Task fetched successfully"));
-        // validates both HTTP status and JSON response message
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message")
+                        .value("Task fetched successfully"));
     }
 
 }
