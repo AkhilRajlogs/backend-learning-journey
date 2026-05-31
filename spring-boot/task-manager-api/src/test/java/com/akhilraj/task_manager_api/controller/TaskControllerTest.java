@@ -26,6 +26,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+
 @WebMvcTest(TaskController.class)
 public class TaskControllerTest {
 
@@ -115,6 +120,19 @@ public class TaskControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message")
                         .value("Task fetched successfully"));
+    }
+
+    @Test
+    void shouldReturn200WhenDeletingTask() throws Exception {
+
+        doNothing().when(taskService).deleteTask(1L);
+
+        mockMvc.perform(delete("/tasks/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message")
+                        .value("Task deleted successfully"));
+
+        verify(taskService).deleteTask(1L);
     }
 
 }
