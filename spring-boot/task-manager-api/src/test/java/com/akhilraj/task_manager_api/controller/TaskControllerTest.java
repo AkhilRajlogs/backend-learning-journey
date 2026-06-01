@@ -31,6 +31,8 @@ import static org.mockito.Mockito.verify;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+
 @WebMvcTest(TaskController.class)
 public class TaskControllerTest {
 
@@ -133,6 +135,31 @@ public class TaskControllerTest {
                         .value("Task deleted successfully"));
 
         verify(taskService).deleteTask(1L);
+    }
+
+    @Test
+    void shouldReturn200WhenUpdatingTask() throws Exception {
+        Task updatedTask = new Task();
+        updatedTask.setId(1L);
+        updatedTask.setTitle("Updated task");
+        updatedTask.setCompleted(true);
+
+        when(taskService.updateTask(any(Long.class), any()))
+                .thenReturn(updatedTask);
+
+        String updateJson = """
+                {
+                "title": "Updated task",
+                "completed": true
+                }
+                """;
+
+        mockMvc.perform(put("/tasks/1")
+                .contentType("application/json")
+                .content(updateJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message")
+                        .value("Task updated successfully"));
     }
 
 }
