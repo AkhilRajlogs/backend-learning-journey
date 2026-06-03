@@ -1,6 +1,7 @@
 package com.akhilraj.task_manager_api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 
@@ -13,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.akhilraj.task_manager_api.repository.TaskRepository;
 import java.util.Optional;
 
+import com.akhilraj.task_manager_api.exception.TaskNotFoundException;
 import com.akhilraj.task_manager_api.model.Task;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,6 +42,15 @@ public class TaskServiceTest {
         assertEquals("Learn Testing", result.getTitle());
     }
 
+    @Test
+    void shouldThrowExceptionWhenTaskDoesNotExist() {
+        when(repository.findById(1L))
+                .thenReturn(Optional.empty());
 
+        assertThrows(
+                TaskNotFoundException.class,
+                () -> taskService.getTaskById(1L)
+        );
+    }
 
 }
