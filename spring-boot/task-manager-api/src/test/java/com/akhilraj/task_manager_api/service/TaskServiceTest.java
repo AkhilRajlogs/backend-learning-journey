@@ -2,6 +2,7 @@ package com.akhilraj.task_manager_api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
@@ -53,4 +54,20 @@ public class TaskServiceTest {
         );
     }
 
-}
+    @Test
+    void shouldDeleteTaskWhenTaskExists() {
+
+        Task task = new Task();
+        task.setId(1L);
+        task.setTitle("Learn Testing");
+
+        when(repository.findById(1L))
+                .thenReturn(Optional.of(task));
+
+        taskService.deleteTask(1L);
+
+        verify(repository).delete(task);
+    }
+
+    }
+
