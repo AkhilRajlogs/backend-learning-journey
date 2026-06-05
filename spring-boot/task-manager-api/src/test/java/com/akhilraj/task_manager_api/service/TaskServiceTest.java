@@ -2,6 +2,8 @@ package com.akhilraj.task_manager_api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -15,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.akhilraj.task_manager_api.repository.TaskRepository;
 import java.util.Optional;
 
+import com.akhilraj.task_manager_api.dto.TaskDTO;
 import com.akhilraj.task_manager_api.exception.TaskNotFoundException;
 import com.akhilraj.task_manager_api.model.Task;
 
@@ -67,6 +70,30 @@ public class TaskServiceTest {
         taskService.deleteTask(1L);
 
         verify(repository).delete(task);
+    }
+
+    @Test
+    void shouldUpdateTaskWhenTaskExists(){
+
+        Task task = new Task();
+        task.setId(1L);
+        task.setTitle("Old Title");
+        task.setCompleted(false);
+        TaskDTO dto = new TaskDTO();
+        dto.setTitle("Updated Task");
+        dto.setCompleted(true);
+
+        when(repository.findById(1L))
+                .thenReturn(Optional.of(task));
+
+        when(repository.save(any(Task.class)))
+                .thenReturn(task);
+        Task result = taskService.updateTask(1L, dto);
+
+        assertEquals("Updated Task", result.getTitle());
+        assertTrue(result.isCompleted());
+        verify(repository).save(any(Task.class));
+
     }
 
     }
