@@ -96,5 +96,27 @@ public class TaskServiceTest {
 
     }
 
+    @Test
+    void shouldCreateTaskSuccessfully(){
+        TaskDTO dto = new TaskDTO();
+        dto.setTitle("Learn Mockito");
+        dto.setCompleted(false);
+
+        Task savedTask = new Task();
+        savedTask.setId(1L);
+        savedTask.setTitle("Learn Mockito");
+        savedTask.setCompleted(false);
+
+        when(repository.save(any(Task.class)))
+        .thenReturn(savedTask);
+
+        Task result = taskService.addTask(dto);
+
+        assertEquals(1L, result.getId());
+        assertEquals("Learn Mockito", result.getTitle());
+
+        verify(repository).save(any(Task.class));
+    }
+
     }
 
