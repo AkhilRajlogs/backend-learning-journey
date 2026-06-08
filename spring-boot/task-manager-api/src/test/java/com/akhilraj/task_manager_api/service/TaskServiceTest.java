@@ -132,5 +132,23 @@ public class TaskServiceTest {
     verify(repository, never()).delete(any());
     }
 
+    @Test
+    void shouldThrowExceptionWhenUpdatingNonExistentTask(){
+
+        TaskDTO dto = new TaskDTO();
+        dto.setTitle("Updated Task");
+        dto.setCompleted(true);
+
+        when(repository.findById(999L))
+            .thenReturn(Optional.empty());
+
+    assertThrows(
+            TaskNotFoundException.class,
+            () -> taskService.updateTask(999L, dto));
+
+    verify(repository, never()).save(any());
+
+    }
+
 }
 
