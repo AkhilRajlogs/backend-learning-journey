@@ -16,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.akhilraj.task_manager_api.repository.TaskRepository;
+
+import java.util.List;
 import java.util.Optional;
 
 import com.akhilraj.task_manager_api.dto.TaskDTO;
@@ -148,6 +150,33 @@ public class TaskServiceTest {
 
     verify(repository, never()).save(any());
 
+    }
+
+    @Test
+    void shouldReturnCompletedTasks() {
+
+        Task task1 = new Task();
+        task1.setId(1L);
+        task1.setTitle("Task 1");
+        task1.setCompleted(true);
+
+        Task task2 = new Task();
+        task2.setId(2L);
+        task2.setTitle("Task 2");
+        task2.setCompleted(true);
+
+        List<Task> tasks = List.of(task1, task2);
+
+        when(repository.findByCompleted(true))
+                .thenReturn(tasks);
+
+        List<Task> result =
+                taskService.getTasksByCompletionStatus(true);
+
+        assertEquals(2, result.size());
+        assertTrue(result.get(0).isCompleted());
+
+        verify(repository).findByCompleted(true);
     }
 
 }
