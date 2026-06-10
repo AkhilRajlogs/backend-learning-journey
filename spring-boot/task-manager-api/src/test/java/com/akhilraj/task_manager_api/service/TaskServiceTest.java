@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.akhilraj.task_manager_api.dto.TaskDTO;
+import com.akhilraj.task_manager_api.dto.TaskResponseDTO;
 import com.akhilraj.task_manager_api.exception.TaskNotFoundException;
 import com.akhilraj.task_manager_api.model.Task;
 
@@ -177,6 +178,20 @@ public class TaskServiceTest {
         assertTrue(result.get(0).isCompleted());
 
         verify(repository).findByCompleted(true);
+    }
+
+    @Test
+    void shouldMapTaskToResponseDTO(){
+        Task task = new Task();
+        task.setId(1L);
+        task.setTitle("DTO creation");
+        task.setCompleted(true);
+
+        TaskResponseDTO dto = taskService.mapToResponseDTO(task);
+        assertEquals(1L, dto.getId());
+        assertEquals("DTO creation", dto.getTitle());
+        assertTrue(dto.isCompleted());
+
     }
 
 }
