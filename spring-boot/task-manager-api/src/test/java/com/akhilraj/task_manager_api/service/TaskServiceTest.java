@@ -211,15 +211,29 @@ public class TaskServiceTest {
         when(repository.findAll(any(Pageable.class)))
                 .thenReturn(page);
 
-        Page<Task> result = taskService.getPaginatedTasks(
-                0,
-                5,
-                "id",
-                "asc");
+        Page<Task> result = taskService.getPaginatedTasks( 0, 5, "id", "asc");
 
 
         assertEquals(2, result.getContent().size());
         assertEquals(2, result.getTotalElements());
+
+        verify(repository).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void shouldReturnEmptyPageWhenNoTasksExist(){
+
+        List<Task> tasks = List.of();
+
+        Page<Task> page = new PageImpl<>(tasks);
+
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
+
+                Page<Task> result = taskService.getPaginatedTasks( 0, 5, "id", "asc");
+
+
+        assertEquals(0, result.getContent().size());
+        assertEquals(0, result.getTotalElements());
 
         verify(repository).findAll(any(Pageable.class));
     }
