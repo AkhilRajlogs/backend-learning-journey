@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
 
 import com.akhilraj.task_manager_api.repository.TaskRepository;
 
@@ -24,6 +25,9 @@ import com.akhilraj.task_manager_api.dto.TaskDTO;
 import com.akhilraj.task_manager_api.dto.TaskResponseDTO;
 import com.akhilraj.task_manager_api.exception.TaskNotFoundException;
 import com.akhilraj.task_manager_api.model.Task;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 public class TaskServiceTest {
@@ -194,5 +198,30 @@ public class TaskServiceTest {
 
     }
 
+    @Test
+    void shouldReturnPaginatedTasks(){
+
+        Task task1 = new Task();
+        Task task2 = new Task();
+
+        List<Task> tasks = List.of(task1, task2);
+
+        Page<Task> page = new PageImpl<>(tasks);
+
+        when(repository.findAll(any(Pageable.class)))
+                .thenReturn(page);
+
+        Page<Task> result = taskService.getPaginatedTasks(
+                0,
+                5,
+                "id",
+                "asc");
+
+
+        assertEquals(2, result.getContent().size());
+        assertEquals(2, result.getTotalElements());
+
+        verify(repository).findAll(any(Pageable.class));
+    }
 }
 
