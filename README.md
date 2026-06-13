@@ -111,6 +111,35 @@ http://localhost:8080/swagger-ui/index.html
 
 ---
 
+## Testing
+
+The project includes automated tests for both Controller and Service layers.
+
+### Controller Tests
+
+- Endpoint response validation
+- HTTP status code verification
+- Request validation testing
+- Exception handling verification
+
+### Service Tests
+
+- Task retrieval
+- Task creation
+- Task update
+- Task deletion
+- Exception scenarios
+- Filtering logic
+- Pagination behavior
+
+Tools Used:
+
+- JUnit 5
+- Mockito
+- MockMvc
+
+---  
+
 ## Tech Stack
 
 - Java 17  
@@ -132,15 +161,18 @@ In Progress
 
 Completed:
 
-- Spring Boot fundamentals  
-- REST API development  
-- PostgreSQL integration  
-- DTO pattern  
-- Validation  
-- Exception handling  
-- Logging  
-- Pagination and sorting    
-
+- Spring Boot fundamentals
+- REST API development
+- PostgreSQL integration
+- DTO pattern
+- Validation
+- Exception handling
+- Logging
+- Pagination and sorting
+- Swagger/OpenAPI
+- Controller Testing (MockMvc)
+- Service Layer Testing (Mockito)
+  
 ---
 
 ## Future Improvements
@@ -148,13 +180,14 @@ Completed:
 Planned enhancements for this project:
 
 - Spring Security + JWT Authentication
-- Unit and Integration Testing using JUnit and Mockito
+- Integration Testing with Testcontainers
+- Spring Security + JWT Authentication
 - Dockerization
 - Enhanced API documentation and endpoint annotations
 - Deployment to cloud platforms
 - Role-based authorization
 - CI/CD pipeline integration
-
+  
 ---
 
 ## Goal  
