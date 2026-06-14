@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 
 import com.akhilraj.task_manager_api.repository.TaskRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -191,11 +192,20 @@ public class TaskServiceTest {
         task.setTitle("DTO creation");
         task.setCompleted(true);
 
+        LocalDateTime createdAt = LocalDateTime.of(2025, 1, 1, 10, 0);
+        LocalDateTime updatedAt = LocalDateTime.of(2025, 1, 2, 12, 0);
+
+        task.setCreatedAt(createdAt);
+        task.setUpdatedAt(updatedAt);
+
         TaskResponseDTO dto = taskService.mapToResponseDTO(task);
+
         assertEquals(1L, dto.getId());
         assertEquals("DTO creation", dto.getTitle());
         assertTrue(dto.isCompleted());
 
+        assertEquals(createdAt, dto.getCreatedAt());
+        assertEquals(updatedAt, dto.getUpdatedAt());
     }
 
     @Test
