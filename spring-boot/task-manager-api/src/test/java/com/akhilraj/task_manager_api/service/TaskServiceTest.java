@@ -1,6 +1,7 @@
 package com.akhilraj.task_manager_api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -246,6 +247,20 @@ public class TaskServiceTest {
         assertEquals(0, result.getTotalElements());
 
         verify(repository).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void shouldMapIncompleteTaskToResponseDTO() {
+        Task task = new Task();
+        task.setId(2L);
+        task.setTitle("Incomplete Task");
+        task.setCompleted(false);
+
+        TaskResponseDTO dto = taskService.mapToResponseDTO(task);
+
+        assertEquals(2L, dto.getId());
+        assertEquals("Incomplete Task", dto.getTitle());
+        assertFalse(dto.isCompleted());
     }
 }
 
