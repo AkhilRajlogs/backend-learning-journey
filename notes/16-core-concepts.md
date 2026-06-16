@@ -324,6 +324,97 @@ Controller → Service → Repository → Database
   - Used to partially update a resource
   - Only modifies specified fields
 
+---
+
+## Spring IoC (Inversion of Control)
+
+Inversion of Control (IoC) is a design principle where the responsibility of creating and managing objects is transferred from application code to the Spring container.
+
+Instead of manually creating objects using `new`, Spring creates and manages them for us.
+
+### Benefits
+
+* Reduces coupling between classes
+* Improves maintainability
+* Simplifies dependency management
+
+---
+
+## Dependency Injection (DI)
+
+Dependency Injection is a technique where dependencies are provided to a class instead of the class creating them itself.
+
+Spring automatically injects the required dependencies using the IoC container.
+
+### Benefits
+
+* Better testability
+* Reduced coupling
+* Easier maintenance
+
+---
+
+## What is a Spring Bean?
+
+A Spring Bean is an object that is created, managed, and maintained by the Spring IoC container.
+
+Examples:
+
+* Controllers
+* Services
+* Repositories
+
+---
+
+## Why Constructor Injection is Preferred
+
+Constructor Injection is the recommended way of injecting dependencies.
+
+### Advantages
+
+* Dependencies are mandatory
+* Easier unit testing
+* Prevents null dependencies
+* Promotes immutability
+
+Example:
+
+```java
+@Service
+public class TaskService {
+
+    private final TaskRepository repository;
+
+    public TaskService(TaskRepository repository) {
+        this.repository = repository;
+    }
+}
+```
+
+---
+
+## Common Spring Stereotype Annotations
+
+### @Component
+
+Marks a class as a Spring Bean.
+
+### @Service
+
+Marks a Service layer class and registers it as a Spring Bean.
+
+### @Repository
+
+Marks a Repository layer class and enables persistence-related exception translation.
+
+### @Controller / @RestController
+
+Marks a Controller class responsible for handling HTTP requests.
+
+
+---
+
+
 ### In my project:
 
 - PUT is used for updating tasks
