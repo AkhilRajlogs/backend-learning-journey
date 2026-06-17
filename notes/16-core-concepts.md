@@ -324,6 +324,15 @@ Controller → Service → Repository → Database
   - Used to partially update a resource
   - Only modifies specified fields
 
+### In my project:
+
+- PUT is used for updating tasks
+- Entire task object is updated
+
+### Key Insight:
+
+Choosing between PUT and PATCH depends on whether full or partial updates are required.
+
 ---
 
 ## Spring IoC (Inversion of Control)
@@ -411,15 +420,28 @@ Marks a Repository layer class and enables persistence-related exception transla
 
 Marks a Controller class responsible for handling HTTP requests.
 
-
 ---
+  
+## Bean Scopes
 
+Bean scope determines how many instances Spring creates for a bean.
 
-### In my project:
+### Singleton
 
-- PUT is used for updating tasks
-- Entire task object is updated
+Default scope.
 
-### Key Insight:
+Only one bean instance is created and shared across the application.
 
-Choosing between PUT and PATCH depends on whether full or partial updates are required.
+Multiple classes requesting the bean receive the same instance.
+
+### Prototype
+
+A new bean instance is created every time it is requested.
+
+### Why Singleton is Default
+
+- Lower memory usage
+- Better performance
+- Suitable for stateless services
+  
+---
