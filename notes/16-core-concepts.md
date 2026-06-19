@@ -287,12 +287,11 @@ Controller → Service → Repository → Database
 
 ---
 
----
-
 ## @RequestBody vs @PathVariable vs @RequestParam (Quick Summary)
 
 - @RequestBody
   - Used to read JSON from request body
+  
   - Converted to DTO using HttpMessageConverter (Jackson)
   - Supports validation using @Valid
 
@@ -309,8 +308,6 @@ Controller → Service → Repository → Database
 - @RequestBody → Body data (JSON)
 - @PathVariable → URL path
 - @RequestParam → Query parameters
-
----
 
 ---
 
@@ -444,4 +441,83 @@ A new bean instance is created every time it is requested.
 - Better performance
 - Suitable for stateless services
   
+---
+
+## Stateless vs Stateful Beans
+
+### Stateless Bean
+
+A stateless bean does not store request-specific data in instance variables.
+
+Example:
+
+- Service classes
+- Repository classes
+
+Benefits:
+
+- Thread-safe
+- Suitable for Singleton scope
+- Better scalability
+
+### Stateful Bean
+
+A stateful bean stores data in instance variables.
+
+Example:
+
+```java
+private String currentUser;
+```
+
+Problems:
+
+* Shared mutable state
+* Race conditions in concurrent requests
+* Data leakage between users
+
+Example:
+
+User A sets currentUser = "Akhil"
+
+At the same time,
+
+User B sets currentUser = "John"
+
+Since Singleton beans share the same instance, values can overwrite each other unexpectedly.
+
+### Recommendation
+
+Stateful beans should generally avoid Singleton scope.
+
+If state must be maintained, Prototype scope or request-scoped beans may be more appropriate.
+
+---
+
+## When to Use Prototype Scope
+
+Prototype scope is useful when:
+
+* Each request needs a fresh object
+* The bean stores state
+* Object creation cost is low
+
+Examples:
+
+* Temporary processing objects
+* User-specific state holders
+* Workflow objects
+
+---
+
+## Singleton vs Prototype
+
+| Feature                      | Singleton  | Prototype        |
+| ---------------------------- | ---------- | ---------------- |
+| Instances Created            | One        | New each request |
+| Memory Usage                 | Lower      | Higher           |
+| Performance                  | Better     | Slightly lower   |
+| Suitable for Stateless Beans | Yes        | Yes              |
+| Suitable for Stateful Beans  | Usually No | Yes              |
+
 ---
