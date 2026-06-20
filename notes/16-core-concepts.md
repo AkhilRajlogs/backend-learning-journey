@@ -291,7 +291,7 @@ Controller → Service → Repository → Database
 
 - @RequestBody
   - Used to read JSON from request body
-  
+
   - Converted to DTO using HttpMessageConverter (Jackson)
   - Supports validation using @Valid
 
@@ -521,3 +521,15 @@ Examples:
 | Suitable for Stateful Beans  | Usually No | Yes              |
 
 ---
+
+### Request Scope
+
+A new bean instance is created for every HTTP request.
+
+Useful when data should live only for the duration of a single request.
+
+### Session Scope
+
+A bean instance is created per user session.
+
+Data remains available across multiple requests from the same user.
