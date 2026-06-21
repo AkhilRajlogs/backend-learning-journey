@@ -528,8 +528,64 @@ A new bean instance is created for every HTTP request.
 
 Useful when data should live only for the duration of a single request.
 
+---
+
 ### Session Scope
 
 A bean instance is created per user session.
 
 Data remains available across multiple requests from the same user.
+
+---
+
+## Stateful vs Stateless Beans
+
+### Stateless Bean
+
+A stateless bean does not store request-specific data in instance variables.
+
+Characteristics:
+
+* No shared mutable state
+* Thread-safe
+* Suitable for Singleton scope
+* Common for Service and Repository classes
+
+Example:
+
+A TaskService that processes requests without storing user-specific information.
+
+---
+
+### Stateful Bean
+
+A stateful bean stores data in instance variables.
+
+Example:
+
+```java
+private String currentUser;
+```
+
+Characteristics:
+
+* Maintains state between method calls
+* Can cause shared mutable state issues
+* Requires careful scope selection
+
+Potential Problem:
+
+If a Singleton bean stores user-specific data:
+
+* User A sets currentUser = "Akhil"
+* User B sets currentUser = "John"
+
+Both users share the same bean instance, so values can overwrite each other unexpectedly.
+
+---
+
+### Key Interview Point
+
+Singleton beans should generally be stateless.
+
+Stateful objects are usually better suited for Prototype, Request, or Session scopes depending on the requirement.
