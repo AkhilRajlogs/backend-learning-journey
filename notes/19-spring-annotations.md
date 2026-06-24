@@ -56,3 +56,38 @@ Spring scans specified packages for classes annotated with stereotype annotation
 - @Controller
 
 Discovered classes are automatically registered as Spring Beans.
+
+---
+
+## @Qualifier
+
+Used with @Autowired to specify which bean should be injected when multiple beans of the same type exist.
+
+Without @Qualifier, Spring may throw NoUniqueBeanDefinitionException.
+
+---
+
+## @SpringBootApplication
+
+Main annotation used to start a Spring Boot application.
+
+Combines:
+
+- @Configuration
+- @EnableAutoConfiguration
+- @ComponentScan
+
+---
+
+## @Scope
+
+Used to define bean scope.
+
+Common scopes:
+
+- Singleton
+- Prototype
+- Request
+- Session
+
+Default scope: Singleton
