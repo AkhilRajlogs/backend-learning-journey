@@ -42,8 +42,8 @@ Combination of:
 
 Used by Spring to inject dependencies automatically.
 
-Spring looks for a matching Bean and injects it into the dependent class.
-
+Spring searches the ApplicationContext for a matching Bean and injects it into the dependent class.
+  
 ---
 
 ## Component Scanning
@@ -79,6 +79,14 @@ Combines:
 
 ---
 
+## @Configuration
+
+Indicates that a class contains Spring Bean definitions.
+
+Used to configure the application using Java-based configuration instead of XML.
+
+---
+
 ## @Scope
 
 Used to define bean scope.
@@ -91,3 +99,16 @@ Common scopes:
 - Session
 
 Default scope: Singleton
+
+---
+
+## SpringApplication.run()
+
+Starts the Spring Boot application.
+
+Responsibilities:
+
+- Creates the ApplicationContext
+- Performs component scanning
+- Creates and manages beans
+- Starts the embedded Tomcat server
