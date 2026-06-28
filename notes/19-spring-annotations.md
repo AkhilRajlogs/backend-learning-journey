@@ -102,7 +102,21 @@ Default scope: Singleton
 
 ---
 
-## SpringApplication.run()
+## Evolution of Spring Configuration
+  
+Spring applications can be started in different ways depending on the type of application.
+
+### ClassPathXmlApplicationContext
+
+- Uses XML configuration
+- Beans are defined inside XML files
+
+### AnnotationConfigApplicationContext
+
+- Uses Java-based configuration instead of XML
+- Registers beans using @Configuration classes and annotations
+
+### SpringApplication.run()
 
 Starts the Spring Boot application.
 
