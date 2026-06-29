@@ -92,3 +92,42 @@ Browser
 The Model carries data from the controller to the view.
 
 The JSP reads the model attributes and renders the final HTML page.
+  
+---
+
+## MVC Layer Responsibilities
+
+A typical Spring MVC application is organized into multiple layers.
+
+### Web Layer
+
+- Handles HTTP requests
+- Implemented using Controllers
+- Interacts with the Service layer
+
+### Service Layer
+
+- Contains business logic
+- Coordinates application operations
+- Interacts with the persistence layer
+
+### Persistence Layer (DAO)
+
+- Responsible for database operations
+- Encapsulates data access logic
+
+### Domain Model
+
+Represents the application's business entities.
+
+These objects carry the application's core data.
+
+### UI Model
+
+Used to transfer data from the controller to the view.
+
+The view reads model attributes to render dynamic content.
+
+### View (JSP)
+
+Responsible for generating the HTML returned to the browser.
