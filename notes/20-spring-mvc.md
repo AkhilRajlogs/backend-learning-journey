@@ -131,3 +131,41 @@ The view reads model attributes to render dynamic content.
 ### View (JSP)
 
 Responsible for generating the HTML returned to the browser.
+
+---
+
+## Passing Data Between Controller and View
+
+Spring MVC provides multiple ways to pass data from a controller to a view.
+
+### Model
+
+- Stores attributes to be rendered by the view
+- Commonly used in controller methods
+
+### ModelMap
+
+- Similar to Model
+- Provides a map-like structure for storing model attributes
+
+### ModelAndView
+
+Combines:
+
+- Model (data)
+- View (logical view name)
+
+Allows returning both the model data and the view from a single object.
+
+---
+
+## Request Parameters
+
+Spring MVC can bind request parameters from the URL to controller method parameters.
+
+Example:
+
+```/search?keyword=spring```
+
+
+`keyword` is extracted from the request and made available to the controller.
