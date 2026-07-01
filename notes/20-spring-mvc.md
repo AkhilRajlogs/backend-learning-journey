@@ -169,3 +169,36 @@ Example:
 
 
 `keyword` is extracted from the request and made available to the controller.
+
+---
+
+## @RequestParam
+
+`@RequestParam` is used to bind query parameters from an HTTP request to controller method parameters.
+
+Example:
+
+```java
+@GetMapping("/search")
+public String search(@RequestParam String keyword) {
+    return "results";
+}
+```
+
+For the request:
+
+```
+/search?keyword=spring
+```
+
+Spring automatically binds:
+
+```
+keyword → "spring"
+```
+
+### Benefits
+
+- Simplifies reading query parameters
+- Supports optional and default values
+- Performs automatic type conversion
