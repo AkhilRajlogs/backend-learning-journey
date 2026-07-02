@@ -183,6 +183,7 @@ Example:
 public String search(@RequestParam String keyword) {
     return "results";
 }
+
 ```
 
 For the request:
@@ -202,3 +203,39 @@ keyword → "spring"
 - Simplifies reading query parameters
 - Supports optional and default values
 - Performs automatic type conversion
+
+---
+
+## Choosing Between Model and ModelAndView
+
+Spring MVC provides multiple ways to return data to a view.
+
+### Using Model
+
+- Add attributes to the model
+- Return the logical view name as a String
+
+Example:
+
+```java
+model.addAttribute("name", "Akhil");
+return "home";
+```
+
+### Using ModelAndView
+
+- Combines both the model data and the view name into a single object
+
+Example:
+
+```java
+ModelAndView mv = new ModelAndView("home");
+mv.addObject("name", "Akhil");
+return mv;
+```
+
+### Which is Preferred?
+
+For simple controllers, using `Model` with a String return type is more common because it is concise and easier to read.
+
+`ModelAndView` is useful when both the model and view need to be constructed together.
