@@ -250,3 +250,11 @@ For simple controllers, using `Model` with a String return type is more common b
 | Returns view name | String | String | Included in object |
 | Commonly used | ✔ | Less common | Sometimes |
 | Best for | Simple controllers | Map-like model access | Returning model and view together |
+
+## Interview Tip
+
+For most Spring MVC controllers:
+
+- Use `Model` for passing data to the view.
+- Return a `String` as the logical view name.
+- Use `ModelAndView` when you want to construct both the model and view together.
