@@ -239,3 +239,14 @@ return mv;
 For simple controllers, using `Model` with a String return type is more common because it is concise and easier to read.
 
 `ModelAndView` is useful when both the model and view need to be constructed together.
+
+---
+
+## Model vs ModelMap vs ModelAndView
+
+| Feature | Model | ModelMap | ModelAndView |
+|---------|-------|----------|--------------|
+| Holds model data | ✔ | ✔ | ✔ |
+| Returns view name | String | String | Included in object |
+| Commonly used | ✔ | Less common | Sometimes |
+| Best for | Simple controllers | Map-like model access | Returning model and view together |
