@@ -258,3 +258,74 @@ For most Spring MVC controllers:
 - Use `Model` for passing data to the view.
 - Return a `String` as the logical view name.
 - Use `ModelAndView` when you want to construct both the model and view together.
+
+---
+
+## Redirect in Spring MVC
+
+A controller can redirect the client to another URL by returning a view name prefixed with `redirect:`.
+
+Example:
+
+```java
+return "redirect:success?id=" + carId;
+```
+
+Instead of rendering a JSP directly, Spring sends an HTTP redirect response, causing the browser to make a new request to the specified URL.
+
+---
+
+## Passing Data During Redirect
+
+Data can be passed to the redirected request using query parameters.
+
+Example:
+
+```text
+redirect:success?id=101
+```
+
+The redirected controller can retrieve the value using `@RequestParam`.
+
+Example:
+
+```java
+@GetMapping("/success")
+public String success(@RequestParam Integer id) {
+    return "success";
+}
+```
+
+---
+
+## JSP Expression Language (EL)
+
+JSP Expression Language (EL) is used to access model attributes inside a JSP page.
+
+Example:
+
+```jsp
+${id}
+${message}
+```
+
+Spring resolves these expressions using attributes stored in the `Model` or `ModelAndView`.
+
+---
+
+## ModelAndView
+
+`ModelAndView` combines both the model data and the logical view name into a single object.
+
+It allows a controller to:
+
+- Add model attributes
+- Specify the view to render
+
+Example:
+
+```java
+ModelAndView mv = new ModelAndView("success");
+mv.addObject("message", "Registration successful");
+return mv;
+```
