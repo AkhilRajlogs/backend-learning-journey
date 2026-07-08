@@ -1,12 +1,12 @@
-# Backend Core Concepts
-
+# Backend Technology Stack Overview
+  
 ## Overview
 
-This document connects all the core concepts required to understand how a backend system works end-to-end.
+This document provides a high-level overview of the core technologies commonly used in a Java Spring Boot backend application and how they fit together.
 
 ---
 
-## 1. Java + Build System Basics
+## 1. Java and Build System Basics
 
 ### JAR (Java Archive)
 
@@ -15,7 +15,7 @@ This document connects all the core concepts required to understand how a backen
   - `.class` files (compiled Java code)  
   - Metadata  
 
-💡 Example: Spring Boot dependencies are downloaded as JAR files
+Example: Spring Boot dependencies are downloaded as JAR files
 
 ---
 
@@ -29,7 +29,7 @@ Without Maven:
 With Maven:
 - Dependencies are automatically added to classpath  
 
-💡 Flow:  
+Flow:  
 Dependency → JAR downloaded → Added to classpath → Available in code
 
 ---
@@ -58,8 +58,8 @@ When you run:
 
 - Tomcat starts automatically on port 8080  
 
-💡 Flow:  
-Client → Tomcat → Spring Boot → Response  
+Flow:  
+Client → Tomcat → DispatcherServlet → Controller  
 
 ---
 
@@ -106,7 +106,7 @@ Basic operations:
 
 - A relational database system  
 
-💡 Flow:  
+Flow:  
 Java App → PostgreSQL → Data stored in tables  
 
 ---
@@ -128,42 +128,6 @@ You write:
 ### Hibernate (ORM)
 
 - Implementation of JPA  
-
----
-
-## What is Pagination?
-
-Pagination is the process of splitting large datasets into smaller chunks (pages).
-
-In Spring Data JPA:
-
-- Pageable defines pagination information
-- PageRequest creates Pageable object
-- Page contains paginated result
-
-Example:
-
-Pageable pageable = PageRequest.of(page, size);
-
-### Why Pagination Matters
-
-- Improves performance
-- Reduces memory usage
-- Common in production APIs
-
----
-
-## Pagination Flow
-
-Controller
-→ receives page and size using @RequestParam
-→ Service creates Pageable using PageRequest
-→ Repository executes paginated query using findAll(pageable)
-
-Benefits:
-- Efficient data retrieval
-- Prevents large response payloads
-- Improves scalability
 
 ---
 
@@ -202,7 +166,7 @@ Database Table:
 - Service: Contains business logic  
 - Repository: Handles database operations using JPA  
 
-💡 Example from my project:
+Example from my project:
 
 - Controller: TaskController  
 - Service: TaskService  
@@ -225,65 +189,42 @@ Flow:
     Client → DTO → Service → Entity → Database  
 
 ---
-
 ## 6. Validation and Error Handling
 
-### Validation
+Backend applications validate incoming requests and return appropriate HTTP responses when errors occur.
 
-- Ensures only valid data enters the system  
-
-Examples:
-
-- @NotBlank → field cannot be empty  
-- @Size → restrict length  
-
----
-
-### Error Handling
-
-- Used to return proper HTTP responses  
-
-Examples:
-
-- 400 → Bad Request (invalid input)  
-- 404 → Not Found (resource missing)  
-- 201 → Created (new resource created)  
-- 200 → OK (successful request)  
-
+These topics are covered in more detail in later Spring Boot notes.
 ---
 
 ## 7. Full Backend Flow (Updated)
-
-    Client (REST Client / Browser)
-            ↓
-    Tomcat Server
-            ↓
-    Controller (receives request)
-            ↓
-    DTO (validates input)
-            ↓
-    Service (business logic)
-            ↓
-    Entity (converted from DTO)
-            ↓
-    Repository (JPA)
-            ↓
-    Hibernate (ORM)
-            ↓
-    PostgreSQL (Database)
-            ↓
-    Entity
-            ↓
-    Response DTO
-            ↓
-    Controller → Client
-
+  
+Client
+↓
+Controller
+↓
+DTO
+↓
+Service
+↓
+Entity
+↓
+Repository
+↓
+Hibernate
+↓
+PostgreSQL
+↓
+Controller
+↓
+Client
+  
 ---
 
-## Notes
+## Related Notes
 
-- Spring Boot simplifies backend development with auto-configuration  
-- JPA reduces the need to write SQL manually  
-- Understanding SQL is important for debugging and performance  
-- Backend flow should always be understood end-to-end  
-- DTO helps maintain clean architecture and separation of concerns  
+- 10 – Spring Boot Request Flow (Detailed request lifecycle)
+- 12 – Backend Architecture Notes (Layered architecture)
+- 17 – Service Layer Deep Dive (Business logic responsibilities)
+- 19 – Spring Annotations (Spring Boot fundamentals)
+
+These notes provide detailed explanations of the concepts summarized in this overview.

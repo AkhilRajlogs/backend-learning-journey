@@ -1,6 +1,6 @@
 # Hello API - Spring Boot
 
-## What I Learned
+## Learning Outcomes
 
 - How to create a Spring Boot project using Maven
 - Project structure (Application.java, controller)
