@@ -128,17 +128,12 @@ Used `Long` instead of `int`
   
 ---
 
-## Request Flow
+## Request Processing
 
-Client  
-→ DispatcherServlet  
-→ Controller  
-→ Service  
-→ Repository  
-→ Database  
+This project follows the standard Spring Boot request lifecycle described in Note 10.
 
-Response flows back in reverse order.
-
+Controller → Service → Repository → Database
+  
 ---
 
 ## Key Improvements Made
@@ -219,14 +214,11 @@ GET /tasks?page=0&size=5
 
 ---
 
-## Connection to Core Concepts
+## Related Notes
 
-This project reinforces:
-
-- Spring Boot request lifecycle  
-- Layered architecture  
-- Clean code principles  
-- API design best practices  
+- 09 – Backend Technology Stack Overview
+- 10 – Spring Boot Request Lifecycle
+- 12 – Spring MVC Internals
 
 ---
 

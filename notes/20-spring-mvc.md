@@ -1,5 +1,9 @@
 # Spring MVC
 
+## Overview
+
+This note introduces the Spring MVC programming model, including controllers, views, request handling, model binding, JSP rendering, redirects, and common controller return types.
+
 ## MVC Architecture
 
 Spring MVC follows the Model-View-Controller pattern.

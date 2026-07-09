@@ -155,18 +155,7 @@ Database
 
 ---
 
-### Key Difference
+## Related Notes
 
-- @RequestParam → Query data  
-- @PathVariable → URL data  
-- @RequestBody → Body data  
-
----
-
-### Internal Flow Difference
-
-- @RequestBody:
-  → HttpMessageConverter → Jackson → DTO  
-
-- @RequestParam / @PathVariable:
-  → ArgumentResolver → Direct binding  
+- 12 – Spring MVC Internals (DispatcherServlet, HandlerMapping, Jackson, validation internals)
+- 20 – Spring MVC (Model, View, JSP, RequestParam, ModelAndView)

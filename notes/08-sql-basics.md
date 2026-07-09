@@ -1,5 +1,11 @@
 # SQL Basics
 
+## Overview
+
+This note summarizes the SQL concepts required for backend development and introduces the basic operations used to interact with relational databases.
+
+---
+  
 ## What is SQL?
 
 SQL (Structured Query Language) is used to interact with relational databases.

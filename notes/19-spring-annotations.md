@@ -1,5 +1,9 @@
 # Spring Annotations
 
+## Overview
+
+This note summarizes the most commonly used Spring and Spring Boot annotations, their purposes, and where they are typically used in a backend application.
+
 ## @Component
 
 Marks a class as a Spring Bean so that Spring can detect and manage it.

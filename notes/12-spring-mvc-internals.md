@@ -1,4 +1,10 @@
-# Backend Architecture Notes
+# Spring MVC Internals  
+
+## Overview
+
+This note explains the internal Spring MVC components involved in processing an HTTP request after it reaches the DispatcherServlet.
+
+It complements Note 10, which focuses on the overall request lifecycle.
 
 ---
 
@@ -38,7 +44,7 @@ In REST APIs:
 
 ---
 
-## 4. Request Flow (Complete)
+## 4. Request Flow (High-Level)
 
 Client  
 → Tomcat  
@@ -58,59 +64,7 @@ Client
 
 ---
 
-## 5. Layered Architecture
-
-Controller → Service → Repository → Database
-
-### Responsibilities:
-
-- Controller
-  - Handles HTTP layer
-  - Uses DTOs
-
-- Service
-  - Contains business logic
-  - Works with Entities
-
-- Repository
-  - Handles database operations using JPA
-
----
-
-## 6. What SHOULD NOT be in Service Layer
-
-- @RequestBody
-- @PathVariable
-- ResponseEntity
-- HTTP status codes
-
-Service must remain independent of web layer
-
----
-
-## 7. Entity vs DTO
-
-### Entity
-- Represents database table
-
-### DTO
-- Defines API request/response structure
-- Used for validation
-- Hides internal fields
-
----
-
-## 8. Why DTO is Used
-
-- Prevents exposing database structure
-- Decouples API from DB
-- Enables validation
-- Improves security
-- Allows custom API contracts
-
----
-
-## 9. Backend Flow (Detailed)
+## 5. Request Processing Internals
 
 Client  
 → DispatcherServlet  
@@ -132,7 +86,7 @@ Client
   
 ---
 
-## 10. Exception Handling (Deep Dive)
+## 6. Exception Handling (Deep Dive)
 
 ### Flow:
 
@@ -172,7 +126,7 @@ Exception occurs
 
 ---
 
-## Validation Flow (Spring Boot + Jakarta Validation)
+## 7. Validation Flow (Spring Boot + Jakarta Validation)
     
 Client  
 → DispatcherServlet  
@@ -186,7 +140,7 @@ Client
 
 ---
 
-## JSON Flow (Jackson)
+## 8. JSON Flow (Jackson)
 
 Client  
 → DispatcherServlet  
@@ -200,7 +154,7 @@ Client
 
 ---
 
-## JSON Parsing vs Validation
+## 9. JSON Parsing vs Validation
 
 ### Invalid JSON
 
@@ -231,7 +185,7 @@ Client
 
 ---
 
-## @RequestBody Internals
+## 10. @RequestBody Internals
 
 - @RequestBody is handled by RequestResponseBodyMethodProcessor
 - It uses HttpMessageConverter to convert request body
@@ -252,7 +206,7 @@ Client
 
 ---
 
-## Important Validation Note
+## 11. Why @Valid Matters
 
 - Validation annotations (@NotBlank, @Size, etc.) do NOT run automatically
 - @Valid (or @Validated) is REQUIRED to trigger validation
@@ -264,51 +218,20 @@ Without @Valid:
 
 ---
 
-## Request Walkthrough (POST /tasks)
+## 12. Interview Quick Summary
 
-1. Request → Tomcat  
-2. DispatcherServlet  
-3. HandlerMapping  
-4. HandlerAdapter  
-5. @RequestBody → DTO  
-6. @Valid → validation  
-7. Controller  
-8. Service  
-9. Repository  
-10. DB  
-11. Entity returned  
-12. Response DTO  
-13. Jackson (Java → JSON)  
-14. Response sent  
-
----
-
-## Exception Walkthrough (Task Not Found)
-
-1. Controller calls service  
-2. Service throws exception  
-3. DispatcherServlet catches  
-4. HandlerExceptionResolver  
-5. @RestControllerAdvice  
-6. ResponseEntity (404)  
-7. JSON response sent  
-
----
-
-## Interview Quick Summary
-
-- DispatcherServlet is the front controller
-- HandlerMapping finds the controller
-- HandlerAdapter executes the controller
-- HttpMessageConverter (Jackson) handles JSON conversion
-- @Valid triggers validation
-- Service contains business logic
-- Repository interacts with database
-- @RestControllerAdvice handles exceptions globally
+- DispatcherServlet is Spring MVC's front controller.
+- HandlerMapping locates the controller method.
+- HandlerAdapter invokes the controller method.
+- HttpMessageConverter (Jackson) converts JSON and Java objects.
+- @Valid triggers Jakarta Bean Validation.
+- @RestControllerAdvice centralizes exception handling.
+- Service contains business logic.
+- Repository performs persistence operations.
 
 --- 
 
-## Common Exceptions
+## 13. Common Exceptions
 
 - HttpMessageNotReadableException → Invalid JSON
 - MethodArgumentNotValidException → Validation failure
@@ -316,7 +239,7 @@ Without @Valid:
 
 ---
 
-## Response Flow (IMPORTANT)
+## 14. Response Flow (IMPORTANT)
 
 After controller returns response:
 
