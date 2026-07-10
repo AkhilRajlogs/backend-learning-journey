@@ -40,6 +40,8 @@ Combination of:
 - @Controller
 - @ResponseBody
 
+Returns the method result directly as the HTTP response body, typically JSON.
+
 ---
 
 ## @Autowired
@@ -106,7 +108,7 @@ Default scope: Singleton
 
 ---
 
-## Evolution of Spring Configuration
+## Evolution of Spring Application Configuration
   
 Spring applications can be started in different ways depending on the type of application.
 
@@ -130,3 +132,10 @@ Responsibilities:
 - Performs component scanning
 - Creates and manages beans
 - Starts the embedded Tomcat server
+
+---
+
+## Related Notes
+
+- 13 – Spring Boot Auto Configuration
+- 20 – Spring MVC

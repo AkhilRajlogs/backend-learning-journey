@@ -163,7 +163,7 @@ Allows returning both the model data and the view from a single object.
 
 ---
 
-## Request Parameters
+## Request Data Binding
 
 Spring MVC can bind request parameters from the URL to controller method parameters.
 
@@ -207,6 +207,53 @@ keyword → "spring"
 - Simplifies reading query parameters
 - Supports optional and default values
 - Performs automatic type conversion
+
+---
+
+## @PathVariable
+
+`@PathVariable` is used to bind values from the URL path to controller method parameters.
+
+Example:
+
+```java
+@GetMapping("/cars/{id}")
+public String getCar(@PathVariable Long id) {
+    return "details";
+}
+```
+
+For the request:
+
+```
+/cars/101
+```
+
+Spring automatically binds:
+
+```
+id → 101
+```
+
+### When to use
+
+Use `@PathVariable` when identifying a specific resource.
+
+Examples:
+
+- `/tasks/1`
+- `/users/5`
+- `/cars/101`
+
+Unlike `@RequestParam`, the value is part of the URL path rather than the query string.
+
+## Choosing the Right Request Annotation
+
+| Annotation      | Reads From        | Example         |
+| --------------- | ----------------- | --------------- |
+| `@RequestParam` | Query parameter   | `/tasks?page=1` |
+| `@PathVariable` | URL path          | `/tasks/1`      |
+| `@RequestBody`  | HTTP request body | JSON payload    |
 
 ---
 
@@ -289,7 +336,7 @@ Example:
 redirect:success?id=101
 ```
 
-The redirected controller can retrieve the value using `@RequestParam`.
+The redirected request can retrieve the query parameter using @RequestParam.
 
 Example:
 
@@ -317,14 +364,7 @@ Spring resolves these expressions using attributes stored in the `Model` or `Mod
 
 ---
 
-## ModelAndView
-
-`ModelAndView` combines both the model data and the logical view name into a single object.
-
-It allows a controller to:
-
-- Add model attributes
-- Specify the view to render
+## ModelAndView Example
 
 Example:
 
