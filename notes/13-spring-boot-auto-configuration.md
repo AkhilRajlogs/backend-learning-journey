@@ -1,5 +1,9 @@
 # Spring Boot Auto-Configuration
 
+## Overview
+
+This note explains how Spring Boot automatically configures common application components based on the project's dependencies and configuration, reducing the need for manual setup.
+
 ---
 
 ## What is Auto-Configuration?
@@ -13,8 +17,8 @@ This reduces manual configuration.
 
 ---
 
-## How It Works
-
+## Auto-Configuration Process
+  
 ### 1. @SpringBootApplication
 
 This annotation includes:
@@ -44,10 +48,11 @@ Auto-config classes use conditions:
 
 ---
 
-## Key Behavior
+## Key Principles
 
-- Dependency present → Configuration applied
-- Bean already defined → Default config skipped
+- Auto-configuration is activated based on project dependencies.
+- Default beans are created only when no user-defined bean already exists.
+- Application properties can customize the generated configuration.
 
 ---
 
@@ -75,7 +80,9 @@ You can override default behavior:
 
 You can disable specific auto-config:
 
+```java
 @SpringBootApplication(exclude = ClassName.class)
+```
 
 ---
 
@@ -83,8 +90,18 @@ You can disable specific auto-config:
 
 Enable debug logs:
 
-application.properties:
+`application.properties`
 
+``` properties
 debug=true
+```
 
 This shows which auto-configurations are applied or skipped.
+
+---
+
+## Related Notes
+
+- 19 – Spring Annotations
+- 10 – Spring Boot Request Lifecycle
+- 12 – Spring MVC Internals
