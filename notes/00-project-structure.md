@@ -8,14 +8,34 @@ This document represents the full local workspace structure for my backend learn
 
 backend-learning-journey/
 
-├── core-java/  
-├── dsa/  
-├── notes/  
-├── projects/  
-├── spring-boot/  
-├── sql-practice/  
-├── README.md  
-├── TRACKER.md  
+├── .vscode/
+├── bin/
+├── core-java/
+│   ├── collections/
+│   ├── dsa/
+│   ├── exceptionhandling/
+│   ├── multithreading/
+│   └── oops/
+│
+├── notes/
+│   ├── 00-project-structure.md
+│   ├── 01-git-workflow.md
+│   ├── ...
+│   ├── 19-spring-annotations.md
+│
+├── projects/
+│   ├── Othello-Java/
+│   └── TicTacToe-Java/
+│
+├── spring-boot/
+│   ├── hello-api/
+│   └── task-manager-api/
+│
+├── sql-practice/
+│   └── 01-basic-queries.sql
+│
+├── README.md
+└── TRACKER.md (local progress tracker, not tracked in Git)
 
 ---
 
@@ -24,6 +44,7 @@ backend-learning-journey/
 core-java/
 
 ### Collections
+
 - ArrayDequeDemo.java
 - ArrayListDemo.java
 - ComparableDemo.java
@@ -41,13 +62,24 @@ core-java/
 - TreeSetDemo.java
 - README.md
 
+### DSA
+
+#### Arrays
+
+- two-sum.md
+- TwoSum.java
+
+(Currently paused while focusing on backend development.)
+
 ### Exception Handling
+
 - BasicExceptionDemo.java
 - CustomExceptionDemo.java
 - InvalidAgeException.java
 - MultipleCatchDemo.java
 
 ### Multithreading
+
 - ThreadDemo.java
 - RunnableDemo.java
 - ExecutorDemo.java
@@ -55,6 +87,7 @@ core-java/
 - RaceConditionDemo.java
 
 ### OOPS (Payment System)
+
 - BasePayment.java
 - PaymentMethod.java
 - CreditCardPayment.java
@@ -66,55 +99,53 @@ core-java/
 
 ---
 
-## 2. DSA
-
-dsa/
-
-### Arrays
-- two-sum.md
-- TwoSum.java
-
----
-
-## 3. Notes
+## 2. Notes
 
 notes/
 
-- 01-git-workflow.md  
-- 02-oops-principles.md  
-- 03-collections.md  
-- 03.3-hashmap-internals.md  
-- 03.4-equals-hashcode-contract.md  
-- 03.5-hashset.md  
-- 03.6-linkedhashset.md  
-- 03.7-treeset.md  
-- 03.8-comparable.md  
-- 03.9-comparator.md  
-- 03.10-queue.md  
-- 03.11-priorityqueue.md  
-- 03.12-arraydeque.md  
-- 03.13-linkedlist-queue.md  
-- 03.14-choosing-the-right-collection.md  
+- 00-project-structure.md
 
-- 04-exceptions-in-java.md  
-- 05-multithreading-foundations.md  
-- 06-executorservice-basics.md  
+Core Java
+- 01-git-workflow.md
+- 02-oops-principles.md
+- 03-collections.md
+- 03.3-hashmap-internals.md
+- 03.4-equals-hashcode-contract.md
+- 03.5-hashset.md
+- 03.6-linkedhashset.md
+- 03.7-treeset.md
+- 03.8-comparable.md
+- 03.9-comparator.md
+- 03.10-queue.md
+- 03.11-priorityqueue.md
+- 03.12-arraydeque.md
+- 03.13-linkedlist-queue.md
+- 03.14-choosing-the-right-collection.md
 
-- 07-spring-boot-hello-api.md  
-- 08-sql-basics.md  
-- 09-backend-core-concepts.md  
-- 10-spring-boot-request-flow.md  
-- 11-task-manager-api.md  
-- 12-backend-architecture-notes.md  
-- 13-spring-boot-auto-configuration.md  
-- 14-request-lifecycle-interview.md
+- 04-exceptions-in-java.md
+- 05-multithreading-foundations.md
+- 06-executorservice-basics.md
+
+Spring Boot
+- 07-spring-boot-hello-api.md
+- 08-sql-basics.md
+- 09-backend-technology-stack-overview.md
+- 10-spring-boot-request-flow.md
+- 11-task-manager-api.md
+- 12-spring-mvc-internals.md
+- 13-spring-boot-auto-configuration.md
+- 14-spring-boot-interview-quick-notes.md
+- 15-xml-vs-json.md
 - 16-core-concepts.md
 - 17-service-layer-deep-dive.md
 - 18-interview-preparation-roadmap.md
+- 19-spring-annotations.md
+- 20-spring-mvc.md
+- 21-rest-web-services.md
 
 ---
 
-## 4. Projects
+## 3. Projects
 
 projects/
 
@@ -123,7 +154,7 @@ projects/
 
 ---
 
-## 5. Spring Boot
+## 4. Spring Boot
 
 spring-boot/
 
@@ -151,26 +182,38 @@ Features:
 
 ---
 
-## 6. SQL Practice
+## 5. SQL Practice
 
-sql-practice/
+Currently contains:
 
-(Currently empty — planned for future practice)
+- 01-basic-queries.sql
+
+Additional SQL practice will be added as learning progresses.
 
 ---
 
-## Notes
+## Current Focus
 
-- Focus shifted from DSA → Backend Development
-- Primary effort spent on Spring Boot + Architecture
-- DSA currently in maintenance mode (1 problem/day goal)
+- Spring Boot Backend Development
+- REST APIs
+- Interview Preparation
+- Java Backend Transition
 
 ---
 
 ## Status Summary
 
-- Core Java → Completed
-- Spring Boot → Strong Foundation
-- Project → Task Manager API (Completed)
-- Backend Concepts → Deep Dive Completed
-- Interview Readiness → In Progress
+Core Java → Completed
+
+Spring Boot
+- Spring MVC → Completed
+- REST APIs → In Progress
+
+Projects
+
+- Hello API → Completed
+- Task Manager API → Completed
+
+Interview Preparation
+- Notes → In Progress
+- Revision → In Progress
