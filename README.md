@@ -105,9 +105,9 @@ Controller → Service → Repository → Database
 
 ## API Documentation
 
-Interactive API documentation is available using Swagger UI when the application is running locally:
+Interactive API documentation is available through Swagger UI when the application is running locally:
 
-http://localhost:8080/swagger-ui/index.html
+http://localhost:8080/swagger-ui/index.html  
 
 ---
 
@@ -142,22 +142,25 @@ Tools Used:
 
 ## Tech Stack
 
-- Java 17  
-- Spring Boot  
-- Spring Web  
-- Spring Data JPA  
-- PostgreSQL  
-- Maven  
+- Java 17
+- Spring Boot
+- Spring Web
+- Spring Data JPA (Hibernate)
+- PostgreSQL
+- Maven
+- Swagger / OpenAPI
+- JUnit 5
+- Mockito    
 
 ---
 
 ## Learning Progress  
 
 ### Phase 1 — Core Java  
-Completed  
+Status: Completed  
 
-### Phase 2 — Backend Development  
-In Progress  
+### Phase 2 — Backend Development
+Status: In Progress  
 
 Completed:
 
@@ -181,7 +184,6 @@ Planned enhancements for this project:
 
 - Spring Security + JWT Authentication
 - Integration Testing with Testcontainers
-- Spring Security + JWT Authentication
 - Dockerization
 - Enhanced API documentation and endpoint annotations
 - Deployment to cloud platforms
@@ -192,7 +194,7 @@ Planned enhancements for this project:
 
 ## Goal  
 
-To become a job-ready backend developer capable of building real-world backend systems using:
+To build production-oriented backend systems and become a job-ready Java Backend Developer with expertise in:
 
 - Java  
 - Spring Boot  
@@ -203,4 +205,4 @@ To become a job-ready backend developer capable of building real-world backend s
 
 ## Purpose  
 
-This repository serves as a backend engineering portfolio demonstrating progression from core Java foundations to backend system development.
+This repository serves as my backend engineering portfolio, documenting my progression from Core Java fundamentals to production-oriented backend development using Spring Boot.  
