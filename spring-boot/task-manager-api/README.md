@@ -8,7 +8,6 @@ A Spring Boot REST API for managing tasks.
 * Retrieve tasks
 * Update tasks
 * Delete tasks
-* Filter tasks by completion status
 * Task filtering using query parameters
 * Pagination and sorting
 * DTO-based request and response handling
@@ -57,7 +56,7 @@ mvn spring-boot:run
 
 ## Swagger UI
 
-Available locally at:
+Interactive API documentation is available locally at:
 
 http://localhost:8080/swagger-ui/index.html
 
@@ -77,8 +76,10 @@ http://localhost:8080/swagger-ui/index.html
 
 ## Testing
 
-The project includes automated Service Layer tests covering:
+The project includes automated Controller and Service layer tests covering:
 
+* Request validation
+* Controller endpoint testing
 * Task creation
 * Task retrieval
 * Task update
