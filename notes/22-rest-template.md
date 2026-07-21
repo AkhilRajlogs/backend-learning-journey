@@ -86,7 +86,22 @@ Use it when HTTP response details are important.
 
 ---
 
+## getForObject() vs getForEntity()
+
+| getForObject() | getForEntity() |
+|----------------|----------------|
+| Returns only the response body | Returns the complete HTTP response |
+| Cannot access status code or headers | Can access body, status code, and headers |
+| Simpler for basic API calls | Useful when response metadata is needed |
+
+---
+
 ## Interview Point
+
+- `RestTemplate` is used to consume REST APIs.
+- `RestTemplateBuilder` is the preferred way to create a `RestTemplate`.
+- `getForObject()` returns only the response body.
+- `getForEntity()` returns the entire HTTP response as a `ResponseEntity`.
 
 RestTemplate is commonly used in legacy Spring applications.
 
