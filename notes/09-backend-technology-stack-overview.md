@@ -217,6 +217,50 @@ PostgreSQL
 Controller
 ↓
 Client
+
+---
+
+## JDBC (Java Database Connectivity)
+
+JDBC (Java Database Connectivity) is the standard Java API for communicating directly with relational databases.
+
+Without JPA or Hibernate, developers use JDBC to:
+
+- Establish database connections
+- Execute SQL queries
+- Retrieve query results
+- Manage transactions manually
+
+JPA and Hibernate internally use JDBC to interact with the database.
+
+Flow:
+
+```
+Java Application
+      ↓
+JPA / Hibernate
+      ↓
+     JDBC
+      ↓
+ Relational Database
+```
+
+---
+
+## JDBC vs JPA vs Hibernate
+
+| Technology | Purpose |
+|------------|---------|
+| JDBC | Low-level Java API for communicating with relational databases |
+| JPA | Java specification that defines object-relational mapping (ORM) |
+| Hibernate | Popular implementation of the JPA specification |
+
+### Interview Tip
+
+- **JDBC** gives direct control over SQL and database operations but requires more boilerplate code.
+- **JPA** provides a standard programming model for persistence.
+- **Hibernate** implements JPA and automates SQL generation, entity mapping, and persistence management.
+- In modern Spring Boot applications, developers typically work with **JPA/Hibernate**, while **Hibernate uses JDBC internally** to execute SQL against the database.
   
 ---
 
