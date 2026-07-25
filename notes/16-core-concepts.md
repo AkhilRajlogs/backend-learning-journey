@@ -24,6 +24,69 @@ Hibernate is the implementation of JPA. It handles ORM and generates SQL queries
 
 ---
 
+## EntityManager
+
+EntityManager is the primary JPA interface used to interact with the persistence context.
+
+It manages the lifecycle of entities and provides operations such as:
+
+- persist()
+- merge()
+- remove()
+- find()
+
+In Spring Boot applications using Spring Data JPA, developers usually interact with `JpaRepository`, while EntityManager works behind the scenes.
+
+---
+
+## Hibernate Session
+
+Session is Hibernate's native interface for interacting with the database.
+
+It provides Hibernate-specific features beyond the standard JPA API.  
+
+Since Hibernate implements JPA, an EntityManager can be converted into a Hibernate Session when Hibernate-specific functionality is required.
+
+Example:
+
+```java
+Session session = entityManager.unwrap(Session.class);
+```
+
+The `unwrap()` method returns the underlying Hibernate Session managed by the EntityManager.
+
+---
+
+## @Transactional
+
+`@Transactional` tells Spring that a method should execute within a database transaction.
+
+If all operations succeed, the transaction is committed.
+
+If an exception occurs, Spring rolls back the transaction to maintain data consistency.
+
+It is commonly applied at the Service layer, where multiple database operations should succeed or fail as a single unit.
+
+---
+
+## JPA Repository vs EntityManager vs Session
+
+| Component | Purpose |
+|-----------|---------|
+| JpaRepository | High-level CRUD abstraction used in most Spring Boot applications |
+| EntityManager | JPA interface for managing entity persistence |
+| Session | Hibernate-specific implementation providing additional ORM features |  
+
+Spring Data JPA repositories internally use EntityManager, so developers rarely need to interact with it directly.
+
+### Interview Tip
+
+In most Spring Boot applications, developers work with `JpaRepository`.
+
+`EntityManager` and Hibernate `Session` are typically used only when lower-level persistence control or Hibernate-specific functionality is required.
+
+---
+
 ## What is @Entity?
 
 @Entity marks a class as a JPA entity and maps it to a database table.
@@ -40,13 +103,14 @@ It tells Hibernate to treat this class as a table and its fields as columns.
 
 ## What does persist mean?
 
-Persist means saving an entity so that it can be stored in the database.
+persist() is an EntityManager method that makes a transient entity persistent by associating it with the current persistence context. Hibernate later synchronizes it with the database during the transaction.
 
 ---
 
 ## What does save() do?
 
-The save() method is provided by JpaRepository. It uses JPA and Hibernate to save the entity in the database.
+The save() method is provided by JpaRepository. It uses JPA and Hibernate to save the entity in the database.  
+save() typically executes within a transaction managed by Spring Data JPA.  
 
 - If the entity is new → INSERT operation  
 - If the entity already exists → UPDATE operation  
