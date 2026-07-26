@@ -171,6 +171,59 @@ This lifecycle helps Hibernate determine whether to perform INSERT or UPDATE ope
 
 ---
 
+## Hibernate CRUD with Session
+
+Although most Spring Boot applications use `JpaRepository`, Hibernate's `Session` can perform CRUD operations directly.
+
+### Save Entity
+
+`session.save(entity)` schedules a new entity to be persisted. The actual INSERT is executed when the transaction is committed or the session is flushed.
+
+Example:
+
+```java
+session.save(student);
+```
+
+This schedules an `INSERT` operation, which is executed when the transaction is committed.
+
+---
+
+### Fetch Entity by ID
+
+`session.get()` retrieves an entity using its primary key.
+
+Example:
+
+```java
+Student student = session.get(Student.class, id);
+```
+
+Behavior:
+
+- Returns the entity if found
+- Returns `null` if no matching record exists
+- Immediately queries the database
+- Immediately hits the database (unlike lazy-loading methods such as getReference())
+
+---
+
+## Session.get() vs JpaRepository.findById()
+
+| Session.get() | JpaRepository.findById() |
+|---------------|--------------------------|
+| Returns entity or `null` | Returns `Optional<T>` |
+| Hibernate API | Spring Data JPA API |
+| Requires explicit null handling | Encourages safer handling using Optional |
+
+### Interview Tip
+
+In modern Spring Boot applications, `findById()` is generally preferred because it integrates with Spring Data JPA and promotes null-safe programming using `Optional`.
+
+`Session.get()` is mainly encountered when working directly with Hibernate APIs or maintaining legacy applications.
+
+---
+  
 ## What does findById() do?
 
 findById() is a method provided by JpaRepository.
