@@ -223,6 +223,83 @@ In modern Spring Boot applications, `findById()` is generally preferred because 
 `Session.get()` is mainly encountered when working directly with Hibernate APIs or maintaining legacy applications.
 
 ---
+
+## Hibernate Update and Delete
+
+### Updating an Entity
+
+A common update flow using Hibernate is:
+
+1. Fetch the existing entity using `session.get()`
+2. Modify the required fields
+3. Commit the transaction
+
+Example:
+
+```java
+Student student = session.get(Student.class, id);
+
+student.setName("Akhil");
+student.setAge(24);
+```
+
+Since the entity is already managed by the persistence context, Hibernate automatically detects the changes and issues an `UPDATE` statement when the transaction is committed.
+
+---
+
+### Partial Update vs Full Update
+
+Two common update approaches are:
+
+- **Partial Update**
+  - Only the required fields are modified.
+  - Existing values of other fields remain unchanged.
+
+- **Full Update**
+  - The entire object is replaced with new values.
+  - Commonly associated with HTTP `PUT` requests.
+
+### Interview Tip
+
+Although `PUT` traditionally represents a full resource replacement, many real-world APIs update only selected fields while still exposing a `PUT` endpoint.
+
+---
+
+### Deleting an Entity
+
+Hibernate deletes an entity using:
+
+```java
+session.remove(entity);
+```
+
+or
+
+```java
+session.delete(entity);
+```
+
+The entity must first be managed by the current persistence context.
+
+Typical flow:
+
+1. Retrieve the entity
+2. Delete the entity
+3. Commit the transaction
+
+---
+
+### CRUD Flow Using Hibernate Session
+
+Create → `session.save()`
+
+Read → `session.get()`
+
+Update → Modify managed entity → Commit transaction
+
+Delete → `session.remove()` / `session.delete()`
+
+---
   
 ## What does findById() do?
 
