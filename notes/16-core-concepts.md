@@ -380,6 +380,83 @@ existsById() checks whether a record exists for the given ID and returns true or
 
 ---
 
+## Entity Relationships
+
+Relational databases often contain tables that are connected to each other.
+
+JPA and Hibernate model these connections using entity relationships.
+
+The most common relationship types are:
+
+- One-to-One
+- One-to-Many
+- Many-to-One
+- Many-to-Many
+
+These relationships are represented using JPA annotations and allow Hibernate to automatically manage foreign key associations between tables.
+
+---
+
+## One-to-One Relationship
+
+One record in Table A is associated with exactly one record in Table B.
+
+Example:
+
+- Person ↔ Passport
+- User ↔ Profile
+
+Typically implemented using `@OneToOne`.
+
+---
+
+## One-to-Many Relationship
+
+One record in Table A can be associated with multiple records in Table B.
+
+Example:
+
+- One Department → Many Employees
+- One Customer → Many Orders
+
+Typically implemented using `@OneToMany`.
+
+---
+
+## Many-to-One Relationship
+
+Many records in one table are associated with a single record in another table.
+
+Example:
+
+- Many Employees → One Department
+- Many Orders → One Customer
+
+Typically implemented using `@ManyToOne`.
+
+---
+
+## Many-to-Many Relationship
+
+Multiple records in both tables can be associated with each other.
+
+Example:
+
+- Students ↔ Courses
+- Users ↔ Roles
+
+Typically implemented using `@ManyToMany` and a join table.
+
+---
+
+### Interview Tip
+
+Choose the relationship based on the business domain.
+
+Hibernate uses these mappings to automatically manage foreign keys and generate the required SQL joins.
+
+---
+
 ## Spring MVC / Request Processing
 
 ---
