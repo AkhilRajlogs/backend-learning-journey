@@ -423,6 +423,32 @@ Typically implemented using `@OneToMany`.
 
 ---
 
+### @JoinColumn
+
+`@JoinColumn` specifies the foreign key column used to establish a relationship between two entities.
+
+It is placed on the **owning side** of the relationship—the entity whose table contains the foreign key.
+
+Example:
+
+```java
+@OneToOne
+@JoinColumn(name = "passport_id")
+private Passport passport;
+```
+
+In this example, the `passport_id` column is created in the current entity's table and references the primary key of the `Passport` table.
+
+### Interview Tip
+
+If you need to determine where `@JoinColumn` should be placed, ask:
+
+**Which table should contain the foreign key?**
+
+The entity whose table stores the foreign key is the owning side and should contain `@JoinColumn`.
+
+---
+
 ## Many-to-One Relationship
 
 Many records in one table are associated with a single record in another table.
