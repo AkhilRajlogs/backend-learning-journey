@@ -449,6 +449,27 @@ The entity whose table stores the foreign key is the owning side and should cont
 
 ---
 
+## Owning Side vs Inverse Side
+
+In a bidirectional relationship, one entity is responsible for managing the relationship in the database.
+
+This entity is called the **owning side**.
+
+The other entity is called the **inverse side** and simply reflects the relationship.
+
+General rule:
+
+- Owning side → contains the foreign key
+- Inverse side → references the owning side
+
+### Interview Tip
+
+`@JoinColumn` is placed on the owning side because that entity stores the foreign key.
+
+The inverse side is usually identified using `mappedBy`, which tells Hibernate that the relationship is managed by the other entity.
+
+---
+
 ## Many-to-One Relationship
 
 Many records in one table are associated with a single record in another table.
