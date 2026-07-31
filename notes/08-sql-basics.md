@@ -41,6 +41,65 @@ Fetch specific columns:
 
 SELECT id, title FROM tasks;
 
+### WHERE Clause
+
+The `WHERE` clause filters rows based on a condition.
+
+Example:
+
+```sql
+SELECT * FROM tasks
+WHERE id = 1;
+```
+
+This returns only the row whose `id` is `1`.
+
+---
+
+### LIKE Operator
+
+The `LIKE` operator is used for pattern matching when searching text.
+
+Example:
+
+```sql
+SELECT * FROM tasks
+WHERE title LIKE '%Spring%';
+```
+
+This returns all rows whose `title` contains the word `Spring`.
+
+Common wildcards:
+
+- `%` → matches zero or more characters
+- `_` → matches exactly one character
+
+Example:
+
+```sql
+WHERE title LIKE 'S%'
+```
+
+Matches:
+
+- Spring
+- SQL
+- Student
+
+---
+
+### Why This Matters in Hibernate
+
+Although Hibernate can generate SQL automatically, developers often write HQL/JPQL queries such as:
+
+```java
+FROM Payment p WHERE p.type LIKE :type
+```
+
+Hibernate translates these queries into SQL before executing them against the database.
+
+Understanding SQL helps in reading, debugging, and optimizing these queries.
+
 ---
 
 ### INSERT
