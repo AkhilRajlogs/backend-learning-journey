@@ -466,7 +466,7 @@ General rule:
 
 `@JoinColumn` is placed on the owning side because that entity stores the foreign key.
 
-The inverse side is usually identified using `mappedBy`, which tells Hibernate that the relationship is managed by the other entity.
+The inverse side is identified using mappedBy, which tells Hibernate that the relationship is managed by the other entity.
 
 ---
 
@@ -494,6 +494,73 @@ Example:
 
 Typically implemented using `@ManyToMany` and a join table.
 
+### Join Table
+
+A many-to-many relationship cannot be represented using a single foreign key.
+
+Instead, Hibernate creates (or uses) a **join table** that stores the associations between the two entities.
+
+Example:
+
+```
+Student
+---------
+id
+name
+
+Course
+---------
+id
+title
+
+student_course
+-------------------------
+student_id | course_id
+```
+
+Each row in the join table represents one association between a student and a course.
+
+---
+
+### @JoinTable
+
+`@JoinTable` specifies the join table used for a many-to-many relationship.
+
+Example:
+
+```java
+@ManyToMany
+@JoinTable(
+    name = "student_course",
+    joinColumns = @JoinColumn(name = "student_id"),
+    inverseJoinColumns = @JoinColumn(name = "course_id")
+)
+private List<Course> courses;
+```
+
+Here:
+
+- `joinColumns` refers to the foreign key of the owning entity.
+- `inverseJoinColumns` refers to the foreign key of the associated entity.
+
+---
+
+### Owning Side vs Inverse Side
+
+In a bidirectional many-to-many relationship:
+
+- The **owning side** defines the `@JoinTable`.
+- The **inverse side** uses `mappedBy` to refer to the owning side.
+
+Example:
+
+```java
+@ManyToMany(mappedBy = "courses")
+private List<Student> students;
+```
+
+Only the owning side manages changes to the join table.
+
 ---
 
 ### Interview Tip
@@ -501,6 +568,12 @@ Typically implemented using `@ManyToMany` and a join table.
 Choose the relationship based on the business domain.
 
 Hibernate uses these mappings to automatically manage foreign keys and generate the required SQL joins.
+
+#### Many-to-Many Specific Tip
+
+When you see `mappedBy` in a many-to-many relationship, remember that it marks the inverse side.
+
+The side containing `@JoinTable` is responsible for maintaining the relationship in the database.
 
 ---
 
