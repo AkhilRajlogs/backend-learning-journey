@@ -563,6 +563,25 @@ Only the owning side manages changes to the join table.
 
 ---
 
+## H2 Database
+
+H2 is a lightweight, in-memory relational database commonly used during development and testing.
+
+By default, data exists only while the application is running. Once the application stops, the database is cleared (unless configured otherwise).
+
+### Why use H2?
+
+- Quick setup without installing an external database
+- Useful for testing JPA/Hibernate mappings
+- Integrates easily with Spring Boot
+- Provides a web console for inspecting tables and data
+
+### Interview Tip
+
+H2 is mainly used for development and testing because it is lightweight and starts quickly. Production applications typically use databases such as PostgreSQL or MySQL.
+
+---
+
 ### Interview Tip
 
 Choose the relationship based on the business domain.
