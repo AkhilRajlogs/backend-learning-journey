@@ -561,6 +561,22 @@ private List<Student> students;
 
 Only the owning side manages changes to the join table.
 
+### Updating a Many-to-Many Relationship
+
+When adding or removing associations in a bidirectional many-to-many relationship:
+
+- Update the owning side of the relationship.
+- The owning side is responsible for updating the join table.
+- If the inverse side is also maintained in memory, keep both collections synchronized to avoid inconsistent object state.
+
+Example:
+
+```java
+order.getItems().add(item);
+```
+
+When the transaction is committed, Hibernate updates the join table based on changes made to the owning side.
+
 ---
 
 ## H2 Database
