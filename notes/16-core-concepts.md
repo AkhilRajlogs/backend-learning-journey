@@ -103,14 +103,14 @@ It tells Hibernate to treat this class as a table and its fields as columns.
 
 ## What does persist mean?
 
-persist() is an EntityManager method that makes a transient entity persistent by associating it with the current persistence context. Hibernate later synchronizes it with the database during the transaction.
+persist() is an EntityManager method that makes a transient entity persistent by associating it with the current persistence context. Hibernate synchronizes it with the database when the persistence context is flushed (typically at transaction commit).
 
 ---
 
 ## What does save() do?
 
 The save() method is provided by JpaRepository. It uses JPA and Hibernate to save the entity in the database.  
-save() typically executes within a transaction managed by Spring Data JPA.  
+save() is usually called within a transaction managed by Spring. Hibernate synchronizes the entity with the database when the transaction is flushed or committed.  
 
 - If the entity is new → INSERT operation  
 - If the entity already exists → UPDATE operation  
@@ -203,8 +203,7 @@ Behavior:
 
 - Returns the entity if found
 - Returns `null` if no matching record exists
-- Immediately queries the database
-- Immediately hits the database (unlike lazy-loading methods such as getReference())
+- Immediately queries the database (unlike lazy-loading methods such as getReference())
 
 ---
 
@@ -420,6 +419,29 @@ Example:
 - One Customer → Many Orders
 
 Typically implemented using `@OneToMany`.
+
+---
+
+### mappedBy
+
+`mappedBy` is used on the inverse (non-owning) side of a bidirectional relationship.
+
+It tells Hibernate that the relationship is already managed by another entity, so no additional foreign key or join table should be created.
+
+Example:
+
+```java
+@OneToMany(mappedBy = "payment")
+private List<PaymentReview> reviews;
+```
+
+Here, `payment` refers to the field name inside the `PaymentReview` entity that owns the relationship.
+
+### Interview Tip
+
+`mappedBy` always points to the field name of the owning side—not the database column name.
+
+If `mappedBy` is omitted in a bidirectional relationship, Hibernate may treat both entities as owning sides and create unnecessary database mappings.
 
 ---
 
