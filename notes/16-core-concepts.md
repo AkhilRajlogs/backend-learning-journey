@@ -505,6 +505,34 @@ Typically implemented using `@ManyToOne`.
 
 ---
 
+---
+
+## Cascade Types
+
+Cascade determines whether operations performed on the parent entity (such as persist, merge, remove, refresh, and detach) are automatically propagated to the associated child entities.
+
+Common cascade types:
+
+- `PERSIST` → Save child entities when the parent is saved.
+- `MERGE` → Update child entities when the parent is updated.
+- `REMOVE` → Delete child entities when the parent is deleted.
+- `ALL` → Applies all cascade operations.
+
+Example:
+
+```java
+@OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
+private List<Employee> employees;
+```
+
+### Interview Tip
+
+Cascade controls **operations**, not relationships.
+
+It tells Hibernate what should happen to related entities when an operation is performed on the parent.
+
+---
+
 ## Many-to-Many Relationship
 
 Multiple records in both tables can be associated with each other.
@@ -564,6 +592,32 @@ Here:
 
 - `joinColumns` refers to the foreign key of the owning entity.
 - `inverseJoinColumns` refers to the foreign key of the associated entity.
+
+---
+
+## joinColumns vs inverseJoinColumns
+
+These attributes are used inside `@JoinTable` for many-to-many relationships.
+
+Example:
+
+```java
+@JoinTable(
+    name = "student_course",
+    joinColumns = @JoinColumn(name = "student_id"),
+    inverseJoinColumns = @JoinColumn(name = "course_id")
+)
+```
+
+- `joinColumns` → foreign key of the owning entity.
+- `inverseJoinColumns` → foreign key of the associated entity.
+
+### Interview Tip
+
+A quick way to remember:
+
+- `joinColumns` = "my foreign key"
+- `inverseJoinColumns` = "other entity's foreign key"
 
 ---
 
@@ -748,6 +802,72 @@ It allows sending proper responses like:
 ### Key Insight:
 
 Choosing between PUT and PATCH depends on whether full or partial updates are required.
+
+---
+
+## Why use @JsonIgnore?
+
+Bidirectional relationships can cause infinite recursion during JSON serialization.
+
+Example:
+
+```
+Department
+   ↓
+Employees
+   ↓
+Department
+   ↓
+Employees
+   ...
+```
+
+`@JsonIgnore` prevents a field from being included in the JSON response.
+
+Example:
+
+```java
+@ManyToOne
+@JsonIgnore
+private Department department;
+```
+
+### Interview Tip
+
+`@JsonIgnore` is commonly used to prevent infinite recursion and reduce unnecessary data in API responses.
+
+---
+
+## @JsonManagedReference and @JsonBackReference
+
+These annotations are another way to prevent infinite recursion in bidirectional relationships.
+
+Example:
+
+Parent:
+
+```java
+@OneToMany(mappedBy = "department")
+@JsonManagedReference
+private List<Employee> employees;
+```
+
+Child:
+
+```java
+@ManyToOne
+@JsonBackReference
+private Department department;
+```
+
+During serialization:
+
+- `@JsonManagedReference` is included in the JSON.
+- `@JsonBackReference` is omitted.
+
+### Interview Tip
+
+Many modern Spring Boot projects prefer using DTOs or `@JsonIgnore`, but you may still encounter these annotations in existing codebases.
 
 ---
 
