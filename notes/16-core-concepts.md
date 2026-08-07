@@ -655,6 +655,23 @@ When the transaction is committed, Hibernate updates the join table based on cha
 
 ---
 
+## Relationship Annotation Cheat Sheet
+
+| Relationship | Foreign Key Stored In | Owning Side | Uses `mappedBy` | Uses `@JoinColumn` | Uses `@JoinTable` |
+|--------------|----------------------|-------------|-----------------|-------------------|------------------|
+| One-to-One | Either table (chosen by design) | Entity containing the foreign key | Inverse side only | Yes | No |
+| One-to-Many / Many-to-One | "Many" table | `@ManyToOne` side | `@OneToMany` side | Yes (`@ManyToOne`) | No |
+| Many-to-Many | Join table | Side containing `@JoinTable` | Other side | No | Yes |
+
+### Quick Rules
+
+- `@JoinColumn` → place on the entity whose table stores the foreign key.
+- `mappedBy` → place on the inverse side and point to the field name of the owning side.
+- `@JoinTable` → only used for many-to-many relationships.
+- The owning side is responsible for updating the database relationship.
+
+---
+
 ## H2 Database
 
 H2 is a lightweight, in-memory relational database commonly used during development and testing.
