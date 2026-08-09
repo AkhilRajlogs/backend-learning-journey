@@ -149,15 +149,109 @@ The developer does not need to write the SQL manually.
 - Useful for complex queries.
 - Gives more control over the query.
 
+---
+
+## JPQL (Java Persistence Query Language)
+
+JPQL is a query language provided by JPA for querying **entities and their fields** rather than database tables and columns.
+
+Example:
+
+    @Query("SELECT t FROM Task t WHERE t.completed = :completed")
+    List<Task> findByCompleted(@Param("completed") boolean completed);
+
+Here:
+
+- `Task` refers to the entity class.
+- `completed` refers to an entity field.
+- JPQL is written using entity-oriented concepts rather than database table/column names.
+
+Hibernate translates the JPQL query into the appropriate SQL for the underlying database.
+
+### JPQL vs SQL
+
+**JPQL**
+
+- Works with entities and entity fields.
+- Database-independent at the query-language level.
+- JPA/Hibernate translates it into SQL.
+
+**SQL**
+
+- Works directly with tables and columns.
+- Database-specific syntax may be involved.
+- Sent directly to the database.
+
 ### Interview Tip
+
+JPQL is useful when the query is more complex than a simple derived query but should still remain database-independent.
+
+---
+
+## Native Query
+
+A native query is a query written directly in the database's SQL language.
+
+Example:
+
+    @Query(value = "SELECT * FROM task WHERE completed = :completed", nativeQuery = true)
+    List<Task> findCompletedTasks(@Param("completed") boolean completed);
+
+Unlike JPQL, a native query works directly with database tables and columns.
+
+### When to Use Native Queries
+
+Native queries can be useful when:
+
+- The required query is difficult to express using JPQL.
+- Database-specific SQL features are required.
+- Existing SQL needs to be reused.
+
+### JPQL vs Native Query
+
+| Feature | JPQL | Native Query |
+|---|---|---|
+| Works with | Entities and fields | Tables and columns |
+| Query language | JPQL | SQL |
+| Database independent | Generally yes | Usually no |
+| Translated by Hibernate | Yes | SQL is sent directly |
+| Useful for | JPA-oriented queries | Complex or database-specific queries |
+
+### Interview Tip
+
+Prefer derived queries for simple queries, JPQL for more flexible entity-based queries, and native SQL when database-specific functionality or complex SQL is required.
+
+---
+
+## Query Approach — Quick Comparison
+
+Spring Data JPA provides multiple ways to retrieve data:
+
+1. **Derived Query**
+   - Query is generated from the repository method name.
+   - Best for simple queries.
+
+2. **JPQL**
+   - Query is written using entities and their fields.
+   - Useful for more complex entity-based queries.
+
+3. **Native Query**
+   - Query is written directly in SQL.
+   - Useful for database-specific or complex SQL requirements.
+
+### Interview Tip
+
+A useful progression to remember is:
+
+**Simple → Derived Query**
+
+**More flexible → JPQL**
+
+**Database-specific / complex SQL → Native Query**
 
 Derived queries are convenient when the required query can be clearly expressed through the repository method name.
 
 For complex queries, an explicit query using `@Query` is generally more appropriate.
-
----
-
-## Interview Tip
 
 Most Spring Boot projects directly extend JpaRepository because it already includes CRUD, pagination, sorting, and JPA-specific operations.
 
