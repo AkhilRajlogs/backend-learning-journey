@@ -182,10 +182,6 @@ Hibernate translates the JPQL query into the appropriate SQL for the underlying 
 - Database-specific syntax may be involved.
 - Sent directly to the database.
 
-### Interview Tip
-
-JPQL is useful when the query is more complex than a simple derived query but should still remain database-independent.
-
 ---
 
 ## Native Query
@@ -217,10 +213,6 @@ Native queries can be useful when:
 | Translated by Hibernate | Yes | SQL is sent directly |
 | Useful for | JPA-oriented queries | Complex or database-specific queries |
 
-### Interview Tip
-
-Prefer derived queries for simple queries, JPQL for more flexible entity-based queries, and native SQL when database-specific functionality or complex SQL is required.
-
 ---
 
 ## Query Approach — Quick Comparison
@@ -239,9 +231,17 @@ Spring Data JPA provides multiple ways to retrieve data:
    - Query is written directly in SQL.
    - Useful for database-specific or complex SQL requirements.
 
-### Interview Tip
+---
 
-A useful progression to remember is:
+## Interview Quick Reference
+
+### Repository
+
+Most Spring Boot projects directly extend `JpaRepository` because it provides CRUD, pagination, sorting, and JPA-specific operations.
+
+### Query Selection
+
+A useful progression to remember:
 
 **Simple → Derived Query**
 
@@ -249,10 +249,12 @@ A useful progression to remember is:
 
 **Database-specific / complex SQL → Native Query**
 
+### Derived Queries
+
 Derived queries are convenient when the required query can be clearly expressed through the repository method name.
 
 For complex queries, an explicit query using `@Query` is generally more appropriate.
 
-Most Spring Boot projects directly extend JpaRepository because it already includes CRUD, pagination, sorting, and JPA-specific operations.
+### Key Idea
 
 Spring Data JPA reduces boilerplate by allowing developers to define repository interfaces and derive queries from method names instead of writing common database-access code manually.
