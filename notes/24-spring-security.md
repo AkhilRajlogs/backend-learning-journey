@@ -90,17 +90,50 @@ Spring Security can integrate with other frameworks and components used in Sprin
 
 ---
 
+## Authentication Mechanisms
+
+Spring Security supports different authentication mechanisms depending on the application's requirements.
+
+### HTTP Basic Authentication
+
+HTTP Basic Authentication sends the username and password with each request using Base64 encoding.
+
+It is simple to configure and is commonly used for basic authentication scenarios and testing.
+
+### Form-Based Authentication
+
+Form-based authentication allows users to authenticate through a login form.
+
+The application receives the user's credentials through the form and authenticates the user.
+
+### JWT Authentication
+
+JWT (JSON Web Token) authentication uses tokens to represent an authenticated user's identity.
+
+After successful authentication, the server can issue a JWT that the client sends with subsequent requests.
+
+JWT-based authentication is commonly used in modern REST APIs.
+
+### OAuth and OpenID Connect
+
+OAuth is commonly used for authorization and delegated access.
+
+OpenID Connect (OIDC) builds on OAuth and provides authentication and identity information.
+
+A common example is:
+
+**"Sign in with Google"**
+
+### LDAP
+
+LDAP (Lightweight Directory Access Protocol) can be used for authentication and access to organizational directory resources.
+
+It is commonly associated with enterprise environments where user accounts and access information are managed centrally.
+
+---
+
 ## Key Idea
 
 Spring Security provides security features beyond simply checking usernames and passwords.
 
-It can handle:
-
-* Authentication
-* Authorization
-* Session management
-* Remember Me
-* CSRF protection
-* Two-factor authentication
-* OAuth / OpenID Connect integration
-* Integration with other frameworks
+It supports different authentication mechanisms and security features depending on the application's requirements.
