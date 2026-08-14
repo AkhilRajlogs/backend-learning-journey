@@ -108,6 +108,39 @@ Default scope: Singleton
 
 ---
 
+## Lombok
+
+Lombok is a Java library that reduces boilerplate code by generating commonly used methods and constructors through annotations.
+
+### @Data
+
+`@Data` generates commonly used methods such as:
+
+* Getters
+* Setters
+* `toString()`
+* `equals()`
+* `hashCode()`
+* Required-arguments constructor
+
+It is commonly used in DTOs and model classes when these methods are needed.
+
+### @AllArgsConstructor
+
+Generates a constructor containing all fields of the class as parameters.
+
+### @NoArgsConstructor
+
+Generates a no-argument constructor.
+
+### Why Lombok is Useful
+
+Lombok reduces repetitive boilerplate code and makes classes such as DTOs shorter and easier to read.
+
+For example, instead of manually writing getters, setters, and constructors, Lombok annotations can generate them automatically during compilation.
+
+---
+
 ## Evolution of Spring Application Configuration
   
 Spring applications can be started in different ways depending on the type of application.
