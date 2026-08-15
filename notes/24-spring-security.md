@@ -137,3 +137,109 @@ It is commonly associated with enterprise environments where user accounts and a
 Spring Security provides security features beyond simply checking usernames and passwords.
 
 It supports different authentication mechanisms and security features depending on the application's requirements.
+
+---
+
+## Spring Security Authentication Flow
+
+A simplified authentication flow is:
+
+Request
+↓
+Authentication Filter
+↓
+Authentication Manager
+↓
+Authentication Provider
+↓
+Authentication / credential verification
+
+### Authentication Filter
+
+The authentication filter intercepts the incoming authentication request and creates an authentication token containing the supplied credentials.
+
+For example, with form-based authentication, the submitted username and password are used to create a username-password authentication token.
+
+### Authentication Manager
+
+The Authentication Manager is responsible for coordinating authentication.
+
+It determines which appropriate Authentication Provider should handle the authentication request.
+
+### Authentication Provider
+
+The Authentication Provider performs the actual authentication for a particular type of authentication.
+
+It receives the authentication token and performs the necessary credential verification.
+
+The provider's `authenticate()` method contains the authentication logic.
+
+### Simplified Flow
+
+The overall idea can be remembered as:
+
+**Request → Filter → Authentication Manager → Authentication Provider → Authentication**
+
+This is a simplified conceptual flow; the exact components involved can vary depending on the authentication mechanism.
+
+---
+
+## Spring Security Configuration
+
+Spring Security can be customized using a configuration class.
+
+A security configuration class can be enabled using:
+
+- `@Configuration`
+- `@EnableWebSecurity`
+
+A `SecurityFilterChain` bean can then be used to configure how HTTP requests should be secured.
+
+Example:
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http
+            .csrf().disable()
+            .authorizeHttpRequests()
+            .anyRequest()
+            .authenticated()
+            .and()
+            .formLogin();
+
+        return http.build();
+    }
+}
+```
+
+This configuration demonstrates:
+
+- Disabling CSRF protection for the example
+- Requiring authentication for requests
+- Enabling form-based login
+
+### Logout
+
+Spring Security provides a default logout endpoint:
+
+`/logout`
+
+---
+
+## In-Memory Authentication
+
+Spring Security can be configured with users stored in memory for simple examples and testing.
+
+A `UserDetailsService` bean can be used to provide user information to Spring Security.
+
+The user can be created using Spring Security's user builder and returned as part of the in-memory authentication configuration.
+
+Passwords should be encoded rather than stored as plain text.
+
+The implementation details of `UserDetailsService`, user creation, and password encoding will be covered further in the module.
