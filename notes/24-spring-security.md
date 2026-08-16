@@ -243,3 +243,65 @@ The user can be created using Spring Security's user builder and returned as par
 Passwords should be encoded rather than stored as plain text.
 
 The implementation details of `UserDetailsService`, user creation, and password encoding will be covered further in the module.
+
+---
+
+## Custom Username and Password
+
+Spring Security can be configured with custom users stored in memory.
+
+A `UserDetailsService` bean can provide user details to Spring Security.
+
+Users can be created using Spring Security's `User` builder.
+
+Example:
+
+```java
+@Bean
+public UserDetailsService user() {
+
+    UserDetails user = User.builder()
+        .username("Tony")
+        .password(passwordEncoder().encode("password"))
+        .roles("NORMAL")
+        .build();
+
+    UserDetails user2 = User.builder()
+        .username("Steve")
+        .password(passwordEncoder().encode("nopassword"))
+        .roles("NORMAL")
+        .build();
+
+    return new InMemoryUserDetailsManager(user, user2);
+}
+```
+
+### Password Encoding
+
+Passwords can be encoded before being stored in the in-memory user configuration.
+
+A `PasswordEncoder` bean can be provided to Spring Security.
+
+Example:
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
+```
+
+### In-Memory User Configuration
+
+`InMemoryUserDetailsManager` stores the configured users in memory.
+
+In this example:
+
+- `User.builder()` creates user details.
+- `username()` specifies the username.
+- `password()` specifies the encoded password.
+- `roles()` assigns roles to the user.
+- `InMemoryUserDetailsManager` manages the configured users.
+- `PasswordEncoder` is used to encode passwords.
+
+The details of password encoders and authentication mechanisms will be covered further in the module.
