@@ -305,3 +305,92 @@ In this example:
 - `PasswordEncoder` is used to encode passwords.
 
 The details of password encoders and authentication mechanisms will be covered further in the module.
+
+---
+
+## HTTP Basic Authentication
+
+Spring Security supports HTTP Basic Authentication as an alternative to form-based login.
+
+It can be enabled using:
+
+```java
+http
+    .authorizeHttpRequests()
+    .anyRequest()
+    .authenticated()
+    .and()
+    .httpBasic();
+```
+
+With HTTP Basic Authentication, the client sends credentials with the HTTP request.
+
+It is commonly useful for simple APIs, testing, and learning authentication flows.
+
+---
+
+## Authorization with Ant Matchers
+
+Spring Security can restrict access to specific endpoints based on the user's role.
+
+Ant-style path matching can be used to define which requests require particular roles.
+
+Example:
+
+```java
+http
+    .authorizeHttpRequests()
+    .antMatchers("/hotel/create").hasRole("ADMIN")
+    .antMatchers("/hotel/**").hasRole("ADMIN");
+```
+
+### Path Matching
+
+`/hotel/create`
+
+- Matches the specific `/hotel/create` endpoint.
+- Only users with the `ADMIN` role are allowed.
+
+`/hotel/**`
+
+- Matches endpoints under `/hotel/`.
+- Only users with the `ADMIN` role are allowed.
+
+The order and specificity of authorization rules matter when defining multiple request-matching rules.
+
+---
+
+## HTTP Security Status Codes
+
+Spring Security commonly uses HTTP status codes to indicate the result of a security check.
+
+### 401 Unauthorized
+
+`401 Unauthorized` generally indicates that authentication is required or the supplied authentication credentials are not valid.
+
+The client has not successfully authenticated.
+
+### 403 Forbidden
+
+`403 Forbidden` indicates that the request is understood, but the authenticated user does not have sufficient permission to access the requested resource.
+
+### Key Difference
+
+**401 → Authentication problem**
+
+**403 → Authorization / permission problem**
+
+---
+
+## Key Idea
+
+Spring Security can control both:
+
+- **How users authenticate**, such as form-based or HTTP Basic authentication.
+- **What authenticated users can access**, using authorization rules and roles.
+
+For example:
+
+**Authentication → Who are you?**
+
+**Authorization → Are you allowed to access this endpoint?**
