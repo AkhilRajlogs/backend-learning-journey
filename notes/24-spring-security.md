@@ -360,6 +360,72 @@ The order and specificity of authorization rules matter when defining multiple r
 
 ---
 
+## Method-Level Security
+
+Spring Security can also apply authorization rules directly at the controller method level.
+
+With method-level security, authorization can be specified on individual methods, so Ant-style request matchers are not required for those rules.
+
+### Enabling Method-Level Security
+
+Method-level security can be enabled in the security configuration:
+
+```java
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+```
+
+This enables annotations such as `@PreAuthorize`.
+
+### @PreAuthorize
+
+`@PreAuthorize` can be placed directly on a controller method to specify who is allowed to execute it.
+
+Example:
+
+```java
+@PreAuthorize("hasRole('ADMIN')")
+@PostMapping("/hotel")
+public Hotel createHotel(...) {
+    // ...
+}
+```
+
+Only users with the `ADMIN` role can execute this method.
+
+Another method can restrict access to users with a different role:
+
+```java
+@PreAuthorize("hasRole('NORMAL')")
+@GetMapping("/hotel")
+public List<Hotel> getHotels(...) {
+    // ...
+}
+```
+
+### Request-Level vs Method-Level Authorization
+
+**Ant Matchers**
+
+- Authorization rules are defined based on request paths.
+- Example: `/hotel/**`
+- Does not require adding authorization annotations to every controller method.
+
+**Method-Level Security**
+
+- Authorization rules are defined directly on methods.
+- Uses annotations such as `@PreAuthorize`.
+- Useful when authorization requirements differ between individual methods.
+
+### Key Idea
+
+Authorization can be applied at different levels:
+
+**Request level → Ant-style matchers**
+
+**Method level → `@PreAuthorize`**
+
+---
+
 ## HTTP Security Status Codes
 
 Spring Security commonly uses HTTP status codes to indicate the result of a security check.
