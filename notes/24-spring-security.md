@@ -460,3 +460,32 @@ For example:
 **Authentication → Who are you?**
 
 **Authorization → Are you allowed to access this endpoint?**
+
+---
+
+## Section 1 Summary
+
+This section introduced the fundamentals of Spring Security and basic security configuration.
+
+Covered topics include:
+
+- Authentication vs Authorization
+- Spring Security features
+- Authentication mechanisms
+- Authentication flow
+- Security configuration using `SecurityFilterChain`
+- Form-based authentication
+- In-memory authentication
+- Password encoding with `PasswordEncoder`
+- HTTP Basic Authentication
+- Request-level authorization using Ant-style matchers
+- Method-level authorization using `@PreAuthorize`
+- HTTP security status codes such as `401 Unauthorized` and `403 Forbidden`
+
+The section established the basic idea of:
+
+**Authentication → Verify identity**
+
+**Authorization → Control access**
+
+More advanced topics such as persistent users, database-backed authentication, JWT authentication, and remember-me functionality are covered in the next section.
