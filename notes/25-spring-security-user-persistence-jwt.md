@@ -309,3 +309,62 @@ During authentication:
 ↓
 
 **Authenticated User with Authorities**
+
+---
+
+## Remember Me
+
+The Remember Me feature allows a user to remain authenticated even after the normal HTTP session expires.
+
+### Basic Flow
+
+```text
+Login
+↓
+Session is created
+↓
+JSESSIONID cookie is stored
+↓
+Session expires
+↓
+Remember Me information is used
+↓
+User can remain authenticated
+```
+
+The normal session is identified using the `JSESSIONID` cookie.
+
+Remember Me becomes relevant after the normal authenticated session is no longer available.
+
+### Custom Login Form
+
+To use Remember Me, a custom login form can be created with a **Remember Me** checkbox.
+
+The custom login page can be created using:
+
+- `login.html`
+- Thymeleaf
+
+The user can select the Remember Me option while logging in.
+
+### Spring Security Configuration
+
+Form-based login must be enabled in the security configuration.
+
+```java
+.formLogin()
+```
+
+Remember Me functionality can then be configured in the security configuration.
+
+### Testing Remember Me
+
+Instead of waiting for the session to expire, the session can be removed manually for testing.
+
+For example:
+
+- Log in with Remember Me selected.
+- Delete the `JSESSIONID` cookie.
+- Verify how the Remember Me functionality behaves after the normal session cookie is removed.
+
+Browser tools or cookie-management extensions can be used during testing.
