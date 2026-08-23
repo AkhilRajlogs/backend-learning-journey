@@ -10,10 +10,13 @@ The section covers:
 
 - Persistent user credentials
 - User and role entities
+- User–role relationships
 - Database-backed authentication
+- Custom `UserDetailsService`
+- Password encoding
+- Registration
 - Remember Me
 - JWT authentication
-- Related authentication concepts and implementation
 
 ---
 
@@ -73,27 +76,7 @@ The general flow becomes:
 
 **Login Request → Authentication → User Lookup → Database → Credential Verification → Authenticated User**
 
-The exact implementation using entities, repositories, `UserDetailsService`, password encoding, and related components will be covered as the section progresses.
-
----
-
-## Section Progress
-
-Covered so far:
-
-- Moving from hardcoded users toward persistent users
-- User entity
-- Role entity
-- User–Role many-to-many relationship
-- Join table concept
-
-Upcoming topics:
-
-- Database-backed authentication implementation
-- UserDetails / UserDetailsService
-- Password encoding
-- Remember Me
-- JWT authentication
+The exact implementation using entities, repositories, `UserDetailsService`, password encoding, and related components will be covered as the section progresses.  
 
 ---
 
@@ -368,3 +351,174 @@ For example:
 - Verify how the Remember Me functionality behaves after the normal session cookie is removed.
 
 Browser tools or cookie-management extensions can be used during testing.
+
+---
+
+## Remember Me Implementation
+
+Spring Security can use a custom login page to provide a Remember Me option.
+
+### Thymeleaf Dependency
+
+Thymeleaf can be added as a dependency to create and render server-side HTML templates.
+
+A custom login page can be created at:
+
+```text
+src/main/resources/templates/login.html
+```
+
+The `login.html` page contains:
+
+- Username field
+- Password field
+- Remember Me checkbox
+- Submit button
+
+The custom login page can be returned by a controller.
+
+```java
+@Controller
+public class LoginController {
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+}
+```
+
+The `login()` method returns the `login` view, which corresponds to `login.html`.
+
+---
+
+### Custom Login Form
+
+The custom login form allows the user to provide authentication credentials and optionally select the Remember Me option.
+
+Conceptually:
+
+```text
+Username + Password
+        +
+Remember Me selected
+        ↓
+Custom Login Form
+        ↓
+Spring Security Authentication
+```
+
+In this implementation, Spring Security uses the conventional remember-me mechanism.
+
+When Remember Me is enabled, a remember-me cookie is created in addition to the normal JSESSIONID session cookie.
+
+---
+
+### UserDetailsService
+
+The database-backed `UserDetailsService` can be injected into the security configuration.
+
+```java
+@Autowired
+UserDetailsService userDetailsService;
+```
+
+The `UserDetailsService` is used to load user details when Spring Security needs to authenticate or restore the authenticated user.
+
+---
+
+### Security Configuration
+
+The registration endpoint can be made publicly accessible using `permitAll()`.
+
+Remember Me can then be configured with the `UserDetailsService`.
+
+```java
+http
+    .antMatchers("/user/register").permitAll()
+    .and()
+    .rememberMe()
+    .userDetailsService(userDetailsService)
+    .and()
+    .formLogin()
+    .loginPage("/login")
+    .permitAll()
+    .and()
+    .logout()
+    .deleteCookies("remember-me");
+```
+
+This configuration:
+
+- Allows everyone to access `/user/register`.
+- Enables Remember Me functionality.
+- Provides the `UserDetailsService` required to load user details.
+- Configures a custom login page at `/login`.
+- Allows everyone to access the login page.
+- Deletes the `remember-me` cookie during logout.
+
+---
+
+### Testing Remember Me
+
+A browser normally stores the `JSESSIONID` cookie for the current authenticated session.
+
+When Remember Me is selected, a separate `remember-me` cookie is also created.
+
+The behavior can be tested as follows:
+
+1. Log in with the Remember Me checkbox selected.
+2. Verify that `JSESSIONID` and `remember-me` cookies are present.
+3. Delete the `JSESSIONID` cookie.
+4. Leave the `remember-me` cookie unchanged.
+5. Refresh or make another request.
+
+Spring Security can use the Remember Me information to restore authentication.
+
+A new `JSESSIONID` is then created for the restored authenticated session.
+
+The flow can be understood as:
+
+```text
+JSESSIONID deleted
+        ↓
+remember-me cookie remains
+        ↓
+Spring Security restores authentication
+        ↓
+New JSESSIONID is created
+```
+
+If the Remember Me checkbox is not selected:
+
+```text
+JSESSIONID deleted
+        ↓
+No Remember Me information available
+        ↓
+Authentication is no longer restored
+        ↓
+User must log in again
+```
+
+---
+
+### Key Difference
+
+```text
+JSESSIONID
+    ↓
+identifies the current HTTP session
+
+remember-me
+    ↓
+Allows Spring Security to restore authentication after the normal session is no longer available
+```
+
+### Key Idea
+
+Remember Me does not replace normal session management.
+
+A normal authenticated session uses `JSESSIONID`.
+
+Remember Me provides a mechanism that can restore authentication when the normal session is no longer available.
