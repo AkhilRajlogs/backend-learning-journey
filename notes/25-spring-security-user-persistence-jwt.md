@@ -522,3 +522,88 @@ Remember Me does not replace normal session management.
 A normal authenticated session uses `JSESSIONID`.
 
 Remember Me provides a mechanism that can restore authentication when the normal session is no longer available.
+
+---
+
+## JSON Web Token (JWT)
+
+JWT stands for **JSON Web Token**.
+
+It is a compact token format used to securely transmit information between two parties.
+
+A JWT can be created and signed by one application. Another application can verify that the token is authentic and has not been altered by validating its signature.
+
+---
+
+### JWT Structure
+
+A JWT consists of three parts:
+
+**Header**
+
+↓
+
+**Payload**
+
+↓
+
+**Signature**
+
+The token is commonly represented as:
+
+`Header.Payload.Signature`
+
+---
+
+### Header
+
+The header contains information such as:
+
+- The token type
+- The signing algorithm used
+
+The header is Base64URL-encoded.
+
+---
+
+### Payload
+
+The payload contains the information, known as **claims**, carried by the token.
+
+For example:
+
+- Username
+- Roles
+- Other required claims or user information
+
+The payload is Base64URL-encoded.
+
+---
+
+### Signature
+
+The signature is used to verify the integrity and authenticity of the token.
+
+Conceptually:
+
+`Encoded Header + Encoded Payload + Secret Key → Signature`
+
+The signature is generated using the encoded header, encoded payload, and the configured signing key or secret, depending on the signing algorithm.
+
+The signature allows the receiving application to verify that the token has not been altered and was signed by the expected party.
+
+---
+
+### Key Idea
+
+JWT is commonly understood as:
+
+**Header → What type of token and algorithm are used**
+
+**Payload → What information or claims the token carries**
+
+**Signature → How the token's integrity and authenticity are verified**
+
+A JWT can therefore be used to securely exchange signed information between two parties.
+
+---
