@@ -607,3 +607,69 @@ JWT is commonly understood as:
 A JWT can therefore be used to securely exchange signed information between two parties.
 
 ---
+
+## JWT Authentication Flow
+
+JWT authentication can still use Spring Security's existing authentication components.
+
+The general authentication flow remains similar:
+
+Authentication Request
+
+↓
+
+Authentication Filter
+
+↓
+
+Authentication Manager
+
+↓
+
+Authentication Process
+
+↓
+
+Authenticated User
+
+The main difference is that JWT authentication uses a custom JWT authentication filter instead of relying only on the default authentication filter.
+
+Conceptually:
+
+JWT Authentication Request
+
+↓
+
+JWT Authentication Filter
+
+↓
+
+Authentication Manager
+
+↓
+
+Authentication
+
+↓
+
+JWT Generated
+
+↓
+
+JWT Returned to Client
+
+The client can then send the JWT with subsequent requests.
+
+---
+
+## Custom JWT Authentication Filter
+
+Spring Security provides multiple filters.
+
+For JWT authentication, a custom filter can be created to handle JWT-specific authentication logic.
+
+The application can create a class such as:
+
+JWTAuthenticationFilter
+
+The custom filter can extend `OncePerRequestFilter`.
