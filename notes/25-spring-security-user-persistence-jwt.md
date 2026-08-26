@@ -673,3 +673,51 @@ The application can create a class such as:
 JWTAuthenticationFilter
 
 The custom filter can extend `OncePerRequestFilter`.
+
+### OncePerRequestFilter
+
+The custom `JWTAuthenticationFilter` can extend `OncePerRequestFilter`.
+
+`OncePerRequestFilter` is commonly used for security filters that should execute once for each request during the normal request-processing flow.
+
+Conceptually:
+
+Request
+
+↓
+
+JWTAuthenticationFilter
+
+↓
+
+`doFilterInternal()`
+
+↓
+
+JWT Authentication Logic
+
+↓
+
+Continue Filter Chain
+
+The custom filter overrides the `doFilterInternal()` method.
+
+```java
+@Override
+protected void doFilterInternal(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        FilterChain filterChain
+) throws ServletException, IOException {
+
+    // Custom JWT authentication logic
+
+}
+
+The method provides access to:
+
+HttpServletRequest → the incoming request
+HttpServletResponse → the outgoing response
+FilterChain → the remaining filters in the Spring Security filter chain
+
+The JWT authentication logic can be implemented inside this method as the JWT authentication implementation progresses.
