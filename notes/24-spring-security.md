@@ -145,14 +145,26 @@ It supports different authentication mechanisms and security features depending 
 A simplified authentication flow is:
 
 Request
+
 ↓
+
 Authentication Filter
+
 ↓
+
 Authentication Manager
+
 ↓
+
 Authentication Provider
+
 ↓
+
 Authentication / credential verification
+
+↓
+
+Authenticated `Authentication`
 
 ### Authentication Filter
 
@@ -162,13 +174,60 @@ For example, with form-based authentication, the submitted username and password
 
 ### Authentication Manager
 
-The Authentication Manager is responsible for coordinating authentication.
+The `AuthenticationManager` is responsible for coordinating authentication.
 
-It determines which appropriate Authentication Provider should handle the authentication request.
+It receives an authentication request and delegates it to an appropriate `AuthenticationProvider`.
+
+The `AuthenticationManager` can be exposed as a bean using Spring Security's authentication configuration:
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration
+    ) throws Exception {
+
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+The `AuthenticationManager` can then be injected where programmatic authentication is required.
+
+For example, authentication can be initiated using:
+
+    Authentication authentication = authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(
+            username,
+            password
+        )
+    );
+
+Conceptually:
+
+Username + Password
+
+↓
+
+`UsernamePasswordAuthenticationToken`
+
+↓
+
+`AuthenticationManager.authenticate()`
+
+↓
+
+`AuthenticationProvider`
+
+↓
+
+Credential Verification
+
+↓
+
+Authenticated `Authentication`
+
+If authentication succeeds, the returned `Authentication` object represents the authenticated user.
 
 ### Authentication Provider
 
-The Authentication Provider performs the actual authentication for a particular type of authentication.
+The `AuthenticationProvider` performs the actual authentication for a particular type of authentication.
 
 It receives the authentication token and performs the necessary credential verification.
 
@@ -188,41 +247,64 @@ This is a simplified conceptual flow; the exact components involved can vary dep
 
 Spring Security can be customized using a configuration class.
 
-A security configuration class can be enabled using:
+A security configuration class can use:
 
 - `@Configuration`
+
 - `@EnableWebSecurity`
 
 A `SecurityFilterChain` bean can then be used to configure how HTTP requests should be secured.
 
-Example:
+A basic configuration example is:
 
-```java
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
+    @Configuration
+    @EnableWebSecurity
+    public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        @Bean
+        public SecurityFilterChain securityFilterChain(
+                HttpSecurity http
+        ) throws Exception {
 
-        http
-            .csrf().disable()
-            .authorizeHttpRequests()
-            .anyRequest()
-            .authenticated()
-            .and()
-            .formLogin();
+            http
+                .csrf().disable()
+                .authorizeHttpRequests()
+                    .anyRequest().authenticated()
+                .and()
+                .formLogin();
 
-        return http.build();
+            return http.build();
+        }
+
     }
-}
-```
 
 This configuration demonstrates:
 
-- Disabling CSRF protection for the example
-- Requiring authentication for requests
-- Enabling form-based login
+- Disabling CSRF protection for the example.
+
+- Requiring authentication for all requests.
+
+- Enabling form-based login.
+
+Conceptually:
+
+Request
+
+↓
+
+Spring Security Filter Chain
+
+↓
+
+Authorization Rules
+
+↓
+
+Authentication if required
+
+↓
+
+Request Allowed or Denied
 
 ### Logout
 
@@ -256,25 +338,23 @@ Users can be created using Spring Security's `User` builder.
 
 Example:
 
-```java
-@Bean
-public UserDetailsService user() {
+    @Bean
+    public UserDetailsService user() {
 
-    UserDetails user = User.builder()
-        .username("Tony")
-        .password(passwordEncoder().encode("password"))
-        .roles("NORMAL")
-        .build();
+        UserDetails user = User.builder()
+            .username("Tony")
+            .password(passwordEncoder().encode("password"))
+            .roles("NORMAL")
+            .build();
 
-    UserDetails user2 = User.builder()
-        .username("Steve")
-        .password(passwordEncoder().encode("nopassword"))
-        .roles("NORMAL")
-        .build();
+        UserDetails user2 = User.builder()
+            .username("Steve")
+            .password(passwordEncoder().encode("nopassword"))
+            .roles("NORMAL")
+            .build();
 
-    return new InMemoryUserDetailsManager(user, user2);
-}
-```
+        return new InMemoryUserDetailsManager(user, user2);
+    }
 
 ### Password Encoding
 
@@ -284,12 +364,10 @@ A `PasswordEncoder` bean can be provided to Spring Security.
 
 Example:
 
-```java
-@Bean
-public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-}
-```
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 ### In-Memory User Configuration
 
@@ -298,10 +376,15 @@ public PasswordEncoder passwordEncoder() {
 In this example:
 
 - `User.builder()` creates user details.
+
 - `username()` specifies the username.
+
 - `password()` specifies the encoded password.
+
 - `roles()` assigns roles to the user.
+
 - `InMemoryUserDetailsManager` manages the configured users.
+
 - `PasswordEncoder` is used to encode passwords.
 
 The details of password encoders and authentication mechanisms will be covered further in the module.
@@ -312,16 +395,47 @@ The details of password encoders and authentication mechanisms will be covered f
 
 Spring Security supports HTTP Basic Authentication as an alternative to form-based login.
 
-It can be enabled using:
+A complete configuration example is:
 
-```java
-http
-    .authorizeHttpRequests()
-    .anyRequest()
-    .authenticated()
-    .and()
-    .httpBasic();
-```
+    @Configuration
+    @EnableWebSecurity
+    public class SecurityConfig {
+
+        @Bean
+        public SecurityFilterChain securityFilterChain(
+                HttpSecurity http
+        ) throws Exception {
+
+            http
+                .authorizeHttpRequests()
+                    .anyRequest().authenticated()
+                .and()
+                .httpBasic();
+
+            return http.build();
+        }
+
+    }
+
+Conceptually:
+
+Request
+
+↓
+
+Authentication required
+
+↓
+
+HTTP Basic credentials provided
+
+↓
+
+Spring Security authenticates the user
+
+↓
+
+Request Allowed or Denied
 
 With HTTP Basic Authentication, the client sends credentials with the HTTP request.
 
@@ -335,25 +449,82 @@ Spring Security can restrict access to specific endpoints based on the user's ro
 
 Ant-style path matching can be used to define which requests require particular roles.
 
-Example:
+A complete request-level authorization configuration can be written as:
 
-```java
-http
-    .authorizeHttpRequests()
+    http
+        .authorizeHttpRequests()
+            .antMatchers("/hotel/create").hasRole("ADMIN")
+            .antMatchers("/hotel/**").hasRole("ADMIN")
+            .anyRequest().authenticated()
+        .and()
+        .httpBasic();
+
+The authorization rules are defined inside `authorizeHttpRequests()`.
+
+The earlier rules define requirements for specific requests.
+
     .antMatchers("/hotel/create").hasRole("ADMIN")
-    .antMatchers("/hotel/**").hasRole("ADMIN");
-```
+
+    .antMatchers("/hotel/**").hasRole("ADMIN")
+
+The following rule can define the default requirement for requests that do not match the earlier rules:
+
+    .anyRequest().authenticated()
+
+The `.and()` call then continues the configuration outside the authorization configuration.
+
+Conceptually:
+
+`authorizeHttpRequests()`
+
+↓
+
+Specific request rules
+
+↓
+
+Default rule for remaining requests
+
+↓
+
+`.and()`
+
+↓
+
+Configure another security feature
+
+The complete example:
+
+    http
+        .authorizeHttpRequests()
+            .antMatchers("/hotel/create").hasRole("ADMIN")
+            .antMatchers("/hotel/**").hasRole("ADMIN")
+            .anyRequest().authenticated()
+        .and()
+        .httpBasic();
+
+means:
+
+- `/hotel/create` requires the `ADMIN` role.
+
+- `/hotel/**` requires the `ADMIN` role.
+
+- Any remaining requests require authentication.
+
+- HTTP Basic Authentication is enabled.
 
 ### Path Matching
 
 `/hotel/create`
 
 - Matches the specific `/hotel/create` endpoint.
+
 - Only users with the `ADMIN` role are allowed.
 
 `/hotel/**`
 
 - Matches endpoints under `/hotel/`.
+
 - Only users with the `ADMIN` role are allowed.
 
 The order and specificity of authorization rules matter when defining multiple request-matching rules.
@@ -362,67 +533,253 @@ The order and specificity of authorization rules matter when defining multiple r
 
 ## Method-Level Security
 
-Spring Security can also apply authorization rules directly at the controller method level.
+Spring Security can also apply authorization rules directly at the controller or service method level.
 
-With method-level security, authorization can be specified on individual methods, so Ant-style request matchers are not required for those rules.
+With method-level security, authorization can be specified on individual methods.
 
-### Enabling Method-Level Security
+Web security and method-level security can be configured together.
 
-Method-level security can be enabled in the security configuration:
+For example:
 
-```java
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-```
+    @Configuration
+    @EnableWebSecurity
+    @EnableGlobalMethodSecurity(prePostEnabled = true)
+    public class SecurityConfig {
 
-This enables annotations such as `@PreAuthorize`.
+        @Bean
+        public SecurityFilterChain securityFilterChain(
+                HttpSecurity http
+        ) throws Exception {
+
+            http
+                .authorizeHttpRequests()
+                    .anyRequest().authenticated()
+                .and()
+                .httpBasic();
+
+            return http.build();
+        }
+
+    }
+
+In this configuration:
+
+- `@EnableWebSecurity` enables web security configuration.
+
+- `SecurityFilterChain` configures HTTP request security.
+
+- `@EnableGlobalMethodSecurity(prePostEnabled = true)` enables method-level security features such as `@PreAuthorize`.
+
+These security mechanisms can be used together.
 
 ### @PreAuthorize
 
-`@PreAuthorize` can be placed directly on a controller method to specify who is allowed to execute it.
+`@PreAuthorize` can be placed directly on a controller or service method to specify who is allowed to execute it.
 
 Example:
 
-```java
-@PreAuthorize("hasRole('ADMIN')")
-@PostMapping("/hotel")
-public Hotel createHotel(...) {
-    // ...
-}
-```
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/hotel")
+    public Hotel createHotel(...) {
+
+        // ...
+
+    }
 
 Only users with the `ADMIN` role can execute this method.
 
 Another method can restrict access to users with a different role:
 
-```java
-@PreAuthorize("hasRole('NORMAL')")
-@GetMapping("/hotel")
-public List<Hotel> getHotels(...) {
-    // ...
-}
-```
+    @PreAuthorize("hasRole('NORMAL')")
+    @GetMapping("/hotel")
+    public List<Hotel> getHotels(...) {
+
+        // ...
+
+    }
 
 ### Request-Level vs Method-Level Authorization
 
-**Ant Matchers**
+**Request-Level Security**
 
-- Authorization rules are defined based on request paths.
-- Example: `/hotel/**`
-- Does not require adding authorization annotations to every controller method.
+Authorization rules are applied based on the request path.
+
+Example:
+
+    http
+        .authorizeHttpRequests()
+            .antMatchers("/admin/**").hasRole("ADMIN")
+            .anyRequest().authenticated()
+        .and()
+        .httpBasic();
+
+The authorization decision is based on the request path.
 
 **Method-Level Security**
 
-- Authorization rules are defined directly on methods.
-- Uses annotations such as `@PreAuthorize`.
-- Useful when authorization requirements differ between individual methods.
+Authorization rules are applied directly to individual methods.
+
+Example:
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void adminOperation() {
+
+        // ...
+
+    }
+
+The authorization decision is applied directly to the method.
 
 ### Key Idea
 
-Authorization can be applied at different levels:
+Request-level and method-level security can provide different layers of authorization.
 
-**Request level → Ant-style matchers**
+Conceptually:
 
-**Method level → `@PreAuthorize`**
+`@EnableWebSecurity`
+
+↓
+
+Enables web security configuration
+
+↓
+
+`SecurityFilterChain`
+
+↓
+
+Configures HTTP request security
+
+---
+
+`@EnableGlobalMethodSecurity`
+
+↓
+
+Enables method-level security
+
+↓
+
+`@PreAuthorize`
+
+↓
+
+Applies authorization to individual methods
+
+---
+
+## Modern Spring Security Configuration
+
+Some Spring Security examples use older configuration APIs such as:
+
+- `@EnableGlobalMethodSecurity`
+
+- `.antMatchers()`
+
+- `.and()`
+
+These examples can still appear in existing courses and projects that use older Spring Security versions.
+
+Newer Spring Security versions commonly use newer configuration APIs.
+
+### Modern Method-Level Security
+
+The modern alternative to:
+
+`@EnableGlobalMethodSecurity(prePostEnabled = true)`
+
+is:
+
+    @EnableMethodSecurity
+
+For example:
+
+    @Configuration
+    @EnableWebSecurity
+    @EnableMethodSecurity
+    public class SecurityConfig {
+
+        // ...
+
+    }
+
+### Modern Request Matching
+
+The modern alternative to:
+
+    .antMatchers("/admin/**")
+
+is commonly:
+
+    .requestMatchers("/admin/**")
+
+### Modern Configuration Style
+
+Newer Spring Security versions commonly use lambda-based configuration.
+
+For example:
+
+    @Configuration
+    @EnableWebSecurity
+    @EnableMethodSecurity
+    public class SecurityConfig {
+
+        @Bean
+        public SecurityFilterChain securityFilterChain(
+                HttpSecurity http
+        ) throws Exception {
+
+            http
+                .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/admin/**")
+                    .hasRole("ADMIN")
+                    .anyRequest()
+                    .authenticated()
+                )
+                .httpBasic();
+
+            return http.build();
+        }
+
+    }
+
+Conceptually:
+
+Older style:
+
+`antMatchers()`
+
+↓
+
+`anyRequest()`
+
+↓
+
+`.and()`
+
+↓
+
+Next configuration section
+
+Modern style:
+
+`requestMatchers()`
+
+↓
+
+`anyRequest()`
+
+↓
+
+Configuration lambda ends
+
+↓
+
+Next configuration method
+
+The exact syntax depends on the Spring Security version used by the application.
+
+When following an existing course or project, the examples should remain consistent with the Spring Security version used in that project.
 
 ---
 
