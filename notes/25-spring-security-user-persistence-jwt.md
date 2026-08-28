@@ -721,3 +721,161 @@ HttpServletResponse → the outgoing response
 FilterChain → the remaining filters in the Spring Security filter chain
 
 The JWT authentication logic can be implemented inside this method as the JWT authentication implementation progresses.
+
+---
+
+## JWT Login API
+
+JWT authentication begins with a login request containing the user's credentials.
+
+A request object can represent the login data:
+
+```java
+public class JwtRequest {
+
+    private String username;
+
+    private String password;
+
+    // getters and setters
+
+}
+```
+
+The login request can then be authenticated using the `AuthenticationManager`:
+
+```java
+Authentication authentication =
+
+    authenticationManager.authenticate(
+
+        new UsernamePasswordAuthenticationToken(
+
+            jwtRequest.getUsername(),
+
+            jwtRequest.getPassword()
+
+        )
+
+    );
+```
+
+The authentication flow is:
+
+```text
+JwtRequest
+
+    ↓
+
+Username + Password
+
+    ↓
+
+UsernamePasswordAuthenticationToken
+
+    ↓
+
+AuthenticationManager
+
+    ↓
+
+AuthenticationProvider
+
+    ↓
+
+Credential Verification
+
+    ↓
+
+Authenticated Authentication
+```
+
+If authentication succeeds, the returned `Authentication` object represents the authenticated user.
+
+---
+
+## Generating and Returning the JWT
+
+After successful authentication, the application can generate a JWT for the authenticated user.
+
+A simplified login API can be structured as:
+
+```java
+@PostMapping("/login")
+
+public ResponseEntity<JwtResponse> login(
+
+        @RequestBody JwtRequest jwtRequest
+
+) {
+
+    Authentication authentication =
+
+        authenticationManager.authenticate(
+
+            new UsernamePasswordAuthenticationToken(
+
+                jwtRequest.getUsername(),
+
+                jwtRequest.getPassword()
+
+            )
+
+        );
+
+    // Get authenticated user
+
+    // Generate JWT
+
+    // Return JWT
+
+}
+```
+
+The JWT can then be returned to the client using a response object:
+
+```java
+public class JwtResponse {
+
+    private String token;
+
+    // constructor
+
+    // getter
+
+}
+```
+
+The complete login flow can be remembered as:
+
+```text
+Login Request
+
+    ↓
+
+Username + Password
+
+    ↓
+
+AuthenticationManager
+
+    ↓
+
+Credentials Verified
+
+    ↓
+
+Authenticated User
+
+    ↓
+
+Generate JWT
+
+    ↓
+
+Return JWT to Client
+```
+
+The client can use the returned JWT for subsequent authenticated requests.
+
+The process of sending and validating the JWT on subsequent requests is handled separately.
