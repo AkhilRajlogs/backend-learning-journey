@@ -96,11 +96,13 @@ A join table stores the relationship between users and roles.
 
 Conceptually:
 
-    User
-      ↓
-    User_Role
-      ↑
-    Role
+```text
+User
+ ↓
+User_Role
+ ↑
+Role
+```
 
 The `User` entity maintains a collection of roles:
 
@@ -614,49 +616,35 @@ JWT authentication can still use Spring Security's existing authentication compo
 
 The general authentication flow remains similar:
 
+```text
 Authentication Request
-
-↓
-
+        ↓
 Authentication Filter
-
-↓
-
+        ↓
 Authentication Manager
-
-↓
-
+        ↓
 Authentication Process
-
-↓
-
+        ↓
 Authenticated User
+```
 
 The main difference is that JWT authentication uses a custom JWT authentication filter instead of relying only on the default authentication filter.
 
 Conceptually:
 
+```text
 JWT Authentication Request
-
-↓
-
+        ↓
 JWT Authentication Filter
-
-↓
-
+        ↓
 Authentication Manager
-
-↓
-
+        ↓
 Authentication
-
-↓
-
+        ↓
 JWT Generated
-
-↓
-
+        ↓
 JWT Returned to Client
+```
 
 The client can then send the JWT with subsequent requests.
 
@@ -682,23 +670,17 @@ The custom `JWTAuthenticationFilter` can extend `OncePerRequestFilter`.
 
 Conceptually:
 
+```text
 Request
-
-↓
-
+        ↓
 JWTAuthenticationFilter
-
-↓
-
-`doFilterInternal()`
-
-↓
-
+        ↓
+doFilterInternal()
+        ↓
 JWT Authentication Logic
-
-↓
-
+        ↓
 Continue Filter Chain
+```
 
 The custom filter overrides the `doFilterInternal()` method.
 
@@ -714,11 +696,13 @@ protected void doFilterInternal(
 
 }
 
+```
+
 The method provides access to:
 
-HttpServletRequest → the incoming request
-HttpServletResponse → the outgoing response
-FilterChain → the remaining filters in the Spring Security filter chain
+- `HttpServletRequest` → the incoming request
+- `HttpServletResponse` → the outgoing response
+- `FilterChain` → the remaining filters in the Spring Security filter chain
 
 The JWT authentication logic can be implemented inside this method as the JWT authentication implementation progresses.
 
@@ -879,3 +863,172 @@ Return JWT to Client
 The client can use the returned JWT for subsequent authenticated requests.
 
 The process of sending and validating the JWT on subsequent requests is handled separately.
+
+---
+
+## Sending the JWT with Subsequent Requests
+
+After the login API successfully authenticates the user and returns a JWT, the client can use that JWT when making subsequent requests to protected endpoints.
+
+The JWT is commonly sent in the `Authorization` HTTP header.
+
+The standard format is:
+
+```text
+Authorization: Bearer <JWT>
+```
+
+For example:
+
+```text
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+```
+
+The `Bearer` prefix indicates that the client is presenting a bearer token for authentication.
+
+The general flow becomes:
+
+```text
+Login Request
+    ↓
+Username + Password
+    ↓
+AuthenticationManager
+    ↓
+Credentials Verified
+    ↓
+JWT Generated
+    ↓
+JWT Returned to Client
+    ↓
+Client Stores JWT
+    ↓
+Client Sends JWT with Subsequent Requests
+```
+
+The client should include the JWT in the `Authorization` header when accessing protected endpoints.
+
+---
+
+## JWT Validation in the Custom Filter
+
+The `JWTAuthenticationFilter` can inspect incoming requests to determine whether a JWT has been provided.
+
+The filter can read the `Authorization` header from the incoming request.
+
+Conceptually:
+
+```java
+String authorizationHeader =
+        request.getHeader("Authorization");
+```
+
+The filter can then check whether the header contains a Bearer token.
+
+Conceptually:
+
+```text
+Incoming Request
+        ↓
+Read Authorization Header
+        ↓
+Authorization Header Present?
+        ↓
+Check for "Bearer "
+        ↓
+Extract JWT
+```
+
+If the request contains:
+
+```text
+Authorization: Bearer <JWT>
+```
+
+the filter can extract the token by removing the `Bearer ` prefix.
+
+Conceptually:
+
+```java
+String jwt = authorizationHeader.substring(7);
+```
+
+The value `7` represents the length of the string:
+
+```text
+Bearer 
+```
+
+including the trailing space.
+
+The extracted JWT can then be passed to the validation logic.
+
+---
+
+## JWT Validation Flow
+
+The custom JWT filter is responsible for handling JWT authentication for subsequent requests.
+
+The simplified flow is:
+
+```text
+Incoming Request
+    ↓
+JWTAuthenticationFilter
+    ↓
+Read Authorization Header
+    ↓
+Check Bearer Token
+    ↓
+Extract JWT
+    ↓
+Validate JWT
+    ↓
+Extract User Information
+    ↓
+Create Authentication
+    ↓
+Store Authentication in SecurityContext
+    ↓
+Continue Filter Chain
+```
+
+The JWT validation process is separate from the initial login authentication.
+
+During login, the application verifies the user's username and password and then generates a JWT.
+
+During subsequent requests, the application receives the JWT and verifies whether it is valid.
+
+The two stages can therefore be remembered as:
+
+```text
+Login
+
+Username + Password
+        ↓
+AuthenticationManager
+        ↓
+Credentials Verified
+        ↓
+Generate JWT
+        ↓
+Return JWT
+```
+
+and:
+
+```text
+Subsequent Request
+
+JWT
+        ↓
+JWTAuthenticationFilter
+        ↓
+Validate JWT
+        ↓
+Authenticate User
+        ↓
+SecurityContext
+```
+
+The exact JWT validation and token-parsing implementation will be covered next.
