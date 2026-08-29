@@ -98,9 +98,9 @@ Conceptually:
 
 ```text
 User
- ↓
+  ↓
 User_Role
- ↑
+  ↑
 Role
 ```
 
@@ -253,47 +253,33 @@ The application can now use persisted user information during authentication.
 
 A simplified registration flow is:
 
-**Registration Request**
-
-↓
-
-**Encode Password**
-
-↓
-
-**Save User and Roles**
-
-↓
-
-**Database**
+```text
+Registration Request
+        ↓
+Encode Password
+        ↓
+Save User and Roles
+        ↓
+Database
+```
 
 During authentication:
 
-**Login Request**
-
-↓
-
-**Authentication Manager**
-
-↓
-
-**Custom UserDetailsService**
-
-↓
-
-**Load User by Username**
-
-↓
-
-**Database**
-
-↓
-
-**Verify Credentials**
-
-↓
-
-**Authenticated User with Authorities**
+```text
+Login Request
+        ↓
+Authentication Manager
+        ↓
+Custom UserDetailsService
+        ↓
+Load User by Username
+        ↓
+Database
+        ↓
+Verify Credentials
+        ↓
+Authenticated User with Authorities
+```
 
 ---
 
@@ -541,16 +527,14 @@ A JWT can be created and signed by one application. Another application can veri
 
 A JWT consists of three parts:
 
-**Header**
+```text
+Header
+  ↓
+Payload
+  ↓
+Signature
 
-↓
-
-**Payload**
-
-↓
-
-**Signature**
-
+```  
 The token is commonly represented as:
 
 `Header.Payload.Signature`
