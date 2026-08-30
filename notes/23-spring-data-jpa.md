@@ -215,31 +215,50 @@ Native queries can be useful when:
 
 ---
 
-## Query Approach — Quick Comparison
+## Query Approach — Quick Reference
 
-Spring Data JPA provides multiple ways to retrieve data:
+Spring Data JPA provides multiple ways to retrieve data depending on the complexity of the query.
 
-1. **Derived Query**
-   - Query is generated from the repository method name.
-   - Best for simple queries.
+### Derived Query
 
-2. **JPQL**
-   - Query is written using entities and their fields.
-   - Useful for more complex entity-based queries.
+The query is generated from the repository method name.
 
-3. **Native Query**
-   - Query is written directly in SQL.
-   - Useful for database-specific or complex SQL requirements.
+Useful for simple queries that can be clearly expressed through method naming.
 
----
+```java
+List<Task> findByCompleted(boolean completed);
+```
 
-## Interview Quick Reference
+### JPQL
 
-### Repository
+The query is written using JPA entities and their fields rather than database tables and columns.
 
-Most Spring Boot projects directly extend `JpaRepository` because it provides CRUD, pagination, sorting, and JPA-specific operations.
+Useful when a query is more complex than what is convenient to express through a derived query.
 
-### Query Selection
+```java
+@Query("SELECT t FROM Task t WHERE t.completed = :completed")
+List<Task> findByCompleted(
+    @Param("completed") boolean completed
+);
+```
+
+### Native Query
+
+The query is written directly in SQL and operates on database tables and columns.
+
+Useful when database-specific SQL features are required or when the query is difficult to express using JPQL.
+
+```java
+@Query(
+    value = "SELECT * FROM task WHERE completed = :completed",
+    nativeQuery = true
+)
+List<Task> findCompletedTasks(
+    @Param("completed") boolean completed
+);
+```
+
+### Choosing the Query Approach
 
 A useful progression to remember:
 
@@ -249,11 +268,21 @@ A useful progression to remember:
 
 **Database-specific / complex SQL → Native Query**
 
+The main idea is to choose the simplest query mechanism that clearly expresses the required database operation.  
+
+---
+
+## Interview Quick Reference
+
+### Repository
+
+Most Spring Boot projects directly extend `JpaRepository` because it provides CRUD, pagination, sorting, and JPA-specific operations.
+
 ### Derived Queries
 
 Derived queries are convenient when the required query can be clearly expressed through the repository method name.
 
-For complex queries, an explicit query using `@Query` is generally more appropriate.
+For queries that are difficult to express clearly through method naming, an explicit query using @Query is generally more appropriate.
 
 ### Key Idea
 
