@@ -415,35 +415,67 @@ The `UserDetailsService` is used to load user details when Spring Security needs
 
 ---
 
-### Security Configuration
+### Remember Me Security Configuration
+
+Remember Me must be configured together with the application's request authorization and authentication configuration.
 
 The registration endpoint can be made publicly accessible using `permitAll()`.
 
 Remember Me can then be configured with the `UserDetailsService`.
 
+A typical configuration for an application using database-backed authentication and Remember Me can include:
+
 ```java
 http
-    .antMatchers("/user/register").permitAll()
+    .csrf().disable()
+    .authorizeHttpRequests()
+        .antMatchers("/user/register", "/login")
+        .permitAll()
+        .anyRequest()
+        .authenticated()
     .and()
     .rememberMe()
-    .userDetailsService(userDetailsService)
+        .userDetailsService(userDetailsService)
     .and()
     .formLogin()
-    .loginPage("/login")
-    .permitAll()
+        .loginPage("/login")
+        .permitAll()
     .and()
     .logout()
-    .deleteCookies("remember-me");
+        .deleteCookies("remember-me");
 ```
 
-This configuration:
+This configuration demonstrates several important points:
 
-- Allows everyone to access `/user/register`.
-- Enables Remember Me functionality.
-- Provides the `UserDetailsService` required to load user details.
-- Configures a custom login page at `/login`.
-- Allows everyone to access the login page.
-- Deletes the `remember-me` cookie during logout.
+- `csrf().disable()` disables CSRF protection for this application configuration. This was required by the assessment application's test setup.
+- `authorizeHttpRequests()` defines which requests require authentication.
+- `/user/register` is publicly accessible so a new user can register without already being authenticated.
+- `/login` is publicly accessible so users can reach the login page.
+- `anyRequest().authenticated()` requires authentication for other requests.
+- `rememberMe()` enables Remember Me functionality.
+- `userDetailsService(userDetailsService)` allows Spring Security to use the database-backed `UserDetailsService` when restoring authentication.
+- `formLogin()` enables form-based login and specifies the custom login page.
+- `logout().deleteCookies("remember-me")` removes the Remember Me cookie during logout.
+
+The overall security configuration can therefore be understood as:
+
+```text
+CSRF disabled
+        ↓
+Request Authorization
+        ↓
+/user/register and /login → Public
+        ↓
+Other requests → Authentication required
+        ↓
+Remember Me enabled
+        ↓
+Form Login enabled
+        ↓
+Logout removes remember-me cookie
+```
+
+The exact configuration syntax depends on the Spring Security version used by the application. The example above follows the configuration style used in the application implementation.
 
 ---
 
@@ -461,7 +493,7 @@ The behavior can be tested as follows:
 4. Leave the `remember-me` cookie unchanged.
 5. Refresh or make another request.
 
-Spring Security can use the Remember Me information to restore authentication.
+Spring Security can use the Remember Me information to restore the user's authentication.
 
 A new `JSESSIONID` is then created for the restored authenticated session.
 
