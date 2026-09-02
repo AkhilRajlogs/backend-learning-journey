@@ -106,7 +106,9 @@ Role
 
 The `User` entity maintains a collection of roles:
 
+```java
     private Set<Role> roles = new HashSet<>();
+```
 
 The many-to-many relationship can be mapped using `@JoinTable`.
 
@@ -140,17 +142,20 @@ Spring Security requires a way to load user information during authentication.
 
 A custom `UserDetailsService` can be created by implementing the `UserDetailsService` interface.
 
+```java
     public class CustomUserDetailsService
             implements UserDetailsService {
         // ...
     }
+```
 
 The custom service loads a user based on the username.
 
 The repository provides a method such as:
 
+```java
     Optional<User> findByUsername(String username);
-
+```
 This allows the authentication process to retrieve the user's information from the database.
 
 ---
@@ -159,9 +164,11 @@ This allows the authentication process to retrieve the user's information from t
 
 The persistent `User` entity can implement Spring Security's `UserDetails` interface.
 
+```java
     public class User implements UserDetails {
         // ...
     }
+```
 
 By implementing `UserDetails`, the application's persisted user can provide the information required by Spring Security during authentication.
 
@@ -177,6 +184,7 @@ Spring Security uses `GrantedAuthority` to represent the authorities granted to 
 
 The roles stored with the user can be converted into `SimpleGrantedAuthority` objects.
 
+```java
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
@@ -185,6 +193,7 @@ The roles stored with the user can be converted into `SimpleGrantedAuthority` ob
             ))
             .collect(Collectors.toList());
     }
+```
 
 The general flow is:
 
@@ -212,8 +221,9 @@ A public registration API can be provided so that users can be created through t
 
 For example:
 
+```text
     POST /register
-
+```
 The registration endpoint must be allowed without requiring prior authentication.
 
 Request-level security configuration can allow access to the registration endpoint while requiring authentication for protected endpoints.
@@ -230,13 +240,14 @@ Conceptually:
 
 Passwords should be encoded before being stored in the database.
 
+```java
     String encodedPassword =
         bCryptPasswordEncoder.encode(
             userRequest.getPassword()
         );
 
     user.setPassword(encodedPassword);
-
+```
 The encoded password is stored instead of the plain-text password.
 
 `BCryptPasswordEncoder` can be used to perform the encoding.
@@ -399,6 +410,104 @@ Spring Security Authentication
 In this implementation, Spring Security uses the conventional remember-me mechanism.
 
 When Remember Me is enabled, a remember-me cookie is created in addition to the normal JSESSIONID session cookie.
+
+The custom login page can be created as a Thymeleaf template.
+
+A typical location for the template is:
+
+```text
+src/main/resources/templates/login.html
+```
+
+The login form contains:
+
+- Username field
+- Password field
+- Remember Me checkbox
+- Login button
+
+Example `login.html` template:
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Login</title>
+</head>
+
+<body>
+
+<div class="container-fluid text-center">
+
+    <form th:action="@{/login}"
+          method="post"
+          style="max-width: 350px; margin: 0 auto;">
+
+        <div class="border border-secondary p-3 rounded">
+
+            <p>Enter Login Credential</p>
+
+            <p>
+                <input type="text"
+                       name="username"
+                       class="form-control"
+                       placeholder="Username"
+                       required
+                       autofocus />
+            </p>
+
+            <p>
+                <input type="password"
+                       name="password"
+                       class="form-control"
+                       placeholder="Password"
+                       required />
+            </p>
+
+            <p>
+                <input type="checkbox"
+                       name="remember-me" />
+                &nbsp;Remember Me
+            </p>
+
+            <p>
+                <input type="submit"
+                       value="Login"
+                       class="btn btn-primary" />
+            </p>
+
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>
+```
+
+This template can also be used as a reference when creating similar custom login pages for Spring Security applications or coding problems.
+
+The important connection with Remember Me is the checkbox:
+
+```html
+<input type="checkbox" name="remember-me" />
+```
+
+The `remember-me` name allows Spring Security's Remember Me functionality to recognize the option submitted by the login form.
+
+The form submits the credentials to:
+
+```text
+POST /login
+```
+
+which is the conventional login processing endpoint used by Spring Security form login.
 
 ---
 
