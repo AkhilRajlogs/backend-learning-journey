@@ -664,6 +664,16 @@ A JWT can be created and signed by one application. Another application can veri
 
 ---
 
+### JWT Authentication and Authorization
+
+JWTs are commonly used for authentication and authorization in web applications.
+
+They allow a server to issue a signed token that can be presented by a client when accessing protected resources.
+
+JWTs are digitally signed, allowing the receiving application to verify that the token was issued by the expected party and has not been altered.
+
+---
+
 ### JWT Structure
 
 A JWT consists of three parts:
@@ -706,6 +716,44 @@ For example:
 The payload is Base64URL-encoded.
 
 ---
+  
+### Types of Claims
+
+Claims are statements or pieces of information carried in the JWT payload.
+
+There are three types of claims:
+
+- **Registered Claims** → These are predefined claims that are recommended for common purposes. Examples include `iss` (issuer), `exp` (expiration time), and `sub` (subject).
+- **Public Claims** → These claims can be defined for sharing information between parties using the token. They should be defined in the IANA JSON Web Token Registry or as a URI to avoid naming conflicts.
+- **Private Claims** → These are custom claims created to share information between parties that agree to use them.
+
+For example:
+
+```json
+{
+    "iss": "your_issuer",
+    "sub": "1234567890",
+    "name": "John Doe",
+    "email": "johndoe@example.com",
+    "role": "user",
+    "exp": 1645872000,
+    "nbf": 1645795600,
+    "iat": 1645795600,
+    "jti": "a1b2c3d4e5f6g7h8i9j0"
+}
+```
+
+Here:
+
+* `iss` identifies the issuer of the token.
+* `sub` identifies the subject of the token.
+* `exp` represents the expiration time.
+* `nbf` represents the time before which the token must not be accepted.
+* `iat` represents the time at which the token was issued.
+* `jti` provides a unique identifier for the token.
+* Other fields such as `name`, `email`, and `role` can carry application-specific information.
+
+The important idea is that **claims are pieces of information about the subject or other relevant information carried in the JWT payload**.
 
 ### Signature
 
