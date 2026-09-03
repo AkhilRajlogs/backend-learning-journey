@@ -670,7 +670,7 @@ JWTs are commonly used for authentication and authorization in web applications.
 
 They allow a server to issue a signed token that can be presented by a client when accessing protected resources.
 
-JWTs are digitally signed, allowing the receiving application to verify that the token was issued by the expected party and has not been altered.
+JWTs are commonly digitally signed, allowing the receiving application to verify that the token was issued by the expected party and has not been altered.
 
 ---
 
@@ -780,6 +780,56 @@ JWT is commonly understood as:
 **Signature → How the token's integrity and authenticity are verified**
 
 A JWT can therefore be used to securely exchange signed information between two parties.
+
+---
+
+## How JWT Works
+
+JWT-based authentication generally follows these steps:
+
+1. **Authentication** → The user provides their credentials to the authentication server.
+2. **Token Generation** → After successful authentication, the server creates and signs a JWT containing the required claims.
+3. **Token Delivery** → The server sends the JWT to the client.
+4. **Authorization** → The client includes the JWT when making requests to protected resources.
+5. **Token Validation** → The server verifies the JWT signature and checks relevant claims such as expiration.
+6. **Access Control** → If the token is valid and the user has the required authority, access to the protected resource is granted.
+
+The overall flow can be represented as:
+
+```text
+Client
+  ↓
+Credentials
+  ↓
+Authentication Server
+  ↓
+JWT Generated & Signed
+  ↓
+JWT Sent to Client
+  ↓
+Client Sends JWT with Request
+  ↓
+Server Validates JWT
+  ↓
+Access Granted / Denied
+```
+
+Unlike session-based authentication, the server does not need to maintain a server-side session for each authenticated user when using a stateless JWT-based approach.
+
+The JWT carries the information required to identify and authorize the user, while the server validates the token before allowing access to protected resources.
+
+
+## JWT Use Cases
+
+JWTs are commonly used in applications where a client needs to securely present authentication information to a server.
+
+Common use cases include:
+
+- **Single Sign-On (SSO)** → A JWT can be used to represent an authenticated user across multiple applications or services.
+- **API Authentication** → A client can send a JWT with API requests to access protected endpoints.
+- **Stateless Authentication** → The server can authenticate requests using the JWT without maintaining a server-side session for each user.
+
+JWTs are especially useful in distributed systems and REST APIs because the token can be sent with requests independently of server-side session state.
 
 ---
 
