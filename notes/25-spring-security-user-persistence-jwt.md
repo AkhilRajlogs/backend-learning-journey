@@ -658,7 +658,7 @@ Remember Me provides a mechanism that can restore authentication when the normal
 
 JWT stands for **JSON Web Token**.
 
-It is a compact token format used to securely transmit information between two parties.
+JWT is a compact token format for representing claims and securely transmitting them when appropriate signing, transport, and validation mechanisms are used.
 
 A JWT can be created and signed by one application. Another application can verify that the token is authentic and has not been altered by validating its signature.
 
@@ -830,6 +830,52 @@ Common use cases include:
 - **Stateless Authentication** → The server can authenticate requests using the JWT without maintaining a server-side session for each user.
 
 JWTs are especially useful in distributed systems and REST APIs because the token can be sent with requests independently of server-side session state.
+
+---
+
+## JWT Security Considerations
+
+JWTs are signed tokens, but their payload is generally **not encrypted**. Therefore, the information stored in the payload should not be treated as secret.
+
+### Do Not Store Sensitive Information
+
+Do not store passwords, secret keys, or other highly sensitive information directly in the JWT payload.
+
+The payload can be decoded by anyone who has access to the token. The signature helps detect tampering, but it does not make the payload confidential.
+
+Only include the information required by the application.
+
+---
+
+### Use HTTPS
+
+JWTs should be transmitted over **HTTPS**.
+
+HTTPS protects the token while it is being transmitted between the client and server and helps prevent attackers from intercepting the token.
+
+---
+
+### Use Token Expiration
+
+JWTs should have an appropriate expiration time using the `exp` claim.
+
+Short-lived tokens reduce the period during which a stolen token can be used.
+
+Applications that require longer-lived authentication can use mechanisms such as refresh tokens rather than making the access token valid for an unnecessarily long period.
+
+---
+
+### Validate the Token
+
+The server should validate the JWT before accepting it.
+
+Validation should include checking the token's signature and relevant claims, such as expiration time and other claims required by the application.
+
+A token should be rejected if it is invalid, expired, or otherwise fails the application's validation rules.
+
+---
+
+The important idea is that **JWT security depends not only on signing the token, but also on protecting the token during transmission, limiting the information stored in it, using appropriate expiration times, and validating it correctly**.
 
 ---
 
