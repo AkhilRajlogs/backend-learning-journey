@@ -664,6 +664,63 @@ A JWT can be created and signed by one application. Another application can veri
 
 ---
 
+### JJWT Dependencies
+
+A JWT implementation can be added using the **JJWT (Java JWT)** library.
+
+For a Maven project, the required dependencies can be added to `pom.xml`:
+
+```xml
+<!-- JWT API -->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-api</artifactId>
+    <version>0.12.6</version>
+</dependency>
+
+<!-- JWT Implementation (Runtime Only) -->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-impl</artifactId>
+    <version>0.12.6</version>
+    <scope>runtime</scope>
+</dependency>
+
+<!-- JWT Jackson Serializer (Runtime Only) -->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-jackson</artifactId>
+    <version>0.12.6</version>
+    <scope>runtime</scope>
+</dependency>
+```
+
+The dependencies have different responsibilities:
+
+- `jjwt-api` → provides the JWT API used by the application code.
+- `jjwt-impl` → provides the JWT implementation and is required at runtime.
+- `jjwt-jackson` → provides Jackson-based JSON serialization/deserialization support and is required at runtime.
+
+The application code can therefore use the JJWT API while the implementation and JSON support are provided at runtime.
+
+**Key idea:**
+
+```text
+jjwt-api
+    ↓
+JWT API used by application
+
+jjwt-impl
+    ↓
+JWT implementation at runtime
+
+jjwt-jackson
+    ↓
+Jackson JSON serialization support at runtime
+```
+
+---
+
 ### JWT Authentication and Authorization
 
 JWTs are commonly used for authentication and authorization in web applications.
