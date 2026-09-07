@@ -215,6 +215,70 @@ A `PasswordEncoder` bean is still required to encode and verify passwords.
 
 ---
 
+## Method-Level Security
+
+Spring Security can also apply authorization rules directly at the method level.
+
+Method-level security allows specific methods in a controller or service to be protected based on roles or other security conditions.
+
+The `@PreAuthorize` annotation can be used to define an authorization rule that must be satisfied before a method is executed.
+
+For example:
+
+```java
+@RestController
+@RequestMapping("/basePath")
+public class Controller {
+
+    @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void createEntity(
+            @RequestBody SampleEntity sampleEntity
+    ) {
+        // ...
+    }
+}
+```
+
+Here:
+
+- `@PreAuthorize` defines an authorization rule that is checked before the method executes.
+- `hasRole('ADMIN')` requires the authenticated user to have the `ADMIN` role.
+- If the user does not have the required role, access to the method is denied.
+
+Method-level security must be enabled in the Spring Security configuration.
+
+In the configuration used in this section:
+
+```java
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+```
+
+The `prePostEnabled = true` setting enables pre/post authorization annotations such as `@PreAuthorize`.
+
+The overall flow can be understood as:
+
+```text
+Request
+    ↓
+Authentication
+    ↓
+Authenticated User
+    ↓
+@PreAuthorize checks authorization
+    ↓
+Required role/condition satisfied?
+    ↓
+Yes → Method executes
+No  → Access denied
+```
+
+**Key idea:**
+
+URL-level authorization controls access based on request paths, while method-level security allows authorization rules to be applied directly to specific methods.
+
+---
+
 ## User Registration
 
 A public registration API can be provided so that users can be created through the application instead of being hardcoded inside the security configuration.
