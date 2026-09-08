@@ -279,6 +279,66 @@ URL-level authorization controls access based on request paths, while method-lev
 
 ---
 
+## URL-Level Role Authorization
+
+Spring Security can apply authorization rules directly to URL patterns.
+
+The `antMatchers()` method can be used to match requests to specific URL patterns, and `hasRole()` can restrict those requests to users with a particular role.
+
+For example:
+
+```java
+http
+    .authorizeHttpRequests()
+        .antMatchers("/pathForAdmin/**")
+        .hasRole("ADMIN")
+        .antMatchers("/pathForUser/**")
+        .hasRole("USER")
+        .anyRequest()
+        .authenticated();
+```
+
+Here:
+
+- `antMatchers("/pathForAdmin/**")` matches requests under the specified URL pattern.
+- `hasRole("ADMIN")` requires the authenticated user to have the `ADMIN` role.
+- `antMatchers("/pathForUser/**")` matches requests under the user URL pattern.
+- `hasRole("USER")` requires the authenticated user to have the `USER` role.
+- `anyRequest().authenticated()` requires authentication for requests that do not have a more specific authorization rule.
+
+The authorization flow can be understood as:
+
+```text
+Incoming Request
+        ↓
+URL Pattern Matching
+        ↓
+Required Role
+        ↓
+User Has Required Role?
+        ↓
+Yes → Request Allowed
+No  → Access Denied
+```
+
+This provides **URL-level authorization**, where access is controlled based on the requested endpoint.
+
+URL-level authorization and method-level authorization can both be used in the same application:
+
+```text
+URL-Level Authorization
+        ↓
+Controls access based on endpoint
+
+Method-Level Authorization
+        ↓
+Controls access based on specific method
+```
+
+The exact configuration syntax depends on the Spring Security version used by the application. The example above follows the configuration style used in the CodingNinjas material and application implementation.
+
+---
+
 ## User Registration
 
 A public registration API can be provided so that users can be created through the application instead of being hardcoded inside the security configuration.
