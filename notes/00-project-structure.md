@@ -142,6 +142,10 @@ Spring Boot
 - 19-spring-annotations.md
 - 20-spring-mvc.md
 - 21-rest-web-services.md
+- 22-rest-template.md
+- 23-spring-data-jpa.md
+- 24-spring-security.md
+- 25-spring-security-user-persistence-jwt.md
 
 ---
 
