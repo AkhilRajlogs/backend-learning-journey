@@ -1316,6 +1316,195 @@ The process of sending and validating the JWT on subsequent requests is handled 
 
 ---
 
+## JWT Authentication Helper
+
+A separate helper/service can be used to keep JWT creation and token-related operations together.
+
+In the implementation, `JwtAuthenticationHelper` is responsible for:
+
+- Generating the JWT.
+- Extracting the username from the JWT.
+- Reading the JWT claims.
+- Checking whether the JWT has expired.
+
+The helper can be registered as a Spring component:
+
+```java
+@Component
+public class JwtAuthenticationHelper {
+    // ...
+}
+```
+
+### JWT Token Validity
+
+The token validity period can be defined as a constant.
+
+```java
+private static final long JWT_TOKEN_VALIDITY = 60 * 60;
+```
+
+Here, the value represents seconds, so:
+
+```text
+60 × 60 = 3600 seconds = 1 hour
+```
+
+When generating the token, the validity is converted from seconds to milliseconds:
+
+```java
+.setExpiration(
+    new Date(
+        System.currentTimeMillis()
+        + JWT_TOKEN_VALIDITY * 1000
+    )
+)
+```
+
+### Generating the JWT
+
+The helper can generate a JWT using the authenticated user's `UserDetails`.
+
+```java
+public String generateToken(UserDetails userdetails) {
+
+    Map<String, Object> claims = new HashMap<>();
+
+    return Jwts.builder()
+        .setClaims(claims)
+        .setSubject(userdetails.getUsername())
+        .setIssuedAt(new Date(System.currentTimeMillis()))
+        .setExpiration(
+            new Date(
+                System.currentTimeMillis()
+                + JWT_TOKEN_VALIDITY * 1000
+            )
+        )
+        .signWith(
+            new SecretKeySpec(
+                secret.getBytes(),
+                SignatureAlgorithm.HS512.getJcaName()
+            ),
+            SignatureAlgorithm.HS512
+        )
+        .compact();
+}
+```
+
+The important parts of the token generation are:
+
+- `setClaims()` → sets the claims carried by the token.
+- `setSubject()` → stores the authenticated user's username as the JWT subject.
+- `setIssuedAt()` → records when the token was issued.
+- `setExpiration()` → defines when the token expires.
+- `signWith()` → signs the token using the configured secret and `HS512`.
+- `compact()` → creates the final JWT string.
+
+The token-generation flow is:
+
+```text
+UserDetails
+    ↓
+Username
+    ↓
+JWT Claims
+    ↓
+Subject + Issued At + Expiration
+    ↓
+Sign with Secret Key + HS512
+    ↓
+Compact JWT String
+```
+
+### Extracting the Username
+
+The username can be retrieved from the JWT subject.
+
+```java
+public String getUsernameFromToken(String token) {
+
+    Claims claims = getClaimsFromToken(token);
+
+    return claims.getSubject();
+}
+```
+
+The helper first obtains the claims and then reads the subject.
+
+```text
+JWT
+ ↓
+Claims
+ ↓
+Subject
+ ↓
+Username
+```
+
+### Reading JWT Claims
+
+The claims can be extracted by parsing the signed JWT with the configured signing key.
+
+```java
+public Claims getClaimsFromToken(String token) {
+
+    Claims claims = Jwts.parserBuilder()
+        .setSigningKey(secret.getBytes())
+        .build()
+        .parseClaimsJws(token)
+        .getBody();
+
+    return claims;
+}
+```
+
+The important idea is that the token is parsed using the signing key. The resulting `Claims` object provides access to information such as the subject and expiration time.
+
+### Checking Token Expiration
+
+The expiration time can be obtained from the claims and compared with the current time.
+
+```java
+public Boolean isTokenExpired(String token) {
+
+    Claims claims = getClaimsFromToken(token);
+
+    Date expDate = claims.getExpiration();
+
+    return expDate.before(new Date());
+}
+```
+
+The flow is:
+
+```text
+JWT
+ ↓
+Extract Claims
+ ↓
+Get Expiration Date
+ ↓
+Compare with Current Date
+ ↓
+Expired / Not Expired
+```
+
+**Key idea:**
+
+`JwtAuthenticationHelper` centralizes the main JWT operations used by the application:
+
+```text
+Generate Token
+       ↓
+Read Claims
+       ↓
+Extract Username
+       ↓
+Check Expiration
+```
+
+---
+
 ## Sending the JWT with Subsequent Requests
 
 After the login API successfully authenticates the user and returns a JWT, the client can use that JWT when making subsequent requests to protected endpoints.
