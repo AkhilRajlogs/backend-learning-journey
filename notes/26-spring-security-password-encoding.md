@@ -718,3 +718,358 @@ CSRF protection checks token
 Valid token → Request allowed
 Invalid/missing token → Request rejected
 ```
+
+---
+
+# XSS Protection
+
+## 1. What is XSS?
+
+**XSS (Cross-Site Scripting)** is a web security vulnerability where an attacker injects malicious script into a web page.
+
+The injected script can then execute in another user's browser.
+
+### Basic flow
+
+```text
+Attacker injects malicious script
+        ↓
+Application stores or reflects the input
+        ↓
+Victim opens the affected page
+        ↓
+Browser executes the script
+        ↓
+Attacker may access or manipulate
+data available to the page
+```
+
+XSS is primarily a **client-side/browser-based attack**.
+
+---
+
+## 2. How XSS Happens
+
+Applications often accept user-controlled data through:
+
+- Form inputs
+- Search parameters
+- URL parameters
+- Comments
+- Profile information
+- Other user-generated content
+
+If that data is inserted into a web page without appropriate validation or output encoding, an attacker may inject executable JavaScript.
+
+### Example
+
+An application displays user input directly:
+
+```html
+<div>
+    Welcome, ${username}
+</div>
+```
+
+If the application does not safely handle the value, an attacker may attempt to inject HTML/JavaScript instead of normal text.
+
+For example:
+
+```html
+<script>
+    alert('XSS');
+</script>
+```
+
+If the application renders the input as executable markup, the browser may execute the script.
+
+---
+
+## 3. Types of XSS
+
+### Stored XSS
+
+The malicious payload is stored by the application.
+
+```text
+Attacker
+   ↓
+Malicious input
+   ↓
+Application database
+   ↓
+Victim requests page
+   ↓
+Stored payload is rendered
+   ↓
+Script executes
+```
+
+Example targets include:
+
+- Comments
+- User profiles
+- Forum posts
+- Messages
+
+Stored XSS can affect multiple users because the malicious content remains in the application.
+
+---
+
+### Reflected XSS
+
+The malicious payload is included in a request and immediately reflected back in the response.
+
+```text
+Attacker creates malicious URL/request
+        ↓
+Victim opens request
+        ↓
+Application reflects attacker-controlled data
+        ↓
+Browser renders response
+        ↓
+Script executes
+```
+
+Reflected XSS is commonly associated with URL parameters or other request data.
+
+---
+
+## 4. Impact of XSS
+
+A successful XSS attack can potentially allow malicious JavaScript to execute with the privileges of the affected web page.
+
+Depending on the application, this can result in:
+
+- Session-related attacks
+- Theft of accessible data
+- Modification of page content
+- Malicious redirects
+- Delivery of malware or phishing content
+- Performing actions as the affected user
+
+The exact impact depends on the application's architecture, browser protections, authentication mechanism, and what data the page can access.
+
+---
+
+## 5. Input Validation and Sanitization
+
+Applications should validate and sanitize untrusted input where appropriate.
+
+```text
+User Input
+    ↓
+Validation / Sanitization
+    ↓
+Safe Processing
+    ↓
+Application
+```
+
+Input validation can help ensure that data follows the expected format.
+
+For example:
+
+```text
+Expected username:
+john123
+
+Unexpected input:
+<script>...</script>
+```
+
+However, input validation alone should not be treated as the only XSS defense.
+
+---
+
+## 6. Output Encoding
+
+One of the most important XSS defenses is **context-appropriate output encoding**.
+
+The application should ensure that untrusted data is treated as data rather than executable HTML or JavaScript.
+
+Conceptually:
+
+```text
+Untrusted Input
+      ↓
+Output Encoding
+      ↓
+Browser interprets it as text
+      ↓
+Script does not execute
+```
+
+For example, characters such as:
+
+```text
+<
+>
+"
+'
+&
+```
+
+may need to be safely encoded depending on the output context.
+
+---
+
+## 7. Content Security Policy (CSP)
+
+**Content Security Policy (CSP)** is a browser security mechanism that helps restrict which resources and scripts a page is allowed to load or execute.
+
+A CSP can help reduce the impact of XSS vulnerabilities.
+
+Conceptually:
+
+```text
+Web Page
+   ↓
+CSP Policy
+   ↓
+Browser restricts allowed scripts/resources
+```
+
+CSP is an additional layer of defense and should be combined with secure application coding practices.
+
+---
+
+## 8. HttpOnly Cookies
+
+Authentication cookies can be configured with the `HttpOnly` attribute.
+
+An `HttpOnly` cookie cannot be accessed directly through JavaScript using mechanisms such as:
+
+```javascript
+document.cookie
+```
+
+This can reduce the ability of an XSS payload to directly steal an authentication cookie.
+
+However:
+
+> `HttpOnly` does not prevent XSS itself.
+
+A malicious script may still execute and potentially perform actions available to the page.
+
+Therefore, `HttpOnly` should be considered a **defense-in-depth measure**, not a replacement for XSS prevention.
+
+---
+
+## 9. XSS and Spring Applications
+
+Spring applications should treat user-controlled data as untrusted.
+
+When rendering data in a web application:
+
+```text
+User-controlled data
+        ↓
+Safe template/output handling
+        ↓
+HTML response
+        ↓
+Browser
+```
+
+With template engines such as Thymeleaf, use mechanisms that render user input as text when HTML rendering is not intentionally required.
+
+The important principle is:
+
+> Do not allow untrusted input to become executable HTML or JavaScript.
+
+---
+
+## 10. XSS vs CSRF
+
+XSS and CSRF are different vulnerabilities.
+
+| XSS | CSRF |
+|---|---|
+| Injects malicious script into a web page | Tricks a browser into sending an unwanted request |
+| Script executes in the victim's browser | Request is sent using the victim's authenticated context |
+| Focuses on untrusted content/script execution | Focuses on forged requests |
+| Output encoding, sanitization and CSP help defend against it | CSRF tokens and SameSite cookies help defend against it |
+
+### Simple mental model
+
+```text
+XSS
+Attacker → Injects script → Victim's browser executes it
+
+
+CSRF
+Attacker → Tricks browser → Browser sends forged request
+```
+
+---
+
+## 11. CSRF and XSS Can Interact
+
+Although they are different vulnerabilities, XSS can undermine some CSRF defenses.
+
+For example, if malicious JavaScript is successfully executing within the application's origin, it may be able to interact with pages and requests in ways an external attacker cannot.
+
+Therefore:
+
+> Preventing XSS is also important for maintaining the effectiveness of other security controls.
+
+---
+
+## 12. XSS Prevention Checklist
+
+When handling user-controlled data:
+
+- Validate input where appropriate.
+- Sanitize content when HTML input is intentionally supported.
+- Encode output according to the output context.
+- Avoid inserting untrusted data directly into executable JavaScript.
+- Use a strong Content Security Policy where appropriate.
+- Use `HttpOnly` cookies for sensitive session cookies.
+- Treat all user-controlled data as untrusted.
+- Keep frameworks and dependencies updated.
+- Follow secure coding practices.
+
+---
+
+## 13. Key Takeaways
+
+- **XSS = Cross-Site Scripting.**
+- XSS allows attacker-controlled script to execute in a victim's browser.
+- User-controlled input is a common source of XSS vulnerabilities.
+- **Stored XSS** persists malicious content in the application.
+- **Reflected XSS** reflects malicious input through a request/response.
+- Input validation and sanitization help reduce malicious input.
+- Output encoding prevents data from being interpreted as executable content.
+- CSP provides an additional browser-level security layer.
+- `HttpOnly` cookies reduce direct JavaScript access to sensitive cookies but do not prevent XSS.
+- XSS and CSRF are different attacks and require different primary defenses.
+
+### XSS mental model
+
+```text
+Untrusted User Input
+        ↓
+Application
+        ↓
+Unsafe HTML / Script Context
+        ↓
+Victim's Browser
+        ↓
+Malicious Script Executes
+```
+
+### Secure approach
+
+```text
+Untrusted User Input
+        ↓
+Validate / Sanitize where appropriate
+        ↓
+Context-appropriate Output Encoding
+        ↓
+CSP + Secure Cookie Settings
+        ↓
+Safer Browser Execution
+```
