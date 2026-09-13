@@ -6,6 +6,47 @@ Spring Security is used to secure Spring applications by controlling who can acc
 
 ---
 
+## How to Use This Note
+
+This note covers **Week 1 — Section 1: Spring Security Foundations and Basic Authentication**.
+
+The goal is not to memorize every Spring Security class or annotation.
+
+The goal is to understand:
+
+- what each security component does
+- when a component is required
+- how the configuration evolved during the section
+- which annotations belong to which classes
+- how to identify the minimum configuration required by a coding problem
+- how authentication and authorization fit together
+
+### Section 1 Learning Progression
+
+The concepts were introduced progressively:
+
+```text
+Spring Security basics
+        ↓
+In-memory users
+        ↓
+HTTP Basic Authentication
+        ↓
+URL-level authorization
+        ↓
+Method-level authorization
+        ↓
+Form Login
+```
+
+Each step adds a different capability.
+
+**Important:** A coding problem does not necessarily require every feature covered in the section.
+
+Always identify what the problem is asking for and configure only the components required for that requirement.
+
+---
+
 ## Authentication vs Authorization
 
 ### Authentication
@@ -166,6 +207,8 @@ Authentication / credential verification
 
 Authenticated `Authentication`
 
+> **Coding-problem note:** This is the internal conceptual authentication flow. You do not necessarily declare an `AuthenticationManager` or `AuthenticationProvider` bean yourself. For simple `httpBasic()` / `formLogin()` problems, Spring Security can configure the required authentication infrastructure automatically. `AuthenticationManager` becomes especially important when authentication is performed programmatically, such as custom login or JWT authentication.
+
 ### Authentication Filter
 
 The authentication filter intercepts the incoming authentication request and creates an authentication token containing the supplied credentials.
@@ -245,101 +288,156 @@ This is a simplified conceptual flow; the exact components involved can vary dep
 
 ## Spring Security Configuration
 
-Spring Security can be customized using a configuration class.
+Spring Security configuration defines **how the application should authenticate users and control access to requests**.
 
-A security configuration class can use:
+For Section 1, the main security configuration is usually built around:
 
-- `@Configuration`
+- `SecurityConfig` class
+- `SecurityFilterChain`
+- `UserDetailsService`
+- `PasswordEncoder`
 
-- `@EnableWebSecurity`
+However, **not every problem requires all of these beans**.
 
-A `SecurityFilterChain` bean can then be used to configure how HTTP requests should be secured.
+### SecurityConfig Class
 
-A basic configuration example is:
+A typical configuration class is:
 
-    @Configuration
-    @EnableWebSecurity
-    public class SecurityConfig {
-
-        @Bean
-        public SecurityFilterChain securityFilterChain(
-                HttpSecurity http
-        ) throws Exception {
-
-            http
-                .csrf().disable()
-                .authorizeHttpRequests()
-                    .anyRequest().authenticated()
-                .and()
-                .formLogin();
-
-            return http.build();
-        }
-
-    }
-
-This configuration demonstrates:
-
-- Disabling CSRF protection for the example.
-
-- Requiring authentication for all requests.
-
-- Enabling form-based login.
-
-Conceptually:
-
-Request
-
-↓
-
-Spring Security Filter Chain
-
-↓
-
-Authorization Rules
-
-↓
-
-Authentication if required
-
-↓
-
-Request Allowed or Denied
-
-### Logout
-
-Spring Security provides a default logout endpoint:
-
-`/logout`
-
----
-
-## In-Memory Authentication
-
-Spring Security can be configured with users stored in memory for simple examples and testing.
-
-A `UserDetailsService` bean can be used to provide user information to Spring Security.
-
-The user can be created using Spring Security's user builder and returned as part of the in-memory authentication configuration.
-
-Passwords should be encoded rather than stored as plain text.
-
-The implementation details of `UserDetailsService`, user creation, and password encoding will be covered further in the module.
-
----
-
-## Custom Username and Password
-
-Spring Security can be configured with custom users stored in memory.
-
-A `UserDetailsService` bean can provide user details to Spring Security.
-
-Users can be created using Spring Security's `User` builder.
-
-Example:
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
 
     @Bean
-    public UserDetailsService user() {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http
+    ) throws Exception {
+
+        // security configuration
+
+        return http.build();
+    }
+}
+```
+
+### What Each Annotation Does
+
+| Annotation | Purpose | Usually required? |
+|---|---|---|
+| `@Configuration` | Marks the class as a Spring configuration class | Yes |
+| `@EnableWebSecurity` | Enables Spring Web Security configuration | Common in course examples |
+| `@Bean` | Registers a method's return value as a Spring bean | Required on bean-producing methods |
+
+### SecurityFilterChain
+
+`SecurityFilterChain` defines how incoming HTTP requests are processed by Spring Security.
+
+For example:
+
+```java
+@Bean
+public SecurityFilterChain securityFilterChain(
+        HttpSecurity http
+) throws Exception {
+
+    http
+        .authorizeHttpRequests()
+            .anyRequest().authenticated()
+        .and()
+        .httpBasic();
+
+    return http.build();
+}
+```
+
+This configuration means:
+
+1. Requests enter the Spring Security filter chain.
+2. Requests must be authenticated.
+3. HTTP Basic Authentication is used.
+4. If authentication succeeds, the request can continue.
+
+### Minimum Beans Depend on the Problem
+
+Do not assume that every `SecurityConfig` must contain every possible Spring Security bean.
+
+For example:
+
+#### HTTP Basic + In-Memory Users
+
+Typically requires:
+
+```text
+SecurityFilterChain
+UserDetailsService / InMemoryUserDetailsManager
+PasswordEncoder
+```
+
+#### HTTP Basic Without Custom In-Memory Users
+
+The application may not need a custom `UserDetailsService` bean if user details are being supplied through another configured mechanism.
+
+#### Method-Level Security
+
+Requires method-level security to be enabled, for example:
+
+```java
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+```
+
+and the methods that need method-level authorization can use:
+
+```java
+@PreAuthorize("hasRole('ADMIN')")
+```
+
+#### Database Authentication
+
+Requires additional persistence-related components, which are covered in Note 25.
+
+### Bean Responsibility Map
+
+A useful way to remember the responsibilities is:
+
+| Component | Responsibility |
+|---|---|
+| `SecurityFilterChain` | Defines HTTP security and authorization rules |
+| `UserDetailsService` | Provides user information to Spring Security |
+| `InMemoryUserDetailsManager` | Stores user details in memory |
+| `PasswordEncoder` | Encodes passwords and verifies encoded passwords during authentication |
+| `AuthenticationManager` | Coordinates programmatic authentication |
+| `AuthenticationProvider` | Performs authentication for a particular authentication mechanism |
+
+**Important:** The presence of a class or bean in Spring Security does not mean it must be explicitly declared in every application.
+
+Use a bean when your implementation requires that responsibility.
+
+### Example: Section 1 Basic Configuration
+
+A common Section 1 configuration is:
+
+```java
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http
+    ) throws Exception {
+
+        http
+            .authorizeHttpRequests()
+                .anyRequest().authenticated()
+            .and()
+            .httpBasic();
+
+        return http.build();
+    }
+
+    @Bean
+    public UserDetailsService users() {
 
         UserDetails user = User.builder()
             .username("Tony")
@@ -347,99 +445,247 @@ Example:
             .roles("NORMAL")
             .build();
 
-        UserDetails user2 = User.builder()
-            .username("Steve")
-            .password(passwordEncoder().encode("nopassword"))
-            .roles("NORMAL")
-            .build();
-
-        return new InMemoryUserDetailsManager(user, user2);
+        return new InMemoryUserDetailsManager(user);
     }
-
-### Password Encoding
-
-Passwords can be encoded before being stored in the in-memory user configuration.
-
-A `PasswordEncoder` bean can be provided to Spring Security.
-
-Example:
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+}
+```
 
-### In-Memory User Configuration
+This is a **complete example**, not a mandatory template for every problem.
 
-`InMemoryUserDetailsManager` stores the configured users in memory.
+The required configuration depends on what the problem asks you to implement.
 
-In this example:
+### What About `EntityManager`?
 
-- `User.builder()` creates user details.
+`EntityManager` is related to **JPA/database persistence**.
 
-- `username()` specifies the username.
+It is not required simply because Spring Security is being used.
 
-- `password()` specifies the encoded password.
+For example:
 
-- `roles()` assigns roles to the user.
+```text
+HTTP Basic
++
+InMemoryUserDetailsManager
++
+@PreAuthorize
+```
 
-- `InMemoryUserDetailsManager` manages the configured users.
+does not require an `EntityManager`.
 
-- `PasswordEncoder` is used to encode passwords.
+`EntityManager` becomes relevant when the application performs persistence operations through JPA.
 
-The details of password encoders and authentication mechanisms will be covered further in the module.
+The persistence-related Spring Security implementation is covered in **Note 25**.
+
+### Logout
+
+Spring Security provides a default logout endpoint:
+
+`/logout`
+
+Logout configuration can also be customized when required.
+
+Do not add logout-specific configuration to a problem unless the problem requires customized logout behaviour.
+
+---
+
+## In-Memory Authentication
+
+In-memory authentication stores user details in the application's memory instead of retrieving users from a database.
+
+It is useful for:
+
+- learning Spring Security
+- testing
+- small demonstrations
+- coding exercises
+
+The main component is:
+
+```java
+InMemoryUserDetailsManager
+```
+
+It implements `UserDetailsService` and provides configured users to Spring Security.
+
+### Creating Users
+
+Users can be created using Spring Security's `User` builder:
+
+```java
+UserDetails user = User.builder()
+    .username("Tony")
+    .password(passwordEncoder().encode("password"))
+    .roles("NORMAL")
+    .build();
+```
+
+Multiple users can be supplied:
+
+```java
+@Bean
+public UserDetailsService users() {
+
+    UserDetails user1 = User.builder()
+        .username("Tony")
+        .password(passwordEncoder().encode("password"))
+        .roles("NORMAL")
+        .build();
+
+    UserDetails user2 = User.builder()
+        .username("Steve")
+        .password(passwordEncoder().encode("nopassword"))
+        .roles("ADMIN")
+        .build();
+
+    return new InMemoryUserDetailsManager(user1, user2);
+}
+```
+
+### What Each Part Does
+
+| Code | Responsibility |
+|---|---|
+| `User.builder()` | Creates Spring Security user details |
+| `.username()` | Defines the username |
+| `.password()` | Defines the encoded password |
+| `.roles()` | Assigns roles |
+| `InMemoryUserDetailsManager` | Stores and retrieves users from memory |
+| `UserDetailsService` | Spring Security interface used to retrieve user details |
+
+### PasswordEncoder
+
+Passwords should not be stored as plain text.
+
+A `PasswordEncoder` can be configured as a bean:
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
+```
+
+The password can then be encoded when creating the user:
+
+```java
+.password(passwordEncoder().encode("password"))
+```
+
+### Important Coding-Problem Rule
+
+If a problem specifies:
+
+> Create custom users using `InMemoryUserDetailsManager`
+
+think:
+
+```text
+InMemoryUserDetailsManager
+        +
+User.builder()
+        +
+PasswordEncoder
+```
+
+Then add the required authentication and authorization configuration separately.
+
+Do not add database repositories, entities, `EntityManager`, or JWT components unless the problem specifically requires them.
+
+### In-Memory Authentication Flow
+
+```text
+Configured User
+      ↓
+InMemoryUserDetailsManager
+      ↓
+UserDetailsService
+      ↓
+Authentication Provider
+      ↓
+Authentication
+```
+
+The important idea is that the user information is available **in memory**, so no database lookup is required.
 
 ---
 
 ## HTTP Basic Authentication
 
-Spring Security supports HTTP Basic Authentication as an alternative to form-based login.
+HTTP Basic Authentication is an authentication mechanism where the client sends a username and password with the HTTP request.
 
-A complete configuration example is:
+The credentials are Base64-encoded in the `Authorization` header.
 
-    @Configuration
-    @EnableWebSecurity
-    public class SecurityConfig {
+> Base64 is an encoding mechanism, not encryption. HTTPS is required to protect credentials in transit.
 
-        @Bean
-        public SecurityFilterChain securityFilterChain(
-                HttpSecurity http
-        ) throws Exception {
+### Enabling HTTP Basic
 
-            http
-                .authorizeHttpRequests()
-                    .anyRequest().authenticated()
-                .and()
-                .httpBasic();
+```java
+http
+    .authorizeHttpRequests()
+        .anyRequest().authenticated()
+    .and()
+    .httpBasic();
+```
 
-            return http.build();
-        }
+The `.httpBasic()` configuration tells Spring Security to use HTTP Basic Authentication for authentication.
 
-    }
+### Typical Section 1 Combination
 
-Conceptually:
+HTTP Basic is commonly combined with in-memory users:
 
-Request
+```text
+HTTP Request
+      ↓
+HTTP Basic credentials
+      ↓
+Spring Security Filter Chain
+      ↓
+UserDetailsService
+      ↓
+Authentication
+      ↓
+Authorization
+      ↓
+Controller
+```
 
-↓
+### Coding-Problem Recognition
 
-Authentication required
+If a problem says:
 
-↓
+- use HTTP Basic authentication
+- create users in memory
+- authenticate using username/password
 
-HTTP Basic credentials provided
+the basic components are:
 
-↓
+```text
+SecurityFilterChain
+        +
+httpBasic()
+        +
+UserDetailsService / InMemoryUserDetailsManager
+        +
+PasswordEncoder
+```
 
-Spring Security authenticates the user
+Additional authorization rules are added only when the problem requires them.
 
-↓
+### HTTP Basic vs Form Login
 
-Request Allowed or Denied
+| HTTP Basic | Form Login |
+|---|---|
+| Credentials are sent through HTTP authentication headers | Credentials are submitted through a login form |
+| Common for APIs/testing | Common for browser-based applications |
+| Browser/client handles authentication prompt or credentials | Application can provide a login page |
+| Configured using `.httpBasic()` | Configured using `.formLogin()` |
 
-With HTTP Basic Authentication, the client sends credentials with the HTTP request.
-
-It is commonly useful for simple APIs, testing, and learning authentication flows.
+Both are authentication mechanisms. They do not themselves determine which roles can access which endpoints.
 
 ---
 
@@ -597,6 +843,70 @@ Another method can restrict access to users with a different role:
         // ...
 
     }
+
+### Does Every Method Need `@PreAuthorize`?
+
+No.
+
+`@PreAuthorize` is used only when **method-level authorization is required**.
+
+For example:
+
+```java
+@PreAuthorize("hasRole('ADMIN')")
+@PostMapping("/hotel")
+public Hotel createHotel(...) {
+    // ...
+}
+```
+
+This means the method requires the `ADMIN` role.
+
+Another method might not need `@PreAuthorize` if:
+
+- it is intentionally accessible to all authenticated users
+- authorization is already handled appropriately at the request level
+- the problem does not require method-level authorization
+
+### When Should I Use It?
+
+Think of the requirement first:
+
+```text
+"Secure /admin/** for ADMIN users"
+        ↓
+Request-level authorization
+        ↓
+SecurityFilterChain
+```
+
+Whereas:
+
+```text
+"Only ADMIN users can execute this method"
+        ↓
+Method-level authorization
+        ↓
+@PreAuthorize
+```
+
+Method-level security is especially useful when authorization needs to be associated directly with a particular method rather than only with its URL.
+
+### `@PreAuthorize` Is Authorization, Not Authentication
+
+`@PreAuthorize` does not authenticate the user.
+
+Authentication establishes:
+
+```text
+Who is the user?
+```
+
+`@PreAuthorize` evaluates:
+
+```text
+Is this authenticated user allowed to execute this method?
+```
 
 ### Request-Level vs Method-Level Authorization
 
@@ -783,25 +1093,196 @@ When following an existing course or project, the examples should remain consist
 
 ---
 
+## Annotation Map for Coding Problems
+
+Spring Security problems can involve several different classes.
+
+Do not assume that every class needs every annotation.
+
+### Security Configuration Class
+
+Typical:
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+}
+```
+
+If method-level security is required in the course's older configuration style:
+
+```java
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+```
+
+### Controller
+
+A controller may use normal Spring MVC annotations such as:
+
+```java
+@RestController
+@RequestMapping("/hotel")
+```
+
+HTTP method mappings:
+
+```java
+@GetMapping
+@PostMapping
+@PutMapping
+@DeleteMapping
+```
+
+If method-level authorization is required:
+
+```java
+@PreAuthorize("hasRole('ADMIN')")
+```
+
+`@PreAuthorize` is **not required on every controller method**.
+
+### DTO
+
+A DTO does not need Spring Security annotations simply because the application uses Spring Security.
+Security annotations should be added because of a specific security requirement, not simply because the class exists in a secured application.
+
+It may use Lombok annotations such as:
+
+```java
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+```
+
+depending on what the DTO requires.
+
+Security configuration and DTO boilerplate are separate concerns.
+
+### Entity / Model
+
+An entity uses persistence-related annotations when it is a JPA entity, for example:
+
+```java
+@Entity
+@Table(name = "hotel")
+```
+
+These are related to database persistence, not HTTP Basic authentication itself.
+
+Entity-related configuration becomes important when persistent users are introduced in **Note 25**.
+
+### Quick Rule
+
+Think in terms of responsibility:
+
+| Class | Main concern | Typical annotations/components |
+|---|---|---|
+| `SecurityConfig` | Security configuration | `@Configuration`, `@EnableWebSecurity`, `@Bean` |
+| Controller | HTTP/API layer | `@RestController`, mappings |
+| Secured method | Authorization | `@PreAuthorize` when required |
+| DTO | Data transfer | Lombok / validation as required |
+| Entity | Database persistence | JPA annotations |
+| Repository | Database access | Spring Data repository |
+| Security user service | User lookup | `UserDetailsService` |
+
+### `@EnableGlobalMethodSecurity`
+
+The course uses:
+
+```java
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+```
+
+For this module, the important part is:
+
+```text
+prePostEnabled = true
+        ↓
+Enables pre/post method security annotations
+        ↓
+Allows annotations such as @PreAuthorize
+```
+
+The annotation has other configuration options in Spring Security, but they are not required for the Section 1 coding problems covered here.
+
+For the current problems, remember:
+
+```java
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+```
+
+when the problem specifically requires `@PreAuthorize` / pre-post method security.
+
+### Modern Equivalent
+
+In newer Spring Security versions, the commonly used replacement is:
+
+```java
+@EnableMethodSecurity
+```
+
+Therefore:
+
+```text
+Course / older configuration
+        ↓
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+
+Modern configuration
+        ↓
+@EnableMethodSecurity
+```
+
+Use the syntax that matches the Spring Security version used by the project or coding problem.
+
+---
+
 ## HTTP Security Status Codes
 
-Spring Security commonly uses HTTP status codes to indicate the result of a security check.
+Spring Security can result in different HTTP status codes depending on whether authentication or authorization fails.
 
 ### 401 Unauthorized
 
-`401 Unauthorized` generally indicates that authentication is required or the supplied authentication credentials are not valid.
+`401 Unauthorized` generally indicates that authentication is required or authentication credentials were not successfully provided/accepted.
 
-The client has not successfully authenticated.
+Think:
+
+**"The client is not successfully authenticated."**
 
 ### 403 Forbidden
 
-`403 Forbidden` indicates that the request is understood, but the authenticated user does not have sufficient permission to access the requested resource.
+`403 Forbidden` generally indicates that the user is authenticated but does not have sufficient permission to access the requested resource.
+
+Think:
+
+**"The user is authenticated, but is not allowed to do this."**
 
 ### Key Difference
 
-**401 → Authentication problem**
+```text
+401 → Authentication problem
 
-**403 → Authorization / permission problem**
+403 → Authorization / permission problem
+```
+
+### Do I Need to Set HTTP Status Codes Manually?
+
+No.
+
+You do **not** normally add a status-code annotation to every controller method simply because Spring Security is being used.
+
+For example, you do not need to write:
+
+```java
+@ResponseStatus(...)
+```
+
+on every method.
+
+Spring MVC and Spring Security can determine appropriate responses based on the request processing and security outcome.
+
+Explicit response-status configuration is only needed when the API's requirements call for a specific status code.
 
 ---
 
@@ -817,6 +1298,203 @@ For example:
 **Authentication → Who are you?**
 
 **Authorization → Are you allowed to access this endpoint?**
+
+---
+
+## Section 1 Coding Problem Guide
+
+When solving a Spring Security problem, first identify **what the problem is asking for**.
+
+Do not start by writing every security component you remember.
+
+### Step 1 — Identify the User Store
+
+Ask:
+
+**Where are the users stored?**
+
+If the problem says:
+
+> users are created in memory
+
+use:
+
+```text
+InMemoryUserDetailsManager
+```
+
+If the problem says:
+
+> users are stored in a database
+
+move to the persistent-user approach covered in Note 25.
+
+### Step 2 — Identify the Authentication Mechanism
+
+Ask:
+
+**How should the user authenticate?**
+
+| Requirement | Authentication |
+|---|---|
+| HTTP Basic | `.httpBasic()` |
+| Login page | `.formLogin()` |
+| JWT token | JWT authentication |
+| Database credentials | Persistent user authentication |
+
+### Step 3 — Identify Authorization Requirements
+
+Ask:
+
+**Who is allowed to access what?**
+
+If the requirement is based on URL/path:
+
+```java
+.authorizeHttpRequests()
+    .antMatchers("/admin/**").hasRole("ADMIN")
+```
+
+If the requirement is specifically on a method:
+
+```java
+@PreAuthorize("hasRole('ADMIN')")
+```
+
+### Step 4 — Identify Required Beans
+
+For a basic in-memory authentication problem, think:
+
+```text
+SecurityFilterChain
+        ↓
+HTTP security configuration
+
+InMemoryUserDetailsManager implements UserDetailsService
+        ↓
+Stores users in memory
+        ↓
+Provides users through UserDetailsService
+
+PasswordEncoder
+        ↓
+Encodes and verifies passwords
+```
+
+Add other components only when the problem requires them.
+
+### Step 5 — Identify Required Class Annotations
+
+Do not annotate every class with security annotations.
+
+Think by responsibility:
+
+```text
+SecurityConfig
+→ Security configuration annotations
+
+Controller
+→ Spring MVC annotations
+
+DTO
+→ DTO/Lombok/validation annotations as required
+
+Entity
+→ JPA annotations
+
+Secured method
+→ @PreAuthorize only when method-level authorization is required
+```
+
+### Common Section 1 Combinations
+
+#### Combination 1 — In-Memory + HTTP Basic
+
+```text
+InMemoryUserDetailsManager
+        +
+PasswordEncoder
+        +
+SecurityFilterChain
+        +
+httpBasic()
+```
+
+#### Combination 2 — In-Memory + HTTP Basic + URL Authorization
+
+```text
+In-memory users
+        +
+HTTP Basic
+        +
+authorizeHttpRequests()
+        +
+role-based request matchers
+```
+
+#### Combination 3 — In-Memory + HTTP Basic + Method Security
+
+```text
+In-memory users
+        +
+HTTP Basic
+        +
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+        +
+@PreAuthorize(...)
+```
+
+#### Combination 4 — Form Login
+
+```text
+UserDetailsService
+        +
+SecurityFilterChain
+        +
+formLogin()
+```
+
+Additional configuration depends on the problem.
+
+### Common Mistakes
+
+**Mistake 1: Adding every bean you have seen**
+
+Do not add `EntityManager`, repositories, JWT filters, or database entities to an in-memory authentication problem.
+
+**Mistake 2: Adding `@PreAuthorize` everywhere**
+
+Use it only when method-level authorization is required.
+
+**Mistake 3: Confusing authentication with authorization**
+
+```text
+Authentication → Who are you?
+
+Authorization → What are you allowed to do?
+```
+
+**Mistake 4: Treating HTTP status annotations as mandatory**
+
+Spring Security does not require every controller method to have an explicit HTTP status annotation.
+
+**Mistake 5: Mixing course versions**
+
+The course may use:
+
+```java
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+.antMatchers(...)
+```
+
+Newer Spring Security versions commonly use:
+
+```java
+@EnableMethodSecurity
+.requestMatchers(...)
+```
+
+Understand the concept first, then use the syntax required by the project's Spring Security version.
 
 ---
 
