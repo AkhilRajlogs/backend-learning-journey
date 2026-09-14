@@ -134,6 +134,123 @@ Here:
 
 The exact table and column names depend on the application's entity mapping.
 
+### JPA Relationship Cheat Sheet
+
+These annotations describe **how entities are related**, while parameters such as `cascade` and `fetch` describe **how the relationship behaves**.
+
+| Concept | Meaning |
+|---|---|
+| `@OneToOne` | One entity ↔ one entity |
+| `@OneToMany` | One entity → many entities |
+| `@ManyToOne` | Many entities → one entity |
+| `@ManyToMany` | Many entities ↔ many entities |
+| `mappedBy` | The other entity owns the relationship |
+| `@JoinColumn` | Defines the foreign-key column |
+| `@JoinTable` | Uses an intermediate join table |
+| `joinColumns` | Foreign key for this entity in the join table |
+| `inverseJoinColumns` | Foreign key for the other entity |
+| `cascade` | Defines which operations propagate |
+| `fetch` | Defines when related data is loaded |
+
+### How to Read `mappedBy`
+
+```java
+@OneToMany(mappedBy = "user")
+private List<Exercise> exerciseList;
+```
+
+Here:
+
+- `@OneToMany` → one `User` has many `Exercise` records.
+- `mappedBy = "user"` → the `Exercise` entity owns the relationship.
+- `"user"` is the **Java field name** inside `Exercise`, not the database column name.
+
+The other side would typically contain:
+
+```java
+@ManyToOne
+private User user;
+```
+
+### How to Remember `@JoinTable`
+
+For:
+
+```java
+@ManyToMany
+@JoinTable(
+    name = "user_role",
+    joinColumns = @JoinColumn(name = "user"),
+    inverseJoinColumns = @JoinColumn(name = "role")
+)
+private Set<Role> roles;
+```
+
+Think:
+
+```text
+User
+ ↓
+user_role
+ ↓
+Role
+```
+
+- `joinColumns` → this entity (`User`)
+- `inverseJoinColumns` → other entity (`Role`)
+
+### FitFusion Relationship Map
+
+The FitFusion application uses:
+
+```text
+User 1 ───────── * Exercise
+User 1 ───────── * Diet
+User * ───────── * Role
+```
+
+Typical mapping:
+
+```java
+// User
+@OneToMany(mappedBy = "user")
+private List<Exercise> exerciseList;
+
+@OneToMany(mappedBy = "user")
+private List<Diet> diets;
+
+@ManyToMany
+private Set<Role> roles;
+```
+
+```java
+// Exercise
+@ManyToOne
+private User user;
+```
+
+```java
+// Diet
+@ManyToOne
+private User user;
+```
+
+```text
+@OneToMany / @ManyToOne
+        ↓
+      "How many?"
+
+mappedBy
+        ↓
+"Who owns the relationship?"
+
+@JoinColumn / @JoinTable
+        ↓
+"How is the relationship stored?"
+```
+
+> **Important:** `cascade = CascadeType.ALL` and `fetch = FetchType.EAGER` are configuration choices. They are **not required simply because a relationship is `@OneToMany` or `@ManyToMany`**.
+
 ---
 
 ## Custom UserDetailsService
