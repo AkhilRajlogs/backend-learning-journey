@@ -255,7 +255,9 @@ mappedBy
 
 ## Custom UserDetailsService
 
-Spring Security requires a way to load user information during authentication.
+For database-backed authentication, Spring Security needs a way to load a user's stored information.
+
+This is done through the `UserDetailsService` interface.
 
 A custom `UserDetailsService` can be created by implementing the `UserDetailsService` interface.
 
@@ -275,60 +277,472 @@ The repository provides a method such as:
 ```
 This allows the authentication process to retrieve the user's information from the database.
 
+
+```java
+@Service
+public class CustomUserDetailService implements UserDetailsService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
+
+        return userRepository.findByEmail(username)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found"));
+    }
+}
+```
+
+### FitFusion Implementation
+
+In FitFusion, the user's **email acts as the username**.
+
+```java
+@Override
+public UserDetails loadUserByUsername(String username)
+        throws UsernameNotFoundException {
+
+    return userRepository.findByEmail(username)
+            .orElseThrow(() ->
+                    new UserNotFoundException("User not found"));
+}
+```
+
+The important connection is:
+
+```text
+Login username
+      ↓
+UserDetailsService.loadUserByUsername()
+      ↓
+UserRepository.findByEmail()
+      ↓
+User entity from database
+      ↓
+UserDetails
+```
+
+### Key Idea
+
+`UserDetailsService` does **not** authenticate the password itself.
+
+Its main responsibility is to **load the user's stored security information**.
+
+Spring Security can then use that information to perform authentication.
+
 ---
 
 ## Implementing UserDetails
 
-The persistent `User` entity can implement Spring Security's `UserDetails` interface.
+The application's persistent `User` entity can implement Spring Security's `UserDetails` interface.
 
 ```java
-    public class User implements UserDetails {
-        // ...
+@Entity
+public class User implements UserDetails {
+
+    private String email;
+    private String password;
+
+    @Override
+    public String getUsername() {
+        return email;
     }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    // Other UserDetails methods...
+}
 ```
 
-By implementing `UserDetails`, the application's persisted user can provide the information required by Spring Security during authentication.
+This allows the application's database entity to provide the information Spring Security needs.
 
-The required methods from `UserDetails` are implemented inside the `User` class.
+### Important Mapping
 
-This connects the application's user data with Spring Security's authentication process.
+In FitFusion:
+
+```text
+Database User.email
+        ↓
+User.getUsername()
+        ↓
+Spring Security username
+```
+
+Therefore, even though the application does not have a separate `username` field, Spring Security can still treat the user's email as the username.
+
+### UserDetails Methods
+
+The important methods are:
+
+| Method | Purpose |
+|---|---|
+| `getUsername()` | Returns the identity used for authentication |
+| `getPassword()` | Returns the stored encoded password |
+| `getAuthorities()` | Returns the user's roles/permissions |
+| `isAccountNonExpired()` | Whether the account is not expired |
+| `isAccountNonLocked()` | Whether the account is not locked |
+| `isCredentialsNonExpired()` | Whether credentials are still valid |
+| `isEnabled()` | Whether the account is enabled |
+
+A common simple implementation returns `true` for the account-status methods when the application does not implement those restrictions.
 
 ---
 
 ## Granted Authorities
 
-Spring Security uses `GrantedAuthority` to represent the authorities granted to an authenticated user.
+Spring Security uses `GrantedAuthority` objects to represent what an authenticated user is allowed to do.
 
-The roles stored with the user can be converted into `SimpleGrantedAuthority` objects.
+In FitFusion, roles are stored in the database and converted into `SimpleGrantedAuthority` objects.
 
 ```java
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
+@Override
+public Collection<? extends GrantedAuthority> getAuthorities() {
+
+    return this.roles.stream()
             .map(role -> new SimpleGrantedAuthority(
-                role.getRoleName()
+                    role.getRoleName()
             ))
             .collect(Collectors.toList());
-    }
+}
 ```
 
-The general flow is:
+The flow is:
 
-**Stored roles → Stream roles → Convert to GrantedAuthority → Return authorities**
+```text
+Roles stored in database
+        ↓
+User.getAuthorities()
+        ↓
+Stream through roles
+        ↓
+Convert each role to SimpleGrantedAuthority
+        ↓
+Return Collection<GrantedAuthority>
+```
 
-This allows Spring Security to use roles stored in the database for authorization.
+### Role vs Authority
+
+A useful distinction:
+
+- **Role** → application-level concept such as `ADMIN`, `CUSTOMER`, `TRAINER`
+- **GrantedAuthority** → Spring Security representation of an allowed role/permission
+
+For example:
+
+```java
+new SimpleGrantedAuthority("ADMIN")
+```
+
+creates an authority whose value is `"ADMIN"`.
+
+### `hasRole()` vs `hasAuthority()`
+
+This distinction is important in coding problems.
+
+```java
+@PreAuthorize("hasRole('ADMIN')")
+```
+
+typically checks for:
+
+```text
+ROLE_ADMIN
+```
+
+whereas:
+
+```java
+@PreAuthorize("hasAuthority('ADMIN')")
+```
+
+checks for:
+
+```text
+ADMIN
+```
+
+Therefore, the value stored in `GrantedAuthority` must match the expression being used.
+
+For example, if the application stores:
+
+```java
+new SimpleGrantedAuthority("ROLE_ADMIN")
+```
+
+then:
+
+```java
+hasRole("ADMIN")
+```
+
+is appropriate.
+
+If the application stores:
+
+```java
+new SimpleGrantedAuthority("ADMIN")
+```
+
+then:
+
+```java
+hasAuthority("ADMIN")
+```
+
+matches directly.
+
+### FitFusion Check
+
+When working on the FitFusion implementation, always check:
+
+```text
+Role.roleName
+      ↓
+SimpleGrantedAuthority(...)
+      ↓
+hasRole(...) / hasAuthority(...)
+```
+
+A role-prefix mismatch can cause an authenticated user to receive `403 Forbidden` even though the login itself succeeds.
 
 ---
 
 ## AuthenticationManager Configuration
 
-With database-backed authentication, user details are loaded through the custom `UserDetailsService`.
+For simple declarative authentication such as basic authentication or form login, Spring Security can often configure the authentication flow automatically.
 
-The previous in-memory `UserDetailsService` bean is no longer required.
+FitFusion is different because the login API explicitly calls:
 
-An `AuthenticationManager` bean is configured for authentication.
+```java
+manager.authenticate(authenticationToken);
+```
 
-A `PasswordEncoder` bean is still required to encode and verify passwords.
+Therefore, an `AuthenticationManager` is required.
+
+```java
+@Bean
+public AuthenticationManager authenticationManager(
+        AuthenticationConfiguration builder) throws Exception {
+
+    return builder.getAuthenticationManager();
+}
+```
+
+### FitFusion Authentication Flow
+
+The important flow is:
+
+```text
+POST /auth/login
+        ↓
+AuthController
+        ↓
+AuthService.login()
+        ↓
+UsernamePasswordAuthenticationToken
+        ↓
+AuthenticationManager.authenticate()
+        ↓
+UserDetailsService
+        ↓
+UserRepository
+        ↓
+User from database
+        ↓
+PasswordEncoder verifies password
+        ↓
+Authentication succeeds
+```
+
+The important point is that `AuthenticationManager` coordinates the authentication process.
+
+It does not mean that `AuthenticationManager` itself directly queries the database.
+
+### FitFusion `AuthService`
+
+The actual login service follows two important steps:
+
+```java
+public JwtResponse login(JwtRequest jwtRequest) {
+
+    this.doAuthenticate(
+            jwtRequest.getUsername(),
+            jwtRequest.getPassword()
+    );
+
+    UserDetails userDetails =
+            userDetailService.loadUserByUsername(
+                    jwtRequest.getUsername()
+            );
+
+    String token =
+            jwtHelper.generateToken(userDetails);
+
+    return JwtResponse.builder()
+            .jwtToken(token)
+            .build();
+}
+```
+
+The authentication step is:
+
+```java
+UsernamePasswordAuthenticationToken authenticationToken =
+        new UsernamePasswordAuthenticationToken(
+                username,
+                password
+        );
+
+manager.authenticate(authenticationToken);
+```
+
+After successful authentication, the user details are loaded again and used to generate the JWT.
+
+### Why Is AuthenticationManager Important Here?
+
+Because the application is performing **programmatic authentication**.
+
+The login API receives:
+
+```text
+username + password
+```
+
+and explicitly asks Spring Security to authenticate them:
+
+```java
+manager.authenticate(authenticationToken);
+```
+
+After successful authentication:
+
+```text
+Authenticated user
+        ↓
+UserDetails
+        ↓
+JWT generation
+        ↓
+JwtResponse
+```
+
+### PasswordEncoder
+
+The authentication process also relies on a `PasswordEncoder`.
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
+```
+
+During registration:
+
+```text
+Plain password
+      ↓
+BCrypt encoding
+      ↓
+Encoded password stored in database
+```
+
+During login:
+
+```text
+Entered password
+      ↓
+AuthenticationManager
+      ↓
+PasswordEncoder verification
+      ↓
+Stored encoded password
+      ↓
+Authentication success/failure
+```
+
+The application should **never compare the plain-text password directly with the encoded database value**.
+
+---
+
+## Database-Backed Authentication: Complete Mental Model
+
+The complete relationship between the main Spring Security components can be remembered as:
+
+```text
+                    DATABASE
+                       │
+                       ↓
+                 UserRepository
+                       │
+                       ↓
+             CustomUserDetailsService
+                       │
+                       ↓
+                  UserDetails
+                       │
+          ┌────────────┴────────────┐
+          ↓                         ↓
+     Password                  Authorities
+          │                         │
+          ↓                         ↓
+  PasswordEncoder          GrantedAuthority
+          │                         │
+          └────────────┬────────────┘
+                       ↓
+              AuthenticationManager
+                       │
+                       ↓
+               Authentication
+                       │
+                       ↓
+              SecurityContext
+                       │
+                       ↓
+              Authorization rules
+```
+
+### Component Responsibility Map
+
+| Component | Main Responsibility |
+|---|---|
+| `UserRepository` | Retrieves persisted users |
+| `UserDetailsService` | Loads user security information |
+| `User implements UserDetails` | Adapts application user data to Spring Security |
+| `GrantedAuthority` | Represents roles/permissions |
+| `PasswordEncoder` | Encodes and verifies passwords |
+| `AuthenticationManager` | Coordinates authentication |
+| `Authentication` | Represents the authentication result |
+| `SecurityContext` | Holds the current authenticated user |
+| `@PreAuthorize` | Applies method-level authorization |
+
+### Key Idea
+
+Think of the responsibilities in this order:
+
+```text
+Load user
+   ↓
+Verify credentials
+   ↓
+Create authenticated identity
+   ↓
+Attach authorities
+   ↓
+Apply authorization rules
+```
+
+**Authentication answers:**  
+> "Who is this user?"
+
+**Authorization answers:**  
+> "What is this authenticated user allowed to do?"
 
 ---
 
