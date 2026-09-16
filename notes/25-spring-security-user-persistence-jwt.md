@@ -2172,9 +2172,9 @@ The extracted JWT can then be passed to the validation logic.
 
 ## JWT Validation Flow
 
-The custom JWT filter is responsible for handling JWT authentication for subsequent requests.
+The custom JWT filter handles authentication for subsequent requests.
 
-The simplified flow is:
+The core flow is:
 
 ```text
 Incoming Request
@@ -2183,57 +2183,321 @@ JWTAuthenticationFilter
     ↓
 Read Authorization Header
     ↓
-Check Bearer Token
+Check "Bearer "
     ↓
 Extract JWT
     ↓
-Validate JWT
+Extract Username
     ↓
-Extract User Information
+Load UserDetails
+    ↓
+Check Token Expiration
     ↓
 Create Authentication
     ↓
-Store Authentication in SecurityContext
+Store in SecurityContext
     ↓
 Continue Filter Chain
 ```
 
-The JWT validation process is separate from the initial login authentication.
+### FitFusion `JwtAuthenticationFilter`
 
-During login, the application verifies the user's username and password and then generates a JWT.
+FitFusion implements the JWT filter using `OncePerRequestFilter`.
 
-During subsequent requests, the application receives the JWT and verifies whether it is valid.
+```java
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-The two stages can therefore be remembered as:
+    @Autowired
+    private JwtAuthenticationHelper jwtHelper;
+
+    @Autowired
+    private UserDetailsService userDetailService;
+
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain)
+            throws ServletException, IOException {
+
+        String requestHeader = request.getHeader("Authorization");
+
+        String username = null;
+        String token = null;
+
+        if (requestHeader != null &&
+            requestHeader.startsWith("Bearer ")) {
+
+            token = requestHeader.substring(7);
+
+            username = jwtHelper.getUsernameFromToken(token);
+
+            if (username != null &&
+                SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                UserDetails userDetails =
+                        userDetailService.loadUserByUsername(username);
+
+                if (!jwtHelper.isTokenExpired(token)) {
+
+                    UsernamePasswordAuthenticationToken
+                            usernamePasswordAuthenticationToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    token,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+
+                    usernamePasswordAuthenticationToken.setDetails(
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request)
+                    );
+
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(
+                                    usernamePasswordAuthenticationToken
+                            );
+                }
+            }
+        }
+
+        filterChain.doFilter(request, response);
+    }
+}
+```
+
+### Important Steps
+
+#### 1. Read the Authorization Header
+
+```java
+String requestHeader = request.getHeader("Authorization");
+```
+
+The filter reads the JWT from the `Authorization` header.
+
+Expected format:
 
 ```text
-Login
+Authorization: Bearer <JWT>
+```
 
+#### 2. Check the Bearer Prefix
+
+```java
+requestHeader.startsWith("Bearer ")
+```
+
+This confirms that the request contains a Bearer token.
+
+#### 3. Extract the JWT
+
+```java
+token = requestHeader.substring(7);
+```
+
+`Bearer ` contains 7 characters, so `substring(7)` removes the prefix and leaves the JWT.
+
+#### 4. Extract the Username
+
+```java
+username = jwtHelper.getUsernameFromToken(token);
+```
+
+The JWT helper extracts the username from the token's subject.
+
+In FitFusion:
+
+```text
+JWT subject
+    ↓
+User email
+```
+
+#### 5. Check the Security Context
+
+```java
+SecurityContextHolder.getContext().getAuthentication() == null
+```
+
+The filter checks whether authentication has already been established for the current request.
+
+If authentication is already present, the filter does not create another authentication object.
+
+#### 6. Load UserDetails
+
+```java
+UserDetails userDetails =
+        userDetailService.loadUserByUsername(username);
+```
+
+The username extracted from the JWT is used to load the user from the database.
+
+The flow is:
+
+```text
+JWT
+ ↓
+Username / Email
+ ↓
+UserDetailsService
+ ↓
+UserRepository
+ ↓
+UserDetails
+```
+
+#### 7. Check Token Expiration
+
+```java
+if (!jwtHelper.isTokenExpired(token))
+```
+
+The token must not be expired before authentication is established.
+
+Conceptually:
+
+```text
+JWT
+ ↓
+Check expiration
+ ↓
+Valid → Continue
+Expired → Do not authenticate
+```
+
+#### 8. Create Authentication
+
+```java
+new UsernamePasswordAuthenticationToken(
+        token,
+        null,
+        userDetails.getAuthorities()
+);
+```
+
+This creates an authenticated Spring Security `Authentication` object containing the user's authorities.
+
+The important point is that the password is not being authenticated again here.
+
+The JWT has already been issued after successful login. The filter validates the token and establishes the authenticated identity for the current request.
+
+#### 9. Store Authentication in SecurityContext
+
+```java
+SecurityContextHolder.getContext()
+        .setAuthentication(
+                usernamePasswordAuthenticationToken
+        );
+```
+
+This places the authenticated user into Spring Security's `SecurityContext`.
+
+After this point, authorization mechanisms can use the authenticated identity and authorities.
+
+```text
+JWT
+ ↓
+Validated User
+ ↓
+Authentication
+ ↓
+SecurityContext
+ ↓
+Authorization
+```
+
+#### 10. Continue the Filter Chain
+
+```java
+filterChain.doFilter(request, response);
+```
+
+The request continues to the remaining filters and eventually the controller.
+
+This is important because the JWT filter is only one part of the Spring Security filter chain.
+
+---
+
+## JWT Authentication Request Flow
+
+The complete FitFusion flow can be remembered as:
+
+```text
+Client
+   ↓
+Authorization: Bearer <JWT>
+   ↓
+JwtAuthenticationFilter
+   ↓
+Extract JWT
+   ↓
+Extract username
+   ↓
+Load UserDetails
+   ↓
+Check token expiration
+   ↓
+Create Authentication
+   ↓
+SecurityContext
+   ↓
+Authorization
+   ↓
+Controller
+```
+
+### Login vs Subsequent Request
+
+These two flows should not be confused.
+
+**Login:**
+
+```text
 Username + Password
         ↓
 AuthenticationManager
         ↓
-Credentials Verified
+Credentials verified
         ↓
 Generate JWT
         ↓
 Return JWT
 ```
 
-and:
+**Subsequent request:**
 
 ```text
-Subsequent Request
-
 JWT
-        ↓
-JWTAuthenticationFilter
-        ↓
+ ↓
+JwtAuthenticationFilter
+ ↓
 Validate JWT
-        ↓
-Authenticate User
-        ↓
+ ↓
+Load UserDetails
+ ↓
+Create Authentication
+ ↓
 SecurityContext
+ ↓
+Authorization
+ ↓
+Controller
 ```
 
-The exact JWT validation and token-parsing implementation will be covered next.
+### Key Idea
+
+The JWT filter does **not** generate the JWT.
+
+Its job is to:
+
+- Read the JWT from the request.
+- Extract the user's identity.
+- Validate the token.
+- Load the user's authorities.
+- Create an `Authentication` object.
+- Store it in the `SecurityContext`.
+- Continue the request through the filter chain.
+
+The login service generates the JWT; the JWT filter uses that JWT to establish authentication for later requests.
