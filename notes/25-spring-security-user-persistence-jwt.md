@@ -1691,197 +1691,288 @@ The JWT authentication logic can be implemented inside this method as the JWT au
 
 ## JWT Login API
 
-JWT authentication begins with a login request containing the user's credentials.
+In a JWT-based application, login is responsible for:
 
-A request object can represent the login data:
+1. Receiving the username/email and password.
+2. Authenticating the credentials.
+3. Loading the authenticated user's details.
+4. Generating a JWT.
+5. Returning the JWT to the client.
+
+In FitFusion, the login endpoint is exposed through `AuthController`.
+
+### FitFusion `AuthController`
 
 ```java
-public class JwtRequest {
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
 
-    private String username;
+    @Autowired
+    AuthService authService;
 
-    private String password;
-
-    // getters and setters
-
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest jwtRequest) {
+        return new ResponseEntity<>(
+            authService.login(jwtRequest),
+            HttpStatus.OK
+        );
+    }
 }
 ```
 
-The login request can then be authenticated using the `AuthenticationManager`:
+The controller itself does not authenticate the user or generate the JWT.
 
-```java
-Authentication authentication =
-
-    authenticationManager.authenticate(
-
-        new UsernamePasswordAuthenticationToken(
-
-            jwtRequest.getUsername(),
-
-            jwtRequest.getPassword()
-
-        )
-
-    );
-```
-
-The authentication flow is:
-
-```text
-JwtRequest
-
-    ↓
-
-Username + Password
-
-    ↓
-
-UsernamePasswordAuthenticationToken
-
-    ↓
-
-AuthenticationManager
-
-    ↓
-
-AuthenticationProvider
-
-    ↓
-
-Credential Verification
-
-    ↓
-
-Authenticated Authentication
-```
-
-If authentication succeeds, the returned `Authentication` object represents the authenticated user.
+It delegates the work to `AuthService`.
 
 ---
 
 ## Generating and Returning the JWT
 
-After successful authentication, the application can generate a JWT for the authenticated user.
-
-A simplified login API can be structured as:
+### FitFusion `AuthService`
 
 ```java
-@PostMapping("/login")
+@Service
+public class AuthService {
 
-public ResponseEntity<JwtResponse> login(
+    @Autowired
+    AuthenticationManager manager;
 
-        @RequestBody JwtRequest jwtRequest
+    @Autowired
+    JwtAuthenticationHelper jwtHelper;
 
-) {
+    @Autowired
+    UserDetailsService userDetailService;
 
-    Authentication authentication =
+    public JwtResponse login(JwtRequest jwtRequest) {
 
-        authenticationManager.authenticate(
-
-            new UsernamePasswordAuthenticationToken(
-
-                jwtRequest.getUsername(),
-
-                jwtRequest.getPassword()
-
-            )
-
+        this.doAuthenticate(
+            jwtRequest.getUsername(),
+            jwtRequest.getPassword()
         );
 
-    // Get authenticated user
+        UserDetails userdetails =
+            userDetailService.loadUserByUsername(
+                jwtRequest.getUsername()
+            );
 
-    // Generate JWT
+        String token = jwtHelper.generateToken(userdetails);
 
-    // Return JWT
+        JwtResponse response = JwtResponse.builder()
+            .jwtToken(token)
+            .build();
 
+        return response;
+    }
+
+    private void doAuthenticate(String username, String password) {
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+            new UsernamePasswordAuthenticationToken(
+                username,
+                password
+            );
+
+        try {
+            manager.authenticate(authenticationToken);
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException(
+                "Invalid username or password"
+            );
+        }
+    }
 }
 ```
 
-The JWT can then be returned to the client using a response object:
+### What happens inside `login()`?
+
+The FitFusion login process has two important stages.
+
+#### Stage 1 — Authenticate the credentials
 
 ```java
-public class JwtResponse {
-
-    private String token;
-
-    // constructor
-
-    // getter
-
-}
+this.doAuthenticate(
+    jwtRequest.getUsername(),
+    jwtRequest.getPassword()
+);
 ```
 
-The complete login flow can be remembered as:
+`doAuthenticate()` creates a `UsernamePasswordAuthenticationToken` containing the credentials:
 
-```text
-Login Request
-
-    ↓
-
-Username + Password
-
-    ↓
-
-AuthenticationManager
-
-    ↓
-
-Credentials Verified
-
-    ↓
-
-Authenticated User
-
-    ↓
-
-Generate JWT
-
-    ↓
-
-Return JWT to Client
+```java
+UsernamePasswordAuthenticationToken authenticationToken =
+    new UsernamePasswordAuthenticationToken(username, password);
 ```
 
-The client can use the returned JWT for subsequent authenticated requests.
+It then passes the token to:
 
-The process of sending and validating the JWT on subsequent requests is handled separately.
+```java
+manager.authenticate(authenticationToken);
+```
+
+The `AuthenticationManager` coordinates authentication.
+
+For FitFusion, the authentication process ultimately uses:
+
+- `UserDetailsService` to load the user
+- `UserRepository` to find the user by email
+- `PasswordEncoder` to verify the submitted password against the stored encoded password
+- the user's authorities/roles as part of the authenticated identity
+
+If authentication fails, `BadCredentialsException` is thrown.
 
 ---
 
-## JWT Authentication Helper
+#### Stage 2 — Load `UserDetails` and generate the JWT
 
-A separate helper/service can be used to keep JWT creation and token-related operations together.
+After successful authentication:
 
-In the implementation, `JwtAuthenticationHelper` is responsible for:
+```java
+UserDetails userdetails =
+    userDetailService.loadUserByUsername(
+        jwtRequest.getUsername()
+    );
+```
 
-- Generating the JWT.
-- Extracting the username from the JWT.
-- Reading the JWT claims.
-- Checking whether the JWT has expired.
+The user's details are loaded again and passed to:
 
-The helper can be registered as a Spring component:
+```java
+String token = jwtHelper.generateToken(userdetails);
+```
+
+The generated JWT is then placed inside `JwtResponse`:
+
+```java
+JwtResponse response = JwtResponse.builder()
+    .jwtToken(token)
+    .build();
+```
+
+Finally, the controller returns the response to the client.
+
+---
+
+## FitFusion JWT Login Flow
+
+```text
+Client
+  |
+  | POST /auth/login
+  | username + password
+  ↓
+AuthController
+  |
+  ↓
+AuthService.login()
+  |
+  ↓
+AuthenticationManager.authenticate()
+  |
+  ↓
+UserDetailsService
+  |
+  ↓
+UserRepository.findByEmail()
+  |
+  ↓
+PasswordEncoder verifies password
+  |
+  ↓
+Authentication succeeds
+  |
+  ↓
+UserDetails loaded
+  |
+  ↓
+JwtAuthenticationHelper.generateToken()
+  |
+  ↓
+JwtResponse
+  |
+  ↓
+Client receives JWT
+```
+
+### Important distinction
+
+`AuthenticationManager` is used here because FitFusion performs **programmatic authentication**:
+
+```java
+manager.authenticate(authenticationToken);
+```
+
+After authentication succeeds, the application generates a JWT that the client can use for subsequent protected requests.
+
+The JWT itself does not contain the user's password.
+
+---
+
+## JWT Token Generation
+
+FitFusion uses `JwtAuthenticationHelper` to create the token.
 
 ```java
 @Component
 public class JwtAuthenticationHelper {
-    // ...
+
+    private String secret =
+        "tanamanamanamajsddldldldldldldmmcfhvjhbnfnmsdbfmsbvnmbfvnmbvmbjllllddmmmxxxnnneeelllsssnnnsnsnsnsnsnsnsnsnhisisaverylongsecretkeyforjwtgenerationandvalidation12345";
+
+    private static final long JWT_TOKEN_VALIDITY = 60 * 60;
+
+    public String generateToken(UserDetails userdetails) {
+
+        Map<String, Object> claims = new HashMap<>();
+
+        return Jwts.builder()
+            .setClaims(claims)
+            .setSubject(userdetails.getUsername())
+            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setExpiration(
+                new Date(
+                    System.currentTimeMillis()
+                    + JWT_TOKEN_VALIDITY * 1000
+                )
+            )
+            .signWith(
+                new SecretKeySpec(
+                    secret.getBytes(),
+                    SignatureAlgorithm.HS512.getJcaName()
+                ),
+                SignatureAlgorithm.HS512
+            )
+            .compact();
+    }
 }
 ```
 
-### JWT Token Validity
+### Important parts of token generation
 
-The token validity period can be defined as a constant.
+#### Subject
 
 ```java
-private static final long JWT_TOKEN_VALIDITY = 60 * 60;
+.setSubject(userdetails.getUsername())
 ```
 
-Here, the value represents seconds, so:
+The authenticated user's username is stored as the JWT subject.
+
+In FitFusion:
 
 ```text
-60 × 60 = 3600 seconds = 1 hour
+username → email
 ```
 
-When generating the token, the validity is converted from seconds to milliseconds:
+because `User.getUsername()` returns the user's email.
+
+#### Issued-at time
+
+```java
+.setIssuedAt(new Date(System.currentTimeMillis()))
+```
+
+Records when the token was issued.
+
+#### Expiration
 
 ```java
 .setExpiration(
@@ -1892,148 +1983,92 @@ When generating the token, the validity is converted from seconds to millisecond
 )
 ```
 
-### Generating the JWT
-
-The helper can generate a JWT using the authenticated user's `UserDetails`.
+FitFusion sets:
 
 ```java
-public String generateToken(UserDetails userdetails) {
-
-    Map<String, Object> claims = new HashMap<>();
-
-    return Jwts.builder()
-        .setClaims(claims)
-        .setSubject(userdetails.getUsername())
-        .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(
-            new Date(
-                System.currentTimeMillis()
-                + JWT_TOKEN_VALIDITY * 1000
-            )
-        )
-        .signWith(
-            new SecretKeySpec(
-                secret.getBytes(),
-                SignatureAlgorithm.HS512.getJcaName()
-            ),
-            SignatureAlgorithm.HS512
-        )
-        .compact();
-}
+private static final long JWT_TOKEN_VALIDITY = 60 * 60;
 ```
 
-The important parts of the token generation are:
+This represents one hour in seconds.
 
-- `setClaims()` → sets the claims carried by the token.
-- `setSubject()` → stores the authenticated user's username as the JWT subject.
-- `setIssuedAt()` → records when the token was issued.
-- `setExpiration()` → defines when the token expires.
-- `signWith()` → signs the token using the configured secret and `HS512`.
-- `compact()` → creates the final JWT string.
-
-The token-generation flow is:
-
-```text
-UserDetails
-    ↓
-Username
-    ↓
-JWT Claims
-    ↓
-Subject + Issued At + Expiration
-    ↓
-Sign with Secret Key + HS512
-    ↓
-Compact JWT String
-```
-
-### Extracting the Username
-
-The username can be retrieved from the JWT subject.
+#### Signature
 
 ```java
-public String getUsernameFromToken(String token) {
-
-    Claims claims = getClaimsFromToken(token);
-
-    return claims.getSubject();
-}
+.signWith(
+    new SecretKeySpec(
+        secret.getBytes(),
+        SignatureAlgorithm.HS512.getJcaName()
+    ),
+    SignatureAlgorithm.HS512
+)
 ```
 
-The helper first obtains the claims and then reads the subject.
+The token is signed so that the server can later verify that the token was created using the expected signing secret.
 
-```text
-JWT
- ↓
-Claims
- ↓
-Subject
- ↓
-Username
-```
+### Important security note
 
-### Reading JWT Claims
+The secret shown above is the **course/FitFusion implementation**.
 
-The claims can be extracted by parsing the signed JWT with the configured signing key.
+In a production application, secrets should not be hardcoded in source code. They should be managed through appropriate configuration/secrets management.
+
+Also, JWT is **signed, not encrypted**. Its payload should therefore not be treated as a place for sensitive information such as passwords.
+
+### JJWT version note
+
+The exact JJWT API is version-sensitive.
+
+The FitFusion/course implementation uses APIs such as:
 
 ```java
-public Claims getClaimsFromToken(String token) {
-
-    Claims claims = Jwts.parserBuilder()
-        .setSigningKey(secret.getBytes())
-        .build()
-        .parseClaimsJws(token)
-        .getBody();
-
-    return claims;
-}
+Jwts.parserBuilder()
 ```
 
-The important idea is that the token is parsed using the signing key. The resulting `Claims` object provides access to information such as the subject and expiration time.
-
-### Checking Token Expiration
-
-The expiration time can be obtained from the claims and compared with the current time.
+and:
 
 ```java
-public Boolean isTokenExpired(String token) {
-
-    Claims claims = getClaimsFromToken(token);
-
-    Date expDate = claims.getExpiration();
-
-    return expDate.before(new Date());
-}
+signWith(key, algorithm)
 ```
 
-The flow is:
+When implementing this in another project, verify the API against the JJWT version declared in `pom.xml`.
+
+---
+
+## JWT Login Mental Model
+
+For coding problems, remember the sequence:
 
 ```text
-JWT
- ↓
-Extract Claims
- ↓
-Get Expiration Date
- ↓
-Compare with Current Date
- ↓
-Expired / Not Expired
+Login Request
+    ↓
+Authenticate credentials
+    ↓
+AuthenticationManager
+    ↓
+UserDetailsService
+    ↓
+UserRepository
+    ↓
+PasswordEncoder
+    ↓
+Authentication successful
+    ↓
+Load UserDetails
+    ↓
+Generate JWT
+    ↓
+Return JwtResponse
 ```
 
-**Key idea:**
+The key separation is:
 
-`JwtAuthenticationHelper` centralizes the main JWT operations used by the application:
+- **AuthenticationManager** → verifies the login credentials
+- **UserDetailsService** → loads user information
+- **PasswordEncoder** → verifies the encoded password
+- **JwtAuthenticationHelper** → creates the JWT
+- **JwtResponse** → sends the token back to the client
 
-```text
-Generate Token
-       ↓
-Read Claims
-       ↓
-Extract Username
-       ↓
-Check Expiration
-```
-
+The next stage is using that JWT on subsequent requests. The JWT filter responsible for extracting, validating, and placing the authenticated user into the `SecurityContext` is covered separately.
+  
 ---
 
 ## Sending the JWT with Subsequent Requests
