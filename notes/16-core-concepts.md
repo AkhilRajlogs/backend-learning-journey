@@ -477,19 +477,181 @@ In a bidirectional relationship, one entity is responsible for managing the rela
 
 This entity is called the **owning side**.
 
-The other entity is called the **inverse side** and simply reflects the relationship.
+The other entity is called the **inverse side**.
 
-General rule:
+A practical way to identify the owning side:
 
-- Owning side → contains the foreign key
-- Inverse side → references the owning side
+```text
+One-to-Many / Many-to-One
+        ↓
+The @ManyToOne side commonly owns the relationship
+because it contains the foreign-key mapping.
 
-### Interview Tip
+Many-to-Many
+        ↓
+The side containing @JoinTable is the owning side.
+```
 
-`@JoinColumn` is placed on the owning side because that entity stores the foreign key.
+Example:
 
-The inverse side is identified using mappedBy, which tells Hibernate that the relationship is managed by the other entity.
+```java
+// User
+@OneToMany(mappedBy = "user")
+private List<Exercise> exerciseList;
+```
 
+```java
+// Exercise
+@ManyToOne
+@JoinColumn(name = "user_id")
+private User user;
+```
+
+Here:
+
+```text
+User
+  │
+  │ @OneToMany(mappedBy = "user")
+  ↓
+Exercise
+  │
+  │ @ManyToOne
+  │ @JoinColumn(name = "user_id")
+  ↓
+user_id foreign key
+```
+
+`Exercise` is the owning side because its relationship mapping contains the foreign key.
+
+### Important `mappedBy` Rule
+
+The value of `mappedBy` is the **Java field name on the owning entity**.
+
+For:
+
+```java
+@ManyToOne
+private User user;
+```
+
+the inverse side can use:
+
+```java
+@OneToMany(mappedBy = "user")
+private List<Exercise> exerciseList;
+```
+
+Therefore:
+
+```text
+mappedBy = Java relationship field
+```
+
+It does **not** refer to:
+
+- the database column name
+- the table name
+- the entity class name
+
+### Ownership vs Cascade vs Fetch
+
+These concepts answer different questions:
+
+```text
+Ownership
+    ↓
+Who controls persistence of the relationship?
+
+Cascade
+    ↓
+Which entity operations propagate?
+
+Fetch
+    ↓
+When is related data loaded?
+```
+
+For example:
+
+```java
+@OneToMany(
+    mappedBy = "user",
+    cascade = CascadeType.ALL,
+    fetch = FetchType.EAGER
+)
+private List<Exercise> exerciseList;
+```
+
+Here:
+
+- `mappedBy` → identifies the inverse side and points to the owning side's field.
+- `cascade` → controls propagation of entity operations.
+- `fetch` → controls related-data loading.
+
+Remember:
+
+```text
+ownership ≠ cascade ≠ fetch
+```
+
+### Keeping Both Sides Synchronized
+
+For a bidirectional relationship, it is useful to keep both sides of the Java object relationship synchronized.
+
+Example:
+
+```java
+user.getExerciseList().add(exercise);
+exercise.setUser(user);
+```
+
+This keeps the in-memory object graph consistent:
+
+```text
+User
+  ↓
+exerciseList
+  ↓
+Exercise
+  ↓
+user
+  ↓
+User
+```
+
+The owning side still controls how the relationship is persisted.
+
+### Interview Mental Model
+
+When you see a JPA relationship, ask:
+
+```text
+1. What is the cardinality?
+        ↓
+@OneToOne / @OneToMany / @ManyToOne / @ManyToMany
+
+2. Who owns the relationship?
+        ↓
+Look for the foreign-key mapping or @JoinTable.
+
+3. Is there an inverse side?
+        ↓
+Look for mappedBy.
+
+4. How is the relationship stored?
+        ↓
+@JoinColumn / @JoinTable
+
+5. Are cascade and fetch settings required?
+        ↓
+Treat them as separate concerns.
+```
+
+**Key rule:**
+
+> `mappedBy` refers to the Java relationship field on the owning entity, not the database column.
+  
 ---
 
 ## Many-to-One Relationship
@@ -502,8 +664,6 @@ Example:
 - Many Orders → One Customer
 
 Typically implemented using `@ManyToOne`.
-
----
 
 ---
 
