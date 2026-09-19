@@ -2501,3 +2501,84 @@ Its job is to:
 - Continue the request through the filter chain.
 
 The login service generates the JWT; the JWT filter uses that JWT to establish authentication for later requests.
+
+---
+
+## JWT Propagation with RestTemplate
+
+When one backend service calls another protected service, the JWT must be forwarded in the `Authorization` header.
+
+### Sending JWT to Another Service
+
+```java
+HttpHeaders headers = new HttpHeaders();
+headers.setBearerAuth(jwt);
+
+HttpEntity<?> entity = new HttpEntity<>(headers);
+
+ResponseEntity<Rating[]> response =
+    restTemplate.exchange(
+        ratingServiceUrl,
+        HttpMethod.GET,
+        entity,
+        Rating[].class
+    );
+```
+
+The important part is:
+
+```text
+Authorization: Bearer <JWT>
+```
+
+### Service-to-Service Flow
+
+```text
+Client
+  ↓
+Login / Authentication
+  ↓
+JWT issued
+  ↓
+Service A
+  ↓
+RestTemplate
+  ↓
+Authorization: Bearer <JWT>
+  ↓
+Service B
+  ↓
+JWT Authentication Filter
+  ↓
+SecurityContext
+  ↓
+Protected Controller
+```
+
+### Mental Model
+
+The JWT is not only used between the client and the backend.
+
+It can also be propagated when one authenticated service calls another protected service:
+
+```text
+JWT received
+    ↓
+Service A extracts/keeps JWT
+    ↓
+Service A adds JWT to Authorization header
+    ↓
+Service B receives JWT
+    ↓
+JWT filter validates token
+    ↓
+SecurityContext gets authenticated user
+    ↓
+Protected endpoint executes
+```
+
+### Interview Takeaway
+
+> In a JWT-based service-to-service call, the calling service forwards the JWT using the `Authorization: Bearer <JWT>` header so the receiving service can authenticate the request through its JWT security filter.
+
+**Note:** `RestTemplate` is the client used in the course material. The general RestTemplate concepts are already covered in Note 22, so this section only records the **JWT propagation/security integration**.
