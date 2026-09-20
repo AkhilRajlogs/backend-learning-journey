@@ -2568,6 +2568,153 @@ The important part is:
 Authorization: Bearer <JWT>
 ```
 
+### Communicator Pattern for API-to-API Calls
+
+When one Spring Boot application needs to call another API, the HTTP communication can be placed inside a dedicated **Communicator service**.
+
+The Communicator acts as the boundary between the application and the remote API.
+
+For example:
+
+```text
+PharmaLink
+    ↓
+StoreFinderCommunicator
+    ↓
+RestTemplate
+    ↓
+StoreFinder API
+```
+
+Instead of putting the `RestTemplate` call directly inside a controller, a service such as `StoreFinderCommunicator` can handle the remote API request.
+
+### Example Communicator
+
+The Section 3 course example uses a `RatingServiceCommunicator`:
+
+```java
+@Service
+public class RatingServiceCommunicator {
+
+    private final RestTemplate restTemplate;
+
+    @Autowired
+    public RatingServiceCommunicator(
+            RestTemplateBuilder restTemplateBuilder) {
+
+        this.restTemplate = restTemplateBuilder.build();
+    }
+
+    public RatingResponse getRating(
+            String id,
+            String jwtToken) {
+
+        String url = "http://localhost:8081/rating/id/";
+
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.set(
+                "Authorization",
+                "Bearer " + jwtToken
+        );
+
+        HttpEntity<Map<String, Long>> requestEntity =
+                new HttpEntity<>(headers);
+
+        ResponseEntity<RatingResponse> ratingResponse =
+                restTemplate.exchange(
+                        url + id,
+                        HttpMethod.GET,
+                        requestEntity,
+                        RatingResponse.class
+                );
+
+        return ratingResponse.getBody();
+    }
+}
+```
+
+### What the Communicator Is Doing
+
+The Communicator is responsible for:
+
+1. Building the remote API URL.
+2. Creating the HTTP headers.
+3. Adding the JWT to the `Authorization` header.
+4. Creating the HTTP request entity.
+5. Calling the remote API using `RestTemplate`.
+6. Converting the response into the required response type.
+7. Returning the response to the calling application.
+
+The important security part is:
+
+```java
+headers.set(
+        "Authorization",
+        "Bearer " + jwtToken
+);
+```
+
+which produces:
+
+```text
+Authorization: Bearer <JWT>
+```
+
+### API-to-API Flow
+
+```text
+Client
+   ↓
+PharmaLink
+   ↓
+StoreFinderCommunicator
+   ↓
+RestTemplate
+   ↓
+Authorization: Bearer <JWT>
+   ↓
+StoreFinder API
+   ↓
+JWT Authentication Filter
+   ↓
+SecurityContext
+   ↓
+Protected Endpoint
+```
+
+### Mental Model
+
+Think of the Communicator as a small service whose responsibility is:
+
+```text
+"My application needs data from another API."
+
+                ↓
+
+Communicator
+
+                ↓
+
+"Build the HTTP request."
+
+                ↓
+
+RestTemplate
+
+                ↓
+
+"Send JWT + request."
+
+                ↓
+
+Remote API
+```
+
+### Interview Takeaway
+
+> A Communicator is a service abstraction used to encapsulate communication with another API. With JWT-based security, it can use `RestTemplate` to send the JWT in the `Authorization: Bearer <JWT>` header when calling the protected API.
+
 ### Service-to-Service Flow
 
 ```text
