@@ -1309,6 +1309,43 @@ Remember Me provides a mechanism that can restore authentication when the normal
 
 ---
 
+### Remember Me Security Considerations
+
+Remember Me keeps authentication available for longer than the normal session, so the persistent authentication mechanism must be protected carefully.
+
+Important considerations include:
+
+- **Secure cookies** → The Remember Me cookie should use appropriate cookie security settings such as `Secure` and `HttpOnly`.
+- **Strong tokens** → The persistent authentication token should be long and difficult to guess.
+- **Token rotation and expiration** → Tokens should have an appropriate lifetime and may be rotated or refreshed to reduce the risk of token misuse.
+- **User control** → Users should be able to choose whether Remember Me is enabled and should be able to disable it or log out.
+- **Session management** → The application should securely handle both normal sessions and Remember Me authentication.
+- **Account protection** → Additional protections such as account lockout policies can reduce the impact of unauthorized access to a user's device.
+
+### Mental Model
+
+```text
+Remember Me
+      ↓
+Persistent authentication token
+      ↓
+Protect the token
+      ↓
+Secure + HttpOnly cookie
+      ↓
+Strong token
+      ↓
+Expiration / rotation
+      ↓
+User can disable / logout
+```
+
+### Interview Takeaway
+
+> Remember Me improves convenience by allowing authentication to survive beyond the normal session, but the persistent authentication token must be protected with secure cookie settings, strong tokens, appropriate expiration/rotation, and proper session management.
+
+---
+
 ## JSON Web Token (JWT)
 
 JWT stands for **JSON Web Token**.
