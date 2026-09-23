@@ -336,3 +336,284 @@ Resource Server
 **Is OAuth authentication or authorization?**
 
 > OAuth 2.0 primarily provides **authorization** and delegated access to resources. OIDC adds an identity/authentication layer on top of OAuth 2.0.
+
+---
+
+## 2. OpenID Connect (OIDC)
+
+**OpenID Connect (OIDC)** is an **identity layer built on top of OAuth 2.0**.
+
+OAuth 2.0 primarily handles **authorization**, while OIDC adds standardized **authentication and identity information**.
+
+> **Mental Model:** OAuth = "What can this client access?"  
+> OIDC = "Who is the authenticated user?"
+
+---
+
+### OIDC and OAuth 2.0
+
+```text
+OAuth 2.0
+   ↓
+Authorization / Delegated Access
+   ↓
+OIDC
+   ↓
+Authentication + Identity Information
+```
+
+OIDC uses OAuth 2.0 mechanisms and adds an **ID Token** containing claims about the authenticated user.
+
+---
+
+### ID Token
+
+The **ID Token** is a **JWT (JSON Web Token)** that contains claims about the authenticated end-user.
+
+It allows the client to receive standardized identity information about the user.
+
+```text
+User
+ ↓
+Authentication
+ ↓
+Authorization Server
+ ↓
+ID Token (JWT)
+ ↓
+Client
+ ↓
+User Identity Information
+```
+
+> **Remember:**  
+> **Access Token → access protected resources**  
+> **ID Token → information about the authenticated user's identity**
+
+---
+
+### OIDC Endpoints
+
+OIDC commonly involves three important endpoints:
+
+| Endpoint | Purpose |
+|---|---|
+| **Authorization Endpoint** | Used to authenticate the user and obtain authorization |
+| **Token Endpoint** | Used to obtain tokens |
+| **UserInfo Endpoint** | Provides information/claims about the authenticated user |
+
+```text
+Client
+  ↓
+Authorization Endpoint
+  ↓
+User Authentication + Consent
+  ↓
+Token Endpoint
+  ↓
+ID Token + Access Token
+  ↓
+UserInfo Endpoint
+  ↓
+User Information
+```
+
+---
+
+### OIDC Flows
+
+The CN material describes two OIDC flows:
+
+#### 1. Authorization Code Flow
+
+The client receives an authorization code and exchanges it for tokens.
+
+```text
+User
+ ↓
+Authorization Server
+ ↓
+Authentication + Consent
+ ↓
+Authorization Code
+ ↓
+Client
+ ↓
+Token Endpoint
+ ↓
+ID Token + Access Token
+```
+
+#### 2. Implicit Flow
+
+The tokens are returned directly after authorization rather than first returning an authorization code.
+
+```text
+User
+ ↓
+Authorization Server
+ ↓
+Authentication + Authorization
+ ↓
+Tokens
+ ↓
+Client
+```
+
+> **Quick Recall**
+>
+> - Authorization Code → authorization code → token exchange
+> - Implicit → tokens returned directly
+
+---
+
+### Claims and Scopes
+
+#### Claims
+
+**Claims** are pieces of information about the authenticated user.
+
+Examples include:
+
+```text
+Name
+Email
+Profile Information
+```
+
+The ID Token contains claims about the authenticated end-user.
+
+#### Scopes
+
+**Scopes** define the requested level/type of access or identity information.
+
+```text
+Client
+ ↓
+Requests Scopes
+ ↓
+User Authentication + Consent
+ ↓
+Tokens / Claims
+```
+
+> **Remember:** Scope describes **what is being requested**; claims represent **information about the user**.
+
+---
+
+### OIDC Authentication & Consent
+
+OIDC involves:
+
+1. Client requests authentication.
+2. User authenticates with the Identity Provider.
+3. User provides consent where required.
+4. Authorization Server issues an **ID Token** and **Access Token**.
+5. Client can use the UserInfo endpoint to obtain user information.
+
+```text
+Client
+  ↓
+Authentication Request
+  ↓
+User Authentication
+  ↓
+Consent
+  ↓
+ID Token + Access Token
+  ↓
+UserInfo
+  ↓
+User Information
+```
+
+---
+
+### OIDC Workflow
+
+```text
+1. Client Registration
+          ↓
+2. Authentication Request
+          ↓
+3. User Authentication + Consent
+          ↓
+4. ID Token + Access Token Issued
+          ↓
+5. Access User Information
+          ↓
+   UserInfo Endpoint
+```
+
+The important addition compared with OAuth 2.0 is that OIDC provides a standardized way for the client to receive **identity information about the authenticated user**.
+
+---
+
+### Advantages of OIDC
+
+OIDC provides:
+
+- **Standardized authentication and identity information**
+- **Single Sign-On (SSO)**
+- A **user-centric identity framework**
+- Integration with OAuth 2.0 for authorization and delegated access
+
+```text
+OAuth 2.0
+Authorization
+      +
+OIDC
+Authentication + Identity
+      ↓
+Modern Identity / Access Flow
+```
+
+---
+
+### OAuth vs OIDC — Interview Revision
+
+| OAuth 2.0 | OIDC |
+|---|---|
+| Authorization framework | Identity/authentication layer |
+| Delegated access | Authentication + identity |
+| Access Token | ID Token + Access Token |
+| Access Token used for protected resources | ID Token contains user identity claims |
+| Answers: "What can the client access?" | Answers: "Who is the user?" |
+
+> **Interview Tip:** OAuth 2.0 by itself should not be treated as a standardized user-authentication protocol. OIDC builds an identity layer on OAuth 2.0 for authentication.
+
+### Interview Quick Revision
+
+**What is OIDC?**
+
+> OpenID Connect is an identity layer built on OAuth 2.0 that provides authentication and standardized identity information about the authenticated user.
+
+**What is an ID Token?**
+
+> An ID Token is a JWT containing claims about the authenticated end-user.
+
+**What is the difference between an Access Token and an ID Token?**
+
+```text
+Access Token
+→ Used to access protected resources
+
+ID Token
+→ Contains identity information about the authenticated user
+```
+
+**What are the main OIDC endpoints?**
+
+```text
+Authorization Endpoint
+Token Endpoint
+UserInfo Endpoint
+```
+
+**What are claims?**
+
+> Claims are pieces of information about the authenticated user, such as name, email, and profile information.
+
+**What is the relationship between OAuth 2.0 and OIDC?**
+
+> OAuth 2.0 provides authorization and delegated access, while OIDC adds an authentication and identity layer on top of OAuth 2.0.
