@@ -902,3 +902,240 @@ Adapters
 Admin Console
 Database
 ```
+
+---
+
+## 4. Social Login
+
+**Social Login** allows users to authenticate using an existing account from an external identity provider such as **Google or GitHub**.
+
+The application delegates authentication to the external provider instead of requiring the user to create and manage a separate application password.
+
+```text
+User
+ ↓
+Application
+ ↓
+External Identity Provider
+ ↓
+Authentication
+ ↓
+Application
+ ↓
+Authenticated User
+```
+
+---
+
+### Sign in with Google
+
+Google Login allows users to authenticate using their Google account.
+
+The CN material describes Google Sign-In as an **OAuth 2.0-based integration** that can use authorization flows and Google Sign-In APIs/SDKs.
+
+Typical user information that may be obtained includes:
+
+```text
+Name
+Email
+Profile Picture
+```
+
+The application requests appropriate **scopes** to obtain the required information.
+
+---
+
+### Google Login Flow
+
+The general process is:
+
+```text
+1. User clicks "Sign in with Google"
+             ↓
+2. Application redirects user to Google
+             ↓
+3. User authenticates with Google
+             ↓
+4. User grants requested permissions
+             ↓
+5. Google returns authorization information
+             ↓
+6. Application validates/exchanges the information
+             ↓
+7. Application establishes authenticated user session
+```
+
+The CN material describes both client-side and server-side responsibilities:
+
+```text
+Client Side
+→ Display Google Sign-In / Login button
+
+Server Side
+→ Handle authorization response
+→ Exchange authorization information when required
+→ Validate information with Google
+→ Authenticate the user
+```
+
+---
+
+### Benefits of Google Login
+
+Social login can provide:
+
+- Convenient user authentication
+- Reduced need for users to manage another password
+- SSO-style experience through the external identity provider
+- Access to permitted profile information
+- Faster onboarding for users
+
+---
+
+### Sign in with GitHub
+
+GitHub can also be used as an OAuth-based login provider.
+
+The CN material demonstrates GitHub login using Spring Security OAuth2 configuration.
+
+#### 1. Create a GitHub Application
+
+Register the application with GitHub and obtain:
+
+```text
+Client ID
+Client Secret
+```
+
+#### 2. Configure `application.yml`
+
+Store the GitHub OAuth client configuration:
+
+```yaml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: ${GITHUB_CLIENT_ID}
+            clientSecret: ${GITHUB_CLIENT_SECRET}
+```
+
+> **Security:** Keep the client secret outside source code where possible. Environment variables are used here instead of hard-coding the secret.
+
+#### 3. Configure Spring Security
+
+The security configuration is modified to enable OAuth2 login.
+
+The application can then use Spring Security's OAuth2 support to handle the GitHub authentication flow.
+
+#### 4. Add Login Option
+
+The login page can provide a GitHub login option:
+
+```html
+<a href="/oauth2/authorization/github">
+    Login with GitHub
+</a>
+```
+
+The request starts the OAuth2 authorization flow through Spring Security.
+
+---
+
+### Social Login Flow
+
+The common pattern can be summarized as:
+
+```text
+User
+ ↓
+Application Login Page
+ ↓
+Choose Google / GitHub
+ ↓
+External Identity Provider
+ ↓
+User Authentication + Consent
+ ↓
+Authorization Response
+ ↓
+Application / Spring Security
+ ↓
+Authenticated User
+```
+
+---
+
+### Google vs GitHub Login
+
+| Google Login | GitHub Login |
+|---|---|
+| Google acts as external identity provider | GitHub acts as external identity provider |
+| OAuth-based integration | OAuth-based integration |
+| Can provide profile information based on scopes | Can provide permitted GitHub user information |
+| Requires Google application/client configuration | Requires GitHub application/client configuration |
+
+The underlying idea is the same:
+
+```text
+External Provider
+       ↓
+Authenticate User
+       ↓
+Return Authorization Information
+       ↓
+Application
+       ↓
+Authenticated User
+```
+
+---
+
+### Social Login — Interview Quick Revision
+
+**What is Social Login?**
+
+> Social Login allows users to authenticate through an external identity provider such as Google or GitHub instead of maintaining a separate application password.
+
+**Why use Social Login?**
+
+> It simplifies user authentication and onboarding by allowing users to use an existing identity-provider account.
+
+**What information can Google provide after authentication?**
+
+> Depending on the requested scopes and permissions, information such as the user's name, email, and profile picture can be obtained.
+
+**What credentials are required to integrate GitHub OAuth?**
+
+```text
+Client ID
+Client Secret
+```
+
+**Where should the GitHub client secret be stored?**
+
+> It should not be hard-coded in source code. The CN example uses an environment variable:
+
+```yaml
+clientSecret: ${GITHUB_CLIENT_SECRET}
+```
+
+**How does Spring Security start GitHub OAuth login?**
+
+```text
+/login page
+     ↓
+/oauth2/authorization/github
+     ↓
+GitHub
+     ↓
+Authentication
+     ↓
+Application
+```
+
+**What is the common idea behind Google and GitHub Login?**
+
+> Both delegate authentication to an external identity provider and allow the application to establish an authenticated user after the OAuth-based flow completes.
