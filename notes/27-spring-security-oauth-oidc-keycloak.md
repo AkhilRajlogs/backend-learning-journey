@@ -617,3 +617,288 @@ UserInfo Endpoint
 **What is the relationship between OAuth 2.0 and OIDC?**
 
 > OAuth 2.0 provides authorization and delegated access, while OIDC adds an authentication and identity layer on top of OAuth 2.0.
+
+---
+
+## 3. Keycloak
+
+**Keycloak** is an open-source **Identity and Access Management (IAM)** solution used for authentication, authorization, and user management.
+
+It supports standards such as **OAuth 2.0, OIDC, and SAML** and can integrate with applications and external identity providers.
+
+> **Mental Model:** Keycloak = centralized Identity & Access Management.
+
+---
+
+### Keycloak Capabilities
+
+Keycloak provides several features for managing application identity and access.
+
+#### Authentication
+
+Supports:
+
+- User authentication
+- **Single Sign-On (SSO)**
+- **Multi-Factor Authentication (MFA)**
+- Custom authentication flows
+
+MFA can use mechanisms such as:
+
+- OTPs
+- WebAuthn
+- Custom authentication flows
+
+#### User Management
+
+Keycloak provides:
+
+- User provisioning and deprovisioning
+- User directory
+- Groups
+- Role-Based Access Control (RBAC)
+
+```text
+Users
+  ↓
+Groups / Roles
+  ↓
+Permissions
+  ↓
+Application Resources
+```
+
+#### Authorization
+
+Keycloak supports fine-grained authorization and can secure APIs using:
+
+- OAuth 2.0
+- OIDC
+- Resource-based authorization policies
+
+#### Identity Federation & Social Login
+
+Keycloak can integrate with external identity systems and social providers.
+
+Examples include:
+
+```text
+Identity Federation
+├── SAML
+├── OpenID Connect
+└── Kerberos
+
+Social Login
+├── Google
+├── Facebook
+├── Twitter
+└── Other Providers
+```
+
+#### Customization
+
+Keycloak allows customization of:
+
+- Authentication flows
+- User-facing pages
+- Branding
+- Themes
+
+---
+
+### Keycloak Integrations
+
+Keycloak supports integration with technologies and identity standards such as:
+
+```text
+Identity Standards
+├── OAuth 2.0
+├── OpenID Connect
+└── SAML
+
+Directory / Authentication
+└── LDAP
+
+Applications / Platforms
+├── Spring Boot
+├── Node.js
+└── Kubernetes
+```
+
+---
+
+### Keycloak Architecture
+
+The CN material identifies four main architectural components:
+
+| Component | Purpose |
+|---|---|
+| **Keycloak Server** | Handles authentication, authorization, and identity management |
+| **Adapters** | Help applications integrate with Keycloak |
+| **Admin Console** | Administrative interface for managing Keycloak |
+| **Database** | Stores Keycloak data such as users and configuration |
+
+```text
+                    Keycloak
+                       │
+       ┌───────────────┼───────────────┐
+       ↓               ↓               ↓
+ Keycloak Server    Admin Console    Database
+       │
+       ↓
+   Adapters
+       │
+       ↓
+ Applications
+```
+
+---
+
+### Developer & Administration Tools
+
+Keycloak provides tools for managing and integrating the identity system:
+
+- **Admin Console** → manage users, authentication, roles, and configuration
+- **REST API** → programmatic administration and integration
+- **SPIs (Service Provider Interfaces)** → extend/customize Keycloak functionality
+
+---
+
+### Security & Compliance
+
+Keycloak provides security-related capabilities including:
+
+- **Audit logs**
+- **Encryption**
+- Support for established security standards
+
+These features help organizations manage and monitor identity and access securely.
+
+---
+
+### Keycloak Use Cases
+
+Keycloak can be used for:
+
+#### Enterprise Identity Management
+
+Centralized authentication and authorization across enterprise applications.
+
+#### Customer Identity and Access Management (CIAM)
+
+Managing authentication and identity for customer-facing applications.
+
+#### API Security
+
+Protecting APIs using OAuth 2.0/OIDC-based access control.
+
+#### B2B / Partner Collaboration
+
+Managing authentication and access for external partners and organizations.
+
+```text
+Keycloak
+    ↓
+Centralized Identity
+    ↓
+┌──────────┬──────────┬──────────┬──────────┐
+│ Web App  │ API      │ Mobile   │ Partner  │
+│          │          │ App      │ System   │
+└──────────┴──────────┴──────────┴──────────┘
+```
+
+---
+
+### Why Keycloak?
+
+Without a centralized identity solution, each application may need to implement and maintain its own:
+
+```text
+User Management
+Authentication
+Authorization
+Password Management
+MFA
+SSO
+```
+
+Keycloak provides a centralized platform for these identity and access-management responsibilities.
+
+> **Core Idea:** Keycloak centralizes identity and access management so applications can rely on a dedicated identity system instead of implementing all authentication functionality themselves.
+
+---
+
+### OAuth 2.0 + OIDC + Keycloak
+
+These concepts fit together as:
+
+```text
+OAuth 2.0
+   ↓
+Authorization / Delegated Access
+
+OIDC
+   ↓
+Authentication + Identity
+
+Keycloak
+   ↓
+Identity & Access Management Platform
+   ↓
+Implements / Supports OAuth 2.0 + OIDC
+```
+
+> **Remember:** OAuth 2.0 and OIDC are **protocol/framework standards**, while Keycloak is an **IAM product/platform** that can implement and manage these identity and access flows.
+
+---
+
+### Interview Quick Revision
+
+**What is Keycloak?**
+
+> Keycloak is an open-source Identity and Access Management solution that provides authentication, authorization, and user management.
+
+**What features does Keycloak provide?**
+
+> Keycloak provides SSO, MFA, user management, groups, RBAC, fine-grained authorization, identity federation, social login, customizable authentication flows, and administrative/developer tools.
+
+**What is Keycloak used for?**
+
+> It can centralize identity and access management for enterprise applications, customer-facing applications, APIs, and B2B/partner systems.
+
+**Which standards can Keycloak integrate with?**
+
+```text
+OAuth 2.0
+OpenID Connect
+SAML
+```
+
+It can also integrate with directory/authentication systems such as LDAP and external identity providers.
+
+**What is the difference between Keycloak and OIDC?**
+
+```text
+OIDC
+→ Identity/authentication protocol
+
+Keycloak
+→ IAM platform that supports OIDC
+```
+
+**What is SSO in Keycloak?**
+
+> Single Sign-On allows users to authenticate through a centralized identity system and access multiple applications without separately authenticating with each application.
+
+**What is RBAC?**
+
+> Role-Based Access Control assigns permissions based on roles associated with users or groups.
+
+**What are the main Keycloak architectural components mentioned in the CN material?**
+
+```text
+Keycloak Server
+Adapters
+Admin Console
+Database
+```
