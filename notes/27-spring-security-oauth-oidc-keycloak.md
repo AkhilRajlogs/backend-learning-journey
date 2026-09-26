@@ -1139,3 +1139,229 @@ Application
 **What is the common idea behind Google and GitHub Login?**
 
 > Both delegate authentication to an external identity provider and allow the application to establish an authenticated user after the OAuth-based flow completes.
+
+---
+
+## 5. Spring Security OAuth2
+
+Spring Security provides built-in support for integrating applications with **OAuth 2.0 / OIDC identity providers**.
+
+This allows an application to delegate authentication to an external provider such as Google or GitHub and let Spring Security handle the OAuth2 login flow.
+
+```text
+Application
+     ↓
+Spring Security OAuth2
+     ↓
+External Identity Provider
+     ↓
+Authentication
+     ↓
+Spring Security
+     ↓
+Authenticated User
+```
+
+---
+
+### OAuth2 Login with Spring Security
+
+The general flow is:
+
+```text
+1. User chooses OAuth2 Login
+          ↓
+2. Spring Security redirects to Provider
+          ↓
+3. User authenticates + gives consent
+          ↓
+4. Provider returns authorization information
+          ↓
+5. Spring Security completes OAuth2 flow
+          ↓
+6. User is authenticated in the application
+```
+
+Spring Security handles much of the OAuth2 protocol interaction so the application does not need to manually implement the complete authorization flow.
+
+---
+
+### OAuth2 Client Configuration
+
+An OAuth2 provider is configured as a **client registration**.
+
+For example, GitHub can be configured in `application.yml`:
+
+```yaml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: ${GITHUB_CLIENT_ID}
+            clientSecret: ${GITHUB_CLIENT_SECRET}
+```
+
+The configuration identifies the external provider and supplies the application's OAuth2 client credentials.
+
+> **Security:** Client secrets should not be hard-coded in source code. Environment variables can be used to keep them outside the application source.
+
+---
+
+### OAuth2 Login Endpoint
+
+Spring Security provides an authorization endpoint for starting OAuth2 login:
+
+```text
+/oauth2/authorization/{registrationId}
+```
+
+For GitHub:
+
+```text
+/oauth2/authorization/github
+```
+
+A login page can therefore contain:
+
+```html
+<a href="/oauth2/authorization/github">
+    Login with GitHub
+</a>
+```
+
+The `github` portion corresponds to the configured **registration ID**.
+
+---
+
+### Spring Security OAuth2 Flow
+
+```text
+Browser
+   ↓
+/oauth2/authorization/github
+   ↓
+Spring Security
+   ↓
+GitHub
+   ↓
+User Authentication + Consent
+   ↓
+Authorization Response
+   ↓
+Spring Security OAuth2
+   ↓
+Authenticated User
+```
+
+The important point is that **Spring Security manages the OAuth2 authentication flow**, while the external provider performs the user's authentication.
+
+---
+
+### OAuth2 + OIDC + Spring Security
+
+These concepts work together:
+
+```text
+OAuth 2.0
+   ↓
+Authorization Framework
+
+OIDC
+   ↓
+Authentication + Identity Layer
+
+Spring Security OAuth2
+   ↓
+Application-side OAuth2 / OIDC Integration
+
+Google / GitHub / Keycloak
+   ↓
+Identity Providers
+```
+
+> **Mental Model:** OAuth 2.0 and OIDC define the protocols; Spring Security provides the application-side security support; providers such as Google, GitHub, or Keycloak participate in the identity flow.
+
+---
+
+### Key Terms
+
+| Term | Meaning |
+|---|---|
+| **OAuth2 Client** | Application that uses OAuth2 to interact with an authorization server |
+| **Client ID** | Identifies the registered application |
+| **Client Secret** | Credential associated with the OAuth2 client |
+| **Provider** | External authorization/identity provider |
+| **Client Registration** | Configuration describing an OAuth2 provider |
+| **Registration ID** | Name used by the application to identify a configured provider |
+
+Example:
+
+```text
+registration-id = github
+
+/oauth2/authorization/github
+```
+
+---
+
+### Practical Flow to Remember
+
+When implementing OAuth2 Login:
+
+```text
+1. Register application with Provider
+          ↓
+2. Obtain Client ID + Client Secret
+          ↓
+3. Configure OAuth2 Client
+          ↓
+4. Enable OAuth2 Login in Spring Security
+          ↓
+5. Provide Login Link / Button
+          ↓
+6. Spring Security handles OAuth2 flow
+          ↓
+7. Application receives authenticated user
+```
+
+---
+
+### Interview Quick Revision
+
+**What does Spring Security OAuth2 provide?**
+
+> Spring Security provides support for integrating an application with OAuth 2.0 and OIDC providers, including handling the OAuth2 login flow.
+
+**What is a Client Registration?**
+
+> It is the configuration that describes an OAuth2 provider and the application's client credentials and settings.
+
+**What is the purpose of the Client ID?**
+
+> The Client ID identifies the application registered with the OAuth2 provider.
+
+**What is the purpose of the Client Secret?**
+
+> The Client Secret is a credential associated with the OAuth2 client and should be protected from exposure.
+
+**What does `/oauth2/authorization/github` do?**
+
+> It starts the OAuth2 authorization flow for the provider whose registration ID is `github`.
+
+**What is Spring Security's role in OAuth2 Login?**
+
+```text
+External Provider
+→ Authenticates User
+
+Spring Security
+→ Handles OAuth2 Login Flow
+→ Processes Authorization Response
+→ Establishes Authentication
+```
+
+**How do OAuth 2.0, OIDC and Spring Security relate?**
+
+> OAuth 2.0 provides authorization, OIDC adds authentication and identity information, and Spring Security provides application-side support for integrating these protocols.
