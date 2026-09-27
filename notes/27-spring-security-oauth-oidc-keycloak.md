@@ -770,7 +770,7 @@ Keycloak provides security-related capabilities including:
 
 - **Audit logs**
 - **Encryption**
-- Support for established security standards
+- Support for security/compliance standards such as **GDPR** and **ISO27001**
 
 These features help organizations manage and monitor identity and access securely.
 
@@ -1365,3 +1365,459 @@ Spring Security
 **How do OAuth 2.0, OIDC and Spring Security relate?**
 
 > OAuth 2.0 provides authorization, OIDC adds authentication and identity information, and Spring Security provides application-side support for integrating these protocols.
+
+---
+
+## 6. Interview & Quick Revision
+
+### Core Mental Models
+
+```text
+OAuth 2.0
+→ Authorization / Delegated Access
+
+OIDC
+→ Authentication + Identity
+
+Keycloak
+→ Identity & Access Management Platform
+
+Spring Security OAuth2
+→ Application-side OAuth2 / OIDC Integration
+
+Social Login
+→ Authentication through an external Identity Provider
+```
+
+---
+
+### OAuth 2.0 vs OIDC
+
+| | OAuth 2.0 | OIDC |
+|---|---|---|
+| Primary purpose | Authorization | Authentication + Identity |
+| Main question | "What can the client access?" | "Who is the authenticated user?" |
+| Important token | Access Token | ID Token + Access Token |
+| Identity information | Not its primary purpose | Standardized identity information |
+
+> **Interview Rule:** OAuth 2.0 is primarily about authorization; OIDC adds an identity/authentication layer on top of OAuth 2.0.
+
+---
+
+### Access Token vs ID Token
+
+```text
+Access Token
+→ Used to access protected resources
+
+ID Token
+→ JWT containing claims about the authenticated user
+```
+
+Do not treat an ID Token and Access Token as interchangeable.
+
+---
+
+### Authorization Server vs Resource Server
+
+```text
+Authorization Server
+→ Authenticates / authorizes
+→ Issues tokens
+
+Resource Server
+→ Hosts protected resources
+→ Uses access tokens to control access
+```
+
+---
+
+### OAuth 2.0 Actors
+
+Remember the four main actors:
+
+```text
+1. Resource Owner
+2. Client
+3. Authorization Server
+4. Resource Server
+```
+
+---
+
+### Important OAuth Grant Types
+
+```text
+Authorization Code
+→ Authorization code → token exchange
+
+Implicit
+→ Token returned directly
+
+Client Credentials
+→ Server-to-server communication
+→ No user involved
+```
+
+---
+
+### OAuth 2.0 General Flow
+
+```text
+Client Registration
+       ↓
+Authorization Request
+       ↓
+User Authentication + Consent
+       ↓
+Authorization Grant
+       ↓
+Token Request
+       ↓
+Access Token
+       ↓
+Protected Resource
+```
+
+---
+
+### OIDC Flow
+
+```text
+Client Registration
+       ↓
+Authentication Request
+       ↓
+User Authentication + Consent
+       ↓
+ID Token + Access Token
+       ↓
+UserInfo
+       ↓
+User Information
+```
+
+---
+
+### OIDC Key Terms
+
+```text
+ID Token
+→ JWT containing user identity claims
+
+Claims
+→ Information about the authenticated user
+
+Scopes
+→ Requested level/type of access or identity information
+
+Authorization Endpoint
+→ Authentication / authorization request
+
+Token Endpoint
+→ Token issuance
+
+UserInfo Endpoint
+→ User information
+```
+
+---
+
+### Keycloak in One View
+
+```text
+Keycloak
+    ↓
+Identity & Access Management
+    ↓
+┌──────────────┬──────────────┬──────────────┐
+│ Authentication│ Authorization│ User Management│
+└──────────────┴──────────────┴──────────────┘
+    ↓
+SSO + MFA + RBAC + Federation + Social Login
+```
+
+Keycloak supports/integrates with:
+
+```text
+OAuth 2.0
+OpenID Connect
+SAML
+LDAP
+```
+
+Keycloak architecture from the CN material:
+
+```text
+Keycloak Server
+Adapters
+Admin Console
+Database
+```
+
+---
+
+### Keycloak vs OIDC
+
+```text
+OIDC
+→ Identity/authentication protocol
+
+Keycloak
+→ IAM platform supporting OIDC
+```
+
+Similarly:
+
+```text
+OAuth 2.0
+→ Authorization framework
+
+Spring Security OAuth2
+→ Application-side support for OAuth2/OIDC
+```
+
+---
+
+### Social Login
+
+```text
+User
+ ↓
+Application
+ ↓
+Google / GitHub
+ ↓
+User Authentication + Consent
+ ↓
+Authorization Response
+ ↓
+Application / Spring Security
+ ↓
+Authenticated User
+```
+
+Examples covered:
+
+```text
+Google Login
+GitHub Login
+```
+
+GitHub Spring configuration:
+
+```yaml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: ${GITHUB_CLIENT_ID}
+            clientSecret: ${GITHUB_CLIENT_SECRET}
+```
+
+Login endpoint:
+
+```text
+/oauth2/authorization/github
+```
+
+> **Security Reminder:** Client secrets should not be hard-coded in source code.
+
+---
+
+### The Big Picture
+
+The entire section can be remembered as:
+
+```text
+OAuth 2.0
+    │
+    ├── Authorization
+    │
+    └── Delegated Access
+          │
+          ↓
+       OIDC
+          │
+          ├── Authentication
+          └── Identity
+                 │
+                 ↓
+              Keycloak
+                 │
+                 ├── IAM
+                 ├── SSO
+                 ├── MFA
+                 ├── RBAC
+                 ├── User Management
+                 └── Identity Federation
+                         │
+                         ↓
+                 Spring Security OAuth2
+                         │
+                         ↓
+                    Application
+                         │
+              ┌──────────┴──────────┐
+              ↓                     ↓
+           Google                 GitHub
+```
+
+---
+
+## Interview Questions
+
+### Fundamentals
+
+**1. What is OAuth 2.0?**
+
+> OAuth 2.0 is an authorization framework that allows a client to obtain limited access to protected resources on behalf of a resource owner without requiring the client to receive the user's credentials.
+
+**2. Is OAuth 2.0 authentication or authorization?**
+
+> OAuth 2.0 primarily provides authorization and delegated access. OIDC adds an authentication and identity layer on top of OAuth 2.0.
+
+**3. What are the four OAuth actors?**
+
+> Resource Owner, Client, Authorization Server, and Resource Server.
+
+**4. What is an Access Token?**
+
+> A credential representing authorization to access protected resources.
+
+**5. What is a Refresh Token?**
+
+> A token used to obtain a new access token after the current access token expires.
+
+---
+
+### OIDC
+
+**6. What is OIDC?**
+
+> OpenID Connect is an identity layer built on OAuth 2.0 that provides authentication and standardized identity information about the authenticated user.
+
+**7. What is an ID Token?**
+
+> An ID Token is a JWT containing claims about the authenticated end-user.
+
+**8. What is the difference between an ID Token and an Access Token?**
+
+> An Access Token is used to access protected resources, while an ID Token contains identity information about the authenticated user.
+
+**9. What are the main OIDC endpoints?**
+
+```text
+Authorization Endpoint
+Token Endpoint
+UserInfo Endpoint
+```
+
+---
+
+### Keycloak
+
+**10. What is Keycloak?**
+
+> Keycloak is an open-source Identity and Access Management solution providing authentication, authorization, and user management.
+
+**11. What features does Keycloak provide?**
+
+> SSO, MFA, user management, groups, RBAC, fine-grained authorization, identity federation, social login, customizable authentication flows, and administration/developer tools.
+
+**12. What is the difference between Keycloak and OIDC?**
+
+> OIDC is an identity/authentication protocol, while Keycloak is an IAM platform that supports OIDC.
+
+---
+
+### Spring Security OAuth2
+
+**13. What does Spring Security OAuth2 provide?**
+
+> It provides application-side support for integrating with OAuth 2.0 and OIDC providers and handling OAuth2 login flows.
+
+**14. What is a Client Registration?**
+
+> It is the configuration describing an OAuth2 provider and the application's client credentials and related settings.
+
+**15. What does `/oauth2/authorization/github` do?**
+
+> It starts the OAuth2 authorization flow for the provider whose registration ID is `github`.
+
+---
+
+### Scenario Questions
+
+**16. A user wants to log into your application using Google. What is the high-level flow?**
+
+```text
+Application
+    ↓
+Google
+    ↓
+User Authentication
+    ↓
+Authorization / Consent
+    ↓
+Authorization Response
+    ↓
+Spring Security / Application
+    ↓
+Authenticated User
+```
+
+**17. Your application needs to access a user's protected resource. Which token is primarily used?**
+
+> Access Token.
+
+**18. Your application needs standardized information about the authenticated user's identity. What does OIDC provide?**
+
+> An ID Token containing identity claims, with the UserInfo endpoint also providing user information.
+
+**19. You need centralized authentication and authorization for multiple applications. What type of solution does Keycloak provide?**
+
+> An Identity and Access Management platform that can centralize authentication, authorization, user management, SSO, and related identity capabilities.
+
+---
+
+### Final Memory Map
+
+```text
+AUTHORIZATION
+     ↓
+OAuth 2.0
+     ↓
+Access Token
+     ↓
+Protected Resources
+
+
+AUTHENTICATION + IDENTITY
+     ↓
+OIDC
+     ↓
+ID Token
+     ↓
+User Identity
+
+
+CENTRALIZED IAM
+     ↓
+Keycloak
+     ↓
+Authentication + Authorization
++ SSO + MFA + RBAC + User Management
+
+
+APPLICATION INTEGRATION
+     ↓
+Spring Security OAuth2
+     ↓
+Google / GitHub / Keycloak / Other Providers
+```
+
+> **One-line revision:**  
+> **OAuth 2.0 authorizes, OIDC identifies, Keycloak manages identity and access, and Spring Security integrates these capabilities into the application.**
