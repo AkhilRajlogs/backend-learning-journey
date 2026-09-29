@@ -60,3 +60,33 @@ Browser Automatically Refreshes
 > **Remember:**  
 > **Auto Restart** → restarts the Spring Boot application after code changes.  
 > **Live Reload** → refreshes the browser after changes to static resources.
+
+---
+
+### Adding DevTools to a Spring Boot Project
+
+To use Spring Boot DevTools, add the `spring-boot-devtools` dependency to the project.
+
+#### Maven
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <scope>runtime</scope>
+    <optional>true</optional>
+</dependency>
+```
+
+#### Gradle
+
+```gradle
+dependencies {
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+}
+```
+
+Once DevTools is included, its development-time features such as **Auto Restart** and **Live Reload** can improve the development workflow.
+
+> **Quick Recall:**  
+> `spring-boot-devtools` → development-time productivity features.
