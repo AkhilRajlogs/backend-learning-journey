@@ -90,3 +90,54 @@ Once DevTools is included, its development-time features such as **Auto Restart*
 
 > **Quick Recall:**  
 > `spring-boot-devtools` → development-time productivity features.
+
+---
+
+## 3. Spring Boot Actuator
+
+Spring Boot Actuator focuses on **monitoring and managing** a Spring Boot application, particularly in a **production environment**.
+
+It provides a set of **production-ready features** that help developers understand what is happening inside the application.
+
+Actuator exposes these capabilities through **endpoints** that can be accessed via HTTP.
+
+```text
+Spring Boot Application
+        ↓
+     Actuator
+        ↓
+     Endpoints
+        ↓
+Health | Metrics | Environment | Loggers | Info
+```
+
+Actuator endpoints can provide information about:
+
+- Application health
+- Application metrics
+- Environment properties
+- Logging configuration
+- Application information
+
+### Common Actuator Endpoints
+
+| Endpoint | Purpose |
+|---|---|
+| `/actuator/health` | Provides information about the application's health |
+| `/actuator/info` | Provides custom information about the application |
+| `/actuator/metrics` | Exposes application metrics such as memory usage and garbage collection |
+| `/actuator/env` | Displays environment properties and application configuration |
+| `/actuator/loggers` | Allows viewing and dynamically modifying logger configuration |
+
+### Quick Recall
+
+```text
+/actuator/health   → Application Health
+/actuator/info     → Application Information
+/actuator/metrics  → Application Metrics
+/actuator/env      → Environment Properties
+/actuator/loggers  → Logger Configuration
+```
+
+> **Mental Model:**  
+> Spring Boot Actuator → production monitoring and management through HTTP endpoints.
