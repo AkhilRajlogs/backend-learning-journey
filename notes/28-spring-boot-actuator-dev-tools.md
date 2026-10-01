@@ -141,3 +141,73 @@ Actuator endpoints can provide information about:
 
 > **Mental Model:**  
 > Spring Boot Actuator → production monitoring and management through HTTP endpoints.
+
+---
+
+### Custom Actuator Endpoints
+
+Spring Boot Actuator also allows us to create **custom endpoints**.
+
+Custom endpoints can expose application-specific information or functionality that is not covered by the built-in Actuator endpoints.
+
+For example, we can create an endpoint that exposes the **application version**.
+
+```java
+@Component
+@Endpoint(id = "appVersion")
+public class AppVersionActuator {
+
+    @ReadOperation
+    public String getVersion() {
+        return "1.0.0";
+    }
+}
+```
+
+### Understanding the Implementation
+
+#### `@Component`
+
+```java
+@Component
+```
+
+Registers `AppVersionActuator` as a **Spring-managed bean**.
+
+#### `@Endpoint`
+
+```java
+@Endpoint(id = "appVersion")
+```
+
+Defines a custom Actuator endpoint named `appVersion`.
+
+#### `@ReadOperation`
+
+```java
+@ReadOperation
+public String getVersion() {
+    return "1.0.0";
+}
+```
+
+Defines the operation performed when the endpoint is accessed for reading.
+
+The `getVersion()` method returns the application's version.
+
+```text
+Custom Actuator Endpoint
+          ↓
+      @Endpoint
+          ↓
+     @ReadOperation
+          ↓
+    Application Version
+```
+
+The returned value can later be replaced with actual application-version logic, such as retrieving the version from a properties file, build tool, or another source.
+
+> **Quick Recall:**  
+> `@Endpoint` → defines the custom Actuator endpoint.  
+> `@ReadOperation` → defines a read operation for the endpoint.  
+> `@Component` → makes the class a Spring-managed bean.
