@@ -211,3 +211,59 @@ The returned value can later be replaced with actual application-version logic, 
 > `@Endpoint` → defines the custom Actuator endpoint.  
 > `@ReadOperation` → defines a read operation for the endpoint.  
 > `@Component` → makes the class a Spring-managed bean.
+
+---
+
+## 4. Build Tools
+
+Build tools are software applications that **automate the process of building, testing, and deploying software**.
+
+They help developers manage complex codebases, reduce manual work, and maintain consistency throughout the software development lifecycle.
+
+Build tools use predefined scripts and configurations to perform tasks such as:
+
+- Compiling source code
+- Managing dependencies
+- Running tests
+- Packaging applications for deployment
+
+### Core Responsibilities of Build Tools
+
+#### 1. Compilation
+
+Build tools compile source code written in a high-level programming language into executable files or intermediate code.
+
+```text
+Source Code
+    ↓
+Compilation
+    ↓
+Executable / Intermediate Code
+```
+
+#### 2. Dependency Management
+
+Build tools manage project dependencies such as libraries and external components.
+
+They can automatically download, manage, and include required dependencies in the project.
+
+#### 3. Testing
+
+Build tools support automated testing to verify that the software functions as expected and to identify defects early.
+
+This can include:
+
+- Unit testing
+- Integration testing
+
+#### 4. Packaging
+
+After compilation and testing, build tools package the application into a format suitable for deployment.
+
+Common formats include:
+
+- JAR (Java Archive)
+- WAR (Web Application Archive)
+
+> **Mental Model:**  
+> Build Tools → Compile → Manage Dependencies → Test → Package
