@@ -319,3 +319,217 @@ Build tools provide several important benefits:
 
 > **Quick Recall:**  
 > Build tools automate repetitive development tasks → improve efficiency → support testing and CI/CD → make builds more consistent and reproducible.
+
+---
+
+## 5. Interview & Quick Revision
+
+### Core Mental Model
+
+```text
+Spring Boot Development & Operations
+            ↓
+    ┌───────┴────────┐
+    ↓                ↓
+DevTools          Actuator
+    ↓                ↓
+Development      Monitoring &
+Productivity      Management
+
+            +
+            
+        Build Tools
+            ↓
+   Build → Test → Package
+```
+
+### DevTools vs Actuator
+
+| Feature | Spring Boot DevTools | Spring Boot Actuator |
+|---|---|---|
+| Primary purpose | Improve development productivity | Monitor and manage applications |
+| Main environment | Development | Production |
+| Key features | Auto Restart, Live Reload | Health, Metrics, Environment, Loggers |
+| Access | Development tooling | HTTP endpoints |
+
+### DevTools Quick Revision
+
+**What is Spring Boot DevTools?**
+
+> A set of development-time tools that improves developer productivity and speeds up the development cycle.
+
+**What is Auto Restart?**
+
+> DevTools automatically restarts the application when it detects relevant classpath changes.
+
+**What is Live Reload?**
+
+> It allows the browser to automatically refresh when changes to static resources such as HTML, CSS, or JavaScript are detected.
+
+**What dependency enables DevTools?**
+
+```text
+spring-boot-devtools
+```
+
+---
+
+### Actuator Quick Revision
+
+**What is Spring Boot Actuator?**
+
+> A Spring Boot component that provides production-ready features for monitoring and managing an application through endpoints.
+
+**Important endpoints:**
+
+```text
+/actuator/health
+    → Application health
+
+/actuator/info
+    → Application information
+
+/actuator/metrics
+    → Application metrics
+
+/actuator/env
+    → Environment properties
+
+/actuator/loggers
+    → Logger configuration
+```
+
+**Why is Actuator useful?**
+
+> It provides insights into an application's runtime behavior, making it easier to monitor, manage, and troubleshoot production systems.
+
+---
+
+### Custom Actuator Endpoint
+
+A custom endpoint can expose application-specific information or functionality.
+
+```java
+@Component
+@Endpoint(id = "appVersion")
+public class AppVersionActuator {
+
+    @ReadOperation
+    public String getVersion() {
+        return "1.0.0";
+    }
+}
+```
+
+**Key annotations:**
+
+```text
+@Component
+    → Spring-managed bean
+
+@Endpoint
+    → Defines the custom Actuator endpoint
+
+@ReadOperation
+    → Defines a read operation
+```
+
+---
+
+### Build Tools Quick Revision
+
+**What are build tools?**
+
+> Software applications that automate building, testing, and deploying software.
+
+**Core responsibilities:**
+
+```text
+Compile
+   ↓
+Manage Dependencies
+   ↓
+Test
+   ↓
+Package
+```
+
+**What can build tools help with?**
+
+- Automated builds
+- Dependency management
+- Testing automation
+- CI/CD
+- Packaging
+- Consistent and reproducible builds
+
+**Why are build tools important?**
+
+> They reduce manual work and errors, improve efficiency and quality, support reproducibility and consistency, and help manage growing project complexity.
+
+---
+
+### Interview Questions
+
+**1. What is the difference between DevTools and Actuator?**
+
+> DevTools focuses on improving the development workflow, while Actuator focuses on monitoring and managing applications.
+
+**2. What are the two important DevTools features covered here?**
+
+> Auto Restart and Live Reload.
+
+**3. What is the purpose of `/actuator/health`?**
+
+> It provides information about the application's health.
+
+**4. What does `/actuator/metrics` provide?**
+
+> Application metrics such as memory usage and garbage collection information.
+
+**5. Can we create our own Actuator endpoints?**
+
+> Yes. Custom endpoints can expose application-specific information or functionality.
+
+**6. Which annotations are used in the custom endpoint example?**
+
+> `@Component`, `@Endpoint`, and `@ReadOperation`.
+
+**7. What are build tools used for?**
+
+> They automate tasks such as compilation, dependency management, testing, packaging, and deployment.
+
+**8. How do build tools support CI/CD?**
+
+> They automate build, test, and deployment processes within CI/CD pipelines.
+
+---
+
+### Final Memory Map
+
+```text
+DevTools
+   ↓
+Development Productivity
+   ↓
+Auto Restart + Live Reload
+
+Actuator
+   ↓
+Application Monitoring & Management
+   ↓
+Health + Info + Metrics + Environment + Loggers
+   ↓
+Custom Endpoints
+
+Build Tools
+   ↓
+Automated Software Development Tasks
+   ↓
+Compile + Dependencies + Test + Package
+   ↓
+CI/CD + Efficiency + Consistency + Reproducibility
+```
+
+> **One-Line Revision:**  
+> **DevTools improves development, Actuator helps monitor and manage applications, and Build Tools automate the software build lifecycle.**
