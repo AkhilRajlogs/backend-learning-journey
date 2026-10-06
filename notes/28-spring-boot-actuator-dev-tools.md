@@ -322,7 +322,60 @@ Build tools provide several important benefits:
 
 ---
 
-## 5. Interview & Quick Revision
+## Social Media Application — Implementation Flow
+
+The Social Media Application implementation follows a typical Spring Boot layered structure:
+
+```text
+Connection Entity
+       ↓
+ConnectionResponseDto
+       ↓
+UserController
+       ↓
+ConnectionService
+       ↓
+ConnectionDal / JpaRepository
+       ↓
+MySQL Database
+```
+
+### Main Components
+
+- **Connection Entity**
+  - `id`
+  - `name`
+  - `emailId`
+  - `company`
+  - `username`
+  - `level`
+
+- **ConnectionResponseDto**
+  - `name`
+  - `emailId`
+  - `company`
+  - `username`
+  - `level`
+
+- **UserController**
+  - `GET /ninjas/connections` — retrieve user's connections
+  - `POST /ninjas/add` — add a connection
+  - `GET /ninjas/connections/{company}` — retrieve connections by company
+
+- **ConnectionService**
+  - Contains service-layer logic corresponding to controller operations.
+
+- **ConnectionDal**
+  - Extends `JpaRepository`
+  - Provides database access.
+  - Custom `findByCompany` method retrieves connections by company.
+
+- **application.yml**
+  - Configures application name, MySQL datasource, JPA/Hibernate settings, and SQL logging.
+
+---
+
+## 6. Interview & Quick Revision
 
 ### Core Mental Model
 
