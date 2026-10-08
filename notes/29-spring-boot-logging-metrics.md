@@ -95,3 +95,61 @@ Provides the most detailed level of logging information and is useful when very 
 >
 > Higher level → greater severity  
 > Lower level → more detailed information
+
+---
+
+## Spring Boot Logging with SLF4J
+
+Spring Boot applications can use **SLF4J** to create and work with loggers.
+
+A logger can be created using `LoggerFactory`:
+
+```java
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class SampleClass {
+
+    private static final Logger logger =
+        LoggerFactory.getLogger(SampleClass.class);
+
+    public void performActions() {
+        logger.debug("This is a debug message.");
+        logger.info("This is an info message.");
+        logger.warn("This is a warning message.");
+        logger.error("This is an error message.");
+    }
+}
+```
+
+### Understanding the Implementation
+
+**`Logger`**
+
+Represents the logger used to write log messages.
+
+**`LoggerFactory`**
+
+Creates a logger for the specified class.
+
+```java
+LoggerFactory.getLogger(SampleClass.class);
+```
+
+**Logging methods**
+
+```text
+logger.debug() → Debug information
+
+logger.info()  → General application information
+
+logger.warn()  → Warning information
+
+logger.error() → Error information
+```
+
+> **Quick Recall:**
+>
+> `LoggerFactory` → creates the logger  
+> `Logger` → records log messages  
+> `debug / info / warn / error` → log at different levels
