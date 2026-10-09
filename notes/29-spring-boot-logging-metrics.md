@@ -153,3 +153,33 @@ logger.error() → Error information
 > `LoggerFactory` → creates the logger  
 > `Logger` → records log messages  
 > `debug / info / warn / error` → log at different levels
+
+---
+
+## Logging Configuration with `application.yml`
+
+Spring Boot allows logging levels to be configured through the `application.yml` file.
+
+```yaml
+logging:
+  level:
+    root: WARN
+    com.example.packageName: DEBUG
+```
+
+### Understanding the Configuration
+
+- **`logging.level.root: WARN`** → sets the root logger's level to `WARN`.
+- **`com.example.packageName: DEBUG`** → sets the logging level for the specified package to `DEBUG`.
+
+### Logging Level Behavior
+
+When the logging level is set to `WARN`, messages at `WARN` and `ERROR` levels are enabled, while lower-severity levels such as `INFO`, `DEBUG`, and `TRACE` are filtered out.
+
+A package configured with `DEBUG` can produce more detailed logs than the root logger.
+
+> **Quick Recall:**
+>
+> `root` → configures the default logging level.
+>
+> A package-specific level → configures logging for that package.
