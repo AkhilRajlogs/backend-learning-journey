@@ -183,3 +183,35 @@ A package configured with `DEBUG` can produce more detailed logs than the root l
 > `root` → configures the default logging level.
 >
 > A package-specific level → configures logging for that package.
+
+---
+
+## Logging Colors
+
+Spring Boot console logs can use different colors to help distinguish logging levels.
+
+The course notes describe the following color associations:
+
+| Logging Level | Color |
+|---|---|
+| `INFO` | White / Green |
+| `DEBUG` | Blue / Cyan |
+| `WARN` | Yellow / Orange |
+| `ERROR` | Red |
+| `TRACE` | Gray / Light Blue |
+
+### Enabling ANSI Colors
+
+Add the following configuration to `application.yml`:
+
+```yaml
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+```
+
+This setting enables ANSI color output in the console.
+
+> **Quick Recall:**  
+> ANSI configuration controls colored console output, making log levels easier to distinguish visually.
