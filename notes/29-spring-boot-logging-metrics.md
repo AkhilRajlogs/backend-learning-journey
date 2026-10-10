@@ -215,3 +215,33 @@ This setting enables ANSI color output in the console.
 
 > **Quick Recall:**  
 > ANSI configuration controls colored console output, making log levels easier to distinguish visually.
+
+---
+
+## Saving Logs to a File
+
+Instead of displaying logs only in the console, Spring Boot can also write log messages to a file.
+
+Configure the file name in `application.yml`:
+
+```yaml
+logging:
+  file:
+    name: application.log
+```
+
+This configuration directs logging output to `application.log`.
+
+### Log Management
+
+When saving logs to files, consider:
+
+- **Log Rotation** → manages log files as they grow.
+- **Retention Policies** → determine how long log files are kept.
+- **File Location** → specifies where log files are stored.
+
+> **Quick Recall:**
+>
+> `logging.file.name` → configures the log file name.
+>
+> Log rotation and retention policies help manage stored logs.
