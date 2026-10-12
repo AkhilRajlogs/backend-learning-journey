@@ -245,3 +245,51 @@ When saving logs to files, consider:
 > `logging.file.name` → configures the log file name.
 >
 > Log rotation and retention policies help manage stored logs.
+
+---
+
+## Metrics Fundamentals
+
+Metrics are **quantitative measurements** used to understand application and system behavior.
+
+They help monitor performance, identify issues, and evaluate application health.
+
+### Types of Metrics
+
+#### 1. Application Metrics
+
+Measure the behavior and performance of an application.
+
+Examples:
+- Request count
+- Response times
+- Error rates
+
+#### 2. System Metrics
+
+Measure the resources and activity of the underlying system.
+
+Examples:
+- CPU usage
+- Memory usage
+- Disk I/O
+- Network traffic
+
+#### 3. Business Metrics
+
+Measure application-specific business goals and outcomes.
+
+Examples:
+- User engagement
+- Sales
+- Custom Key Performance Indicators (KPIs)
+
+### Quick Recall
+
+| Metric Type | Focus | Examples |
+|---|---|---|
+| Application | Application behavior | Requests, response times, errors |
+| System | System resources | CPU, memory, disk I/O, network |
+| Business | Business outcomes | Engagement, sales, KPIs |
+
+> **Remember:** Application metrics measure application behavior, system metrics measure resource usage, and business metrics measure business outcomes.
