@@ -293,3 +293,29 @@ Examples:
 | Business | Business outcomes | Engagement, sales, KPIs |
 
 > **Remember:** Application metrics measure application behavior, system metrics measure resource usage, and business metrics measure business outcomes.
+
+---
+
+## Micrometer
+
+**Micrometer** is a Java library used to collect, aggregate, and export application metrics to monitoring systems.
+
+It acts as a bridge between an application and monitoring tools such as **Prometheus** and **Grafana**.
+
+### Adding the Prometheus Registry Dependency
+
+To integrate Micrometer metrics with Prometheus, add the following dependency to the project's `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-registry-prometheus</artifactId>
+    <scope>runtime</scope>
+</dependency>
+```
+
+### Quick Recall
+
+- **Micrometer** → collects and exposes application metrics.
+- **Prometheus registry** → enables metrics integration with Prometheus.
+- **Monitoring systems** → receive metrics for monitoring and analysis.
