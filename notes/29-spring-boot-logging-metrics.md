@@ -319,3 +319,36 @@ To integrate Micrometer metrics with Prometheus, add the following dependency to
 - **Micrometer** → collects and exposes application metrics.
 - **Prometheus registry** → enables metrics integration with Prometheus.
 - **Monitoring systems** → receive metrics for monitoring and analysis.
+
+---
+
+## Prometheus
+
+**Prometheus** is an open-source monitoring and alerting system used to collect and analyze metrics.
+
+It stores metrics as **time-series data**, allowing application and system behavior to be monitored over time.
+
+### Key Features
+
+- **Time-Series Database** → stores metric measurements over time.
+- **Data Scraping** → collects metrics from configured targets at regular intervals.
+- **Alerting** → supports alerts based on defined conditions.
+- **Reliability** → designed to provide reliable monitoring.
+
+### Role in Application Monitoring
+
+Prometheus collects metrics exposed by applications and makes the data available for monitoring and analysis.
+
+```text
+Spring Boot Application
+          ↓
+   Micrometer Registry
+          ↓
+      Prometheus
+          ↓
+   Metrics Monitoring
+```
+
+> **Quick Recall:**
+>
+> Prometheus → collects and stores time-series metrics, supports monitoring, and provides alerting capabilities.
