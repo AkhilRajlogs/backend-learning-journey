@@ -352,3 +352,28 @@ Spring Boot Application
 > **Quick Recall:**
 >
 > Prometheus → collects and stores time-series metrics, supports monitoring, and provides alerting capabilities.
+
+---
+
+## Grafana
+
+**Grafana** is an open-source monitoring and visualization platform used to analyze and visualize application and system metrics.
+
+### Key Features
+
+- **Dashboards** → display metrics through customizable dashboards.
+- **Data Sources** → supports Prometheus, InfluxDB, Elasticsearch, and relational databases.
+- **Alerting** → helps monitor metrics and identify issues.
+- **Visualization** → presents metrics in graphs and other visual formats.
+- **Plugins** → extends functionality through additional integrations.
+- **Collaboration** → supports sharing dashboards and monitoring insights.
+
+### Prometheus and Grafana
+
+Prometheus collects and stores metrics, while Grafana visualizes those metrics through dashboards.
+
+> **Quick Recall:**
+>
+> Prometheus → collects and stores metrics.
+>
+> Grafana → visualizes metrics and creates monitoring dashboards.
