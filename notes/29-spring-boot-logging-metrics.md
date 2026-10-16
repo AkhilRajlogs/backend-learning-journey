@@ -377,3 +377,34 @@ Prometheus collects and stores metrics, while Grafana visualizes those metrics t
 > Prometheus → collects and stores metrics.
 >
 > Grafana → visualizes metrics and creates monitoring dashboards.
+
+---
+
+## Docker Fundamentals
+
+**Docker** is a platform for packaging applications and their dependencies into portable containers. Containers provide an isolated environment for running applications.
+
+### Key Concepts
+
+- **Docker Engine** → runs and manages Docker containers.
+- **Docker Daemon** → manages Docker objects such as images, containers, networks, and volumes.
+- **Docker CLI** → lets users interact with Docker through commands.
+- **Docker Image** → a template used to create containers.
+- **Docker Container** → a running instance of an image.
+- **Dockerfile** → contains instructions for building a Docker image.
+- **Docker Registry** → stores and distributes Docker images.
+- **Docker Compose** → defines and runs multi-container applications using a YAML configuration file.
+- **Volumes** → persist data beyond a container's lifecycle.
+- **Networking** → enables communication between containers and other systems.
+
+### Docker in Application Monitoring
+
+Docker can run monitoring tools such as Prometheus and Grafana in separate containers. Docker Compose can define both services and their configurations in one file.
+
+> **Quick Recall:**
+>
+> Image → template for creating a container.
+>
+> Container → isolated runtime instance of an image.
+>
+> Docker Compose → manages multi-container applications.
