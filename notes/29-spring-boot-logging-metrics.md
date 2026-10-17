@@ -408,3 +408,52 @@ Docker can run monitoring tools such as Prometheus and Grafana in separate conta
 > Container → isolated runtime instance of an image.
 >
 > Docker Compose → manages multi-container applications.
+
+---
+
+## Running Prometheus and Grafana with Docker Compose
+
+**Docker Compose** allows Prometheus and Grafana to run as separate services defined in a single YAML file.
+
+### `docker-compose.yml`
+
+```yaml
+version: '3.7'
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.44.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:9.5.2
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+```
+
+### Configuration Overview
+
+- **Image** → specifies the image used to create each container.
+- **Ports** → exposes Prometheus on port `9090` and Grafana on port `3000`.
+- **Volumes** → mounts local configuration files or directories into the containers.
+- **Restart policy** → `unless-stopped` allows Grafana to restart unless it has been explicitly stopped.
+
+### Start the Services
+
+Run the following command from the directory containing `docker-compose.yml`:
+
+```bash
+docker compose up
+```
+
+This starts the services defined in the Compose file.
+
+> **Quick Recall:** Docker Compose defines multiple services in YAML, while `docker compose up` starts them.
