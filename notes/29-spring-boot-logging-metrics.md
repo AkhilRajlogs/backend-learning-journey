@@ -521,3 +521,60 @@ datasources:
 - `isDefault: true` → makes Prometheus the default data source.
 
 > **Quick Recall:** Prometheus configuration defines where metrics are scraped from; Grafana's data source configuration defines where dashboards retrieve metrics from.
+
+---
+
+## Interview & Quick Revision
+
+### Logging
+
+- **Logging vs Metrics:** Logging records events; metrics measure application or system behavior quantitatively.
+- **SLF4J:** Provides a logging abstraction through `Logger` and `LoggerFactory`.
+- **Logging Levels:** `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE` — ordered from highest to lowest severity.
+- **Logging Configuration:** `logging.level` configures the root or package-specific logging level.
+- **File Logging:** `logging.file.name` specifies the log file name.
+- **ANSI Colors:** `spring.output.ansi.enabled` controls ANSI color output.
+
+### Metrics & Monitoring
+
+- **Micrometer:** Collects and exports application metrics through monitoring-system integrations.
+- **Prometheus:** Scrapes and stores time-series metrics and supports alerting.
+- **Grafana:** Visualizes metrics through dashboards and supports alerting.
+- **Docker:** Packages applications and dependencies into portable containers.
+- **Docker Compose:** Defines and runs multiple services using YAML configuration.
+
+### Monitoring Flow
+
+```text
+Spring Boot Application
+          ↓
+Micrometer / Prometheus Registry
+          ↓
+      Prometheus
+          ↓
+       Grafana
+          ↓
+  Dashboards & Visualization
+```
+
+### Quick Interview Questions
+
+1. **What is the difference between logging and metrics?**  
+   Logging records events and details; metrics provide quantitative measurements.
+
+2. **What is the role of SLF4J?**  
+   It provides a common logging API that can work with different logging implementations.
+
+3. **What is Micrometer used for?**  
+   It provides an instrumentation facade for collecting and exporting application metrics.
+
+4. **What is Prometheus responsible for?**  
+   Scraping and storing metrics as time-series data and supporting alerting.
+
+5. **Why use Grafana with Prometheus?**  
+   Grafana visualizes Prometheus metrics through dashboards.
+
+6. **What is Docker Compose used for?**  
+   Defining and running multi-container applications through a YAML configuration.
+
+> **Final Recall:** SLF4J → logging API; Micrometer → metrics instrumentation; Prometheus → metrics collection and storage; Grafana → visualization; Docker Compose → multi-service orchestration.
