@@ -457,3 +457,67 @@ docker compose up
 This starts the services defined in the Compose file.
 
 > **Quick Recall:** Docker Compose defines multiple services in YAML, while `docker compose up` starts them.
+
+---
+
+## Prometheus and Grafana Configuration
+
+### Prometheus Configuration — `prometheus.yml`
+
+Prometheus uses `scrape_configs` to define which targets it collects metrics from and how frequently it collects them.
+
+```yaml
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['127.0.0.1:9090']
+
+  - job_name: 'my-spring-actuator'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 2s
+    static_configs:
+      - targets: ['192.168.0.110:8081']
+    labels:
+      application: "Ninjas Social Media Application"
+```
+
+**Key properties:**
+
+- `scrape_interval` → defines how frequently metrics are collected.
+- `evaluation_interval` → defines how frequently alerting and recording rules are evaluated.
+- `job_name` → identifies a group of scrape targets.
+- `metrics_path` → specifies the endpoint from which metrics are collected.
+- `static_configs` → defines targets explicitly.
+- `labels` → attaches additional identifying information to scraped metrics.
+
+### Grafana Data Source — `datasources.yml`
+
+Grafana uses a data source configuration to connect to Prometheus.
+
+```yaml
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+```
+
+**Key properties:**
+
+- `name` → data source name displayed in Grafana.
+- `type` → identifies Prometheus as the data source.
+- `access: proxy` → routes data requests through Grafana's server.
+- `url` → specifies the Prometheus service address.
+- `isDefault: true` → makes Prometheus the default data source.
+
+> **Quick Recall:** Prometheus configuration defines where metrics are scraped from; Grafana's data source configuration defines where dashboards retrieve metrics from.
