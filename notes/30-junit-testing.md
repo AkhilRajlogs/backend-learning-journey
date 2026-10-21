@@ -77,3 +77,45 @@ public class SampleTest {
 - `@BeforeEach` / `@AfterEach` → run around every test method.
 - `@BeforeAll` / `@AfterAll` → run once before or after all tests in the class.
 - `@Order` → controls test execution order when used with an appropriate test method orderer.
+  
+---
+
+## JUnit 5 Assertions
+
+Assertions are used to verify expected conditions in test methods.
+
+| Assertion | Purpose |
+|---|---|
+| `assertNotNull()` | Verifies that an object is not `null`. |
+| `assertNull()` | Verifies that an object is `null`. |
+| `assertTrue()` | Verifies that a condition is `true`. |
+| `assertFalse()` | Verifies that a condition is `false`. |
+
+### Example
+
+```java
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class SampleTest {
+
+    @Test
+    void testAssertions() {
+        String name = "Java";
+        String value = null;
+        boolean isActive = true;
+
+        assertNotNull(name);
+        assertNull(value);
+        assertTrue(isActive);
+        assertFalse(value != null);
+    }
+}
+```
+
+### Quick Recall
+
+- `assertNotNull()` — checks that a value is not `null`.
+- `assertNull()` — checks that a value is `null`.
+- `assertTrue()` — checks that a condition is true.
+- `assertFalse()` — checks that a condition is false.
