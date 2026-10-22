@@ -119,3 +119,35 @@ class SampleTest {
 - `assertNull()` — checks that a value is `null`.
 - `assertTrue()` — checks that a condition is true.
 - `assertFalse()` — checks that a condition is false.
+
+---
+
+## AssertJ Assertions
+
+AssertJ provides fluent assertions using `assertThat()`, allowing values to be checked with readable matcher methods.
+
+### Example
+
+```java
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+
+class SampleTest {
+
+    @Test
+    void testAssertions() {
+        String name = "Java";
+
+        assertThat(name).isNotNull();
+        assertThat(name).isEqualTo("Java");
+        assertThat(name).startsWith("Ja");
+    }
+}
+```
+
+### Quick Recall
+
+- `assertThat()` — starts a fluent assertion.
+- `isNotNull()` — checks that the value is not `null`.
+- `isEqualTo()` — checks equality with an expected value.
+- `startsWith()` — checks whether a string starts with the specified text.
