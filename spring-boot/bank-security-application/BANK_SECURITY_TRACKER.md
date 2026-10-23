@@ -25,6 +25,13 @@ feature/bank-security-application
 
 - [x] Add banking domain entities
 - [x] Add DTO classes
+- [x] Add project documentation and tracker
+
+### Day 3
+
+- [x] Add repository layer
+- [x] Add JWT authentication models
+- [x] Implement custom user details service
 
 ---
 
@@ -55,40 +62,67 @@ feature/bank-security-application
 - [x] KycDto
 - [x] NomineeDto
 - [x] UserDto
+- [x] JwtRequest
+- [x] JwtResponse
+
+### Repositories
+
+- [x] AccountRepository
+- [x] CardRepository
+- [x] InvestmentRepository
+- [x] NomineeRepository
+- [x] UserRepository
+
+### Security
+
+- [x] CustomUserDetailService
+- [ ] SecurityConfig
+- [ ] JwtAuthenticationHelper
+- [ ] JwtAuthenticationFilter
+
+### Services
+
+- [ ] UserService
+- [ ] AccountService
+- [ ] CardService
+- [ ] InvestmentService
+- [ ] AdminService
+
+### Controllers
+
+- [ ] UserController
+- [ ] UserAccountController
+- [ ] UserCardController
+- [ ] UserInvestmentController
+- [ ] AdminController
 
 ---
 
 ## Next Milestone
 
-### Repository Layer
+### Spring Security Foundation
 
-- [ ] AccountRepository
-- [ ] CardRepository
-- [ ] InvestmentRepository
-- [ ] NomineeRepository
-- [ ] UserRepository
+- [ ] SecurityConfig
+- [ ] PasswordEncoder Bean
+- [ ] AuthenticationManager Bean
+- [ ] JWT Helper
+- [ ] JWT Filter
 
 ---
 
 ## Upcoming Milestones
 
-### Security
-
-- [ ] Security Configuration
-- [ ] JWT Utility
-- [ ] JWT Filter
-- [ ] Authentication Entry Point
-
 ### Authentication
 
-- [ ] Register User
-- [ ] Login User
+- [ ] User Registration
+- [ ] Login
 - [ ] Role-Based Authorization
 
 ### Banking Features
 
 - [ ] Account Creation
 - [ ] Account Management
+- [ ] KYC Management
 - [ ] Card Allocation
 - [ ] Card Management
 - [ ] Investment Management
@@ -97,13 +131,15 @@ feature/bank-security-application
 
 - [ ] Admin Registration
 - [ ] User Management
-- [ ] Account Approval
+- [ ] Account Activation
+- [ ] Account Deactivation
+- [ ] Account Reporting
 
 ### Quality
 
 - [ ] Exception Handling
 - [ ] Validation
-- [ ] Final Testing
+- [ ] Postman Testing
 - [ ] Documentation Review
 
 ---
@@ -126,6 +162,22 @@ feat: add banking domain entities
 
 feat: add dto classes
 
+### Commit 5
+
+docs: add project documentation and tracker
+
+### Commit 6
+
+feat: add repository layer
+
+### Commit 7
+
+feat: add jwt authentication models
+
+### Commit 8
+
+feat: implement custom user details service
+
 ---
 
 ## Notes
@@ -135,3 +187,17 @@ Main branch is reserved for learning notes and supporting material.
 Bank Security Application development is performed on:
 
 feature/bank-security-application
+
+Source of truth for project state:
+
+- Git history
+- Current codebase
+
+Requirements source:
+
+- CodingNinjas problem statement
+
+Implementation order is determined by:
+
+- Dependencies between classes
+- Existing project state

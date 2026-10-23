@@ -20,12 +20,19 @@ A Spring Boot backend application that simulates core banking operations includi
 - Banking Domain Enums
 - Banking Domain Entities
 - DTO Layer
+- Repository Layer
+- JWT Authentication Models
+- Custom User Details Service
+- Project Documentation and Progress Tracking
+
+### In Progress
+
+- Spring Security Configuration
+- JWT Authentication Flow
 
 ### Planned
 
-- Repository Layer
 - Service Layer
-- JWT Authentication
 - User Registration
 - Login
 - Account Management
