@@ -151,3 +151,76 @@ class SampleTest {
 - `isNotNull()` — checks that the value is not `null`.
 - `isEqualTo()` — checks equality with an expected value.
 - `startsWith()` — checks whether a string starts with the specified text.
+
+---
+
+## Mockito
+
+Mockito is a Java framework used for mocking and stubbing in unit tests. It allows dependencies to be simulated so that a specific component can be tested in isolation.
+
+### Basic Concepts
+
+| Concept | Purpose |
+|---|---|
+| **Mocking** | Creates simulated objects that mimic the behaviour of real objects. |
+| **Stubbing** | Configures a mock to return specific values when its methods are called. |
+| **Verification** | Checks whether a method on a mock was called as expected. |
+
+### Example
+
+```java
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+import org.junit.jupiter.api.Test;
+
+interface Calculator {
+    int add(int a, int b);
+    int subtract(int a, int b);
+}
+
+class CalculatorService {
+    private final Calculator calculator;
+
+    CalculatorService(Calculator calculator) {
+        this.calculator = calculator;
+    }
+
+    int addTwoNumbers(int a, int b) {
+        return calculator.add(a, b);
+    }
+
+    int subtractTwoNumbers(int a, int b) {
+        return calculator.subtract(a, b);
+    }
+}
+
+class CalculatorServiceTest {
+
+    @Test
+    void testAddTwoNumbers() {
+        // Create a mock
+        Calculator calculatorMock = mock(Calculator.class);
+
+        // Stub the method's behaviour
+        when(calculatorMock.add(2, 3)).thenReturn(5);
+
+        CalculatorService calculatorService =
+                new CalculatorService(calculatorMock);
+
+        // Execute the method being tested
+        int result = calculatorService.addTwoNumbers(2, 3);
+
+        // Verify the interaction and result
+        verify(calculatorMock).add(2, 3);
+        assertEquals(5, result);
+    }
+}
+```
+
+### Quick Recall
+
+- `mock()` — creates a mock object.
+- `when().thenReturn()` — defines the behaviour of a mock method.
+- `verify()` — checks whether a mock method was called.
+- Assertions verify whether the test result matches expectations.
