@@ -1,4 +1,4 @@
-package com.codingninjas.banksecurityapplication.jwt;
+package com.security.bank.jwt;
 
 import java.io.IOException;
 
@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.codingninjas.banksecurityapplication.service.CustomUserDetailService;
+import com.security.bank.security.CustomUserDetailService;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
