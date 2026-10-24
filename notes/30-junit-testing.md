@@ -224,3 +224,88 @@ class CalculatorServiceTest {
 - `when().thenReturn()` — defines the behaviour of a mock method.
 - `verify()` — checks whether a mock method was called.
 - Assertions verify whether the test result matches expectations.
+   
+---
+
+## Controller Testing with @WebMvcTest
+
+`@WebMvcTest` focuses testing on the Spring MVC layer, allowing controllers to be tested without loading the complete application context.
+
+### Key Components
+
+| Component | Purpose |
+|---|---|
+| `@WebMvcTest` | Loads the MVC components needed to test a controller. |
+| `MockMvc` | Simulates HTTP requests and checks responses without starting a real server. |
+| `@MockBean` | Provides a mock service dependency for the test. |
+| `ObjectMapper` | Converts Java objects into JSON and JSON into Java objects. |
+
+### Example
+
+```java
+import com.example.StudentManagementSystem.model.Student;
+import com.example.StudentManagementSystem.service.StudentsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(controllers = studentsController.class)
+class StudentControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private StudentsService studentsService;
+
+    @Test
+    void shouldAddStudent() throws Exception {
+        Student student = new Student(
+                1,
+                "Rakesh",
+                19,
+                "JUnit",
+                "Aryabhatta Hostels",
+                "rakesh@gmail.com",
+                "09874562134"
+        );
+
+        Mockito.when(studentsService.addStudent(student))
+                .thenReturn(student);
+
+        String json = objectMapper.writeValueAsString(student);
+
+        mockMvc.perform(post("/students/addStudent")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isOk());
+    }
+}
+```
+
+### Test Flow
+
+1. `@WebMvcTest` configures the controller-focused test context.
+2. `@MockBean` supplies a mocked service dependency.
+3. Mockito stubbing defines the service's expected behaviour.
+4. `ObjectMapper` converts the student object into JSON.
+5. `MockMvc` sends a simulated POST request with that JSON.
+6. `andExpect()` checks that the response status is HTTP 200 OK.
+
+### Quick Recall
+
+- `@WebMvcTest` — focuses on the MVC layer.
+- `MockMvc` — performs simulated HTTP requests.
+- `ObjectMapper` — handles JSON conversion.
+- `@MockBean` — supplies a mocked dependency.
+- `andExpect()` — verifies an expected response condition.   
