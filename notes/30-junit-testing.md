@@ -309,3 +309,98 @@ class StudentControllerTest {
 - `ObjectMapper` — handles JSON conversion.
 - `@MockBean` — supplies a mocked dependency.
 - `andExpect()` — verifies an expected response condition.   
+
+---
+
+## JPA Repository Testing with Testcontainers
+
+`@DataJpaTest` loads JPA-related components for testing repository functionality. Testcontainers provides a containerized database for integration testing.
+
+### Key Annotations and Components
+
+| Annotation / Component | Purpose |
+|---|---|
+| `@DataJpaTest` | Configures a test context for JPA-related components. |
+| `@Testcontainers` | Enables Testcontainers support for tests. |
+| `@AutoConfigureTestDatabase` | Controls automatic test database replacement. |
+| `MySQLContainer` | Configures a MySQL container for testing. |
+| `@DynamicPropertySource` | Registers dynamic database connection properties. |
+
+### Example
+
+```java
+@DataJpaTest
+@Testcontainers
+@AutoConfigureTestDatabase(
+    replace = AutoConfigureTestDatabase.Replace.NONE
+)
+class StudentsDalTest {
+
+    private static final MySQLContainer MY_SQL_CONTAINER =
+        new MySQLContainer("mysql:latest")
+            .withDatabaseName("student-test-db")
+            .withUsername("testUser")
+            .withPassword("password");
+
+    static {
+        MY_SQL_CONTAINER.start();
+    }
+
+    @DynamicPropertySource
+    static void registerDatabaseProperties(
+            DynamicPropertyRegistry registry) {
+        registry.add(
+            "spring.datasource.url",
+            MY_SQL_CONTAINER::getJdbcUrl
+        );
+        registry.add(
+            "spring.datasource.username",
+            MY_SQL_CONTAINER::getUsername
+        );
+        registry.add(
+            "spring.datasource.password",
+            MY_SQL_CONTAINER::getPassword
+        );
+    }
+
+    @Autowired
+    StudentsDal studentsDal;
+
+    @Test
+    @Order(1)
+    void shouldSaveStudent() {
+        Student student = new Student(
+            1,
+            "Rakesh",
+            19,
+            "JUnit",
+            "Aryabhatta Hostels",
+            "rakesh@gmail.com",
+            "09874562134"
+        );
+
+        Student resultStudent = studentsDal.save(student);
+
+        assertThat(resultStudent)
+            .usingRecursiveComparison()
+            .ignoringFields("sid")
+            .isEqualTo(student);
+    }
+}
+```
+
+### Test Flow
+
+1. Configure the test for JPA and Testcontainers.
+2. Start a MySQL container with the required database credentials.
+3. Register the container's connection properties with Spring.
+4. Inject the repository being tested.
+5. Save a student and compare the returned object with the input, ignoring the `sid` field.
+
+### Quick Recall
+
+- `@DataJpaTest` — focuses on JPA components.
+- Testcontainers — provides a containerized database.
+- `@DynamicPropertySource` — registers dynamic configuration properties.
+- `@AutoConfigureTestDatabase(replace = Replace.NONE)` — prevents automatic replacement of the configured database.
+- AssertJ recursive comparison — compares object fields while allowing specified fields to be ignored.
