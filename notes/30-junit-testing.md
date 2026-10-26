@@ -404,3 +404,32 @@ class StudentsDalTest {
 - `@DynamicPropertySource` — registers dynamic configuration properties.
 - `@AutoConfigureTestDatabase(replace = Replace.NONE)` — prevents automatic replacement of the configured database.
 - AssertJ recursive comparison — compares object fields while allowing specified fields to be ignored.
+
+---
+
+## Integration Testing with @SpringBootTest
+
+`@SpringBootTest` loads the complete Spring application context for integration testing.
+
+`@AutoConfigureMockMvc` configures a `MockMvc` instance so HTTP requests can be simulated without starting a real server.
+
+### Key Annotations
+
+| Annotation | Purpose |
+|---|---|
+| `@SpringBootTest` | Loads the complete Spring application context. |
+| `@AutoConfigureMockMvc` | Configures `MockMvc` for simulated HTTP requests. |
+
+### What Integration Tests Can Verify
+
+- Controller handling of HTTP requests.
+- Expected response status codes and data.
+- Interactions between controllers, services, and repositories.
+- Whether different application layers work together correctly.
+
+### Quick Recall
+
+- `@WebMvcTest` — focuses on the MVC layer.
+- `@DataJpaTest` — focuses on JPA components.
+- `@SpringBootTest` — loads the complete application context.
+- `@AutoConfigureMockMvc` — enables simulated HTTP requests in the test.
