@@ -33,17 +33,22 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<Account> getAllAccounts(Long userId) {
-        return null;
+    	User user = userRepository.findById(userId).get();
+    	return user.getAccountList();
     }
 
     @Override
     public double getBalance(Long accountNumber) {
-        return 0;
+    	Account account = accountRepository.findByAccountNumber(accountNumber).get();
+        return account.getBalance();
     }
 
     @Override
     public Nominee getNominee(Long accountNumber) {
-        return null;
+    	
+    	Account account = accountRepository.findByAccountNumber(accountNumber).get();
+    	
+        return  account.getNominee();
     }
 
     @Override
@@ -63,6 +68,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountSummary(Long accountNumber) {
-        return null;
+    	Account account = accountRepository.findByAccountNumber(accountNumber).get();
+
+    	account.setUser(null);
+
+    	return account;
     }
 }
