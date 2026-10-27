@@ -433,3 +433,60 @@ class StudentsDalTest {
 - `@DataJpaTest` — focuses on JPA components.
 - `@SpringBootTest` — loads the complete application context.
 - `@AutoConfigureMockMvc` — enables simulated HTTP requests in the test.
+
+---
+
+## Security-Aware Controller Testing
+
+When testing a secured controller, `@WithMockUser` supplies a mock authenticated user for the test.
+
+If the usual `MockMvc` setup does not load the required web dependencies, `MockMvcBuilders.webAppContextSetup()` can configure `MockMvc` using the `WebApplicationContext`.
+
+### Example
+
+```java
+@WebMvcTest(controllers = UserController.class)
+class UserControllerTests {
+
+    @MockBean
+    private UserService userService;
+
+    @MockBean
+    private JwtAuthenticationHelper jwtAuthenticationHelper;
+
+    private MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    @BeforeEach
+    void setup() {
+        mockMvc = MockMvcBuilders
+            .webAppContextSetup(webApplicationContext)
+            .build();
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    void shouldTestGetAllUsers() throws Exception {
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("user1");
+
+        Mockito.when(userService.getAllUsers())
+            .thenReturn(List.of(user));
+
+        mockMvc.perform(get("/user/all")
+                .contentType("application/json"))
+            .andExpect(status().isOk());
+    }
+}
+```
+
+### Quick Recall
+
+- `@WithMockUser` — supplies a mock authenticated user for a test.
+- `roles = "ADMIN"` — configures the mock user's role.
+- `WebApplicationContext` — provides the web application context.
+- `MockMvcBuilders.webAppContextSetup()` — builds `MockMvc` using that context.
+- Mock service dependencies to control their behaviour during the test.
