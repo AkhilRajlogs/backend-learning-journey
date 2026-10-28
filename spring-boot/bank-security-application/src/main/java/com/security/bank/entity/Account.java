@@ -2,6 +2,7 @@ package com.security.bank.entity;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -43,10 +44,10 @@ public class Account {
 
     private Long accountNumber;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Nominee nominee;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Card card;
 
     @ManyToOne
