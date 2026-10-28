@@ -44,26 +44,56 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Nominee getNominee(Long accountNumber) {
-    	
-    	Account account = accountRepository.findByAccountNumber(accountNumber).get();
-    	
-        return  account.getNominee();
-    }
-
-    @Override
     public Nominee updateNominee(NomineeDto nomineeDto, Long accountId) {
-        return null;
+
+        Account account = accountRepository.findById(accountId).get();
+
+        Nominee nominee = account.getNominee();
+
+        nominee.setRelation(nomineeDto.getRelation());
+        nominee.setName(nomineeDto.getName());
+        nominee.setAccountNumber(nomineeDto.getAccountNumber());
+        nominee.setGender(nomineeDto.getGender());
+        nominee.setAge(nomineeDto.getAge());
+
+        account.setNominee(nominee);
+
+        accountRepository.save(account);
+
+        return nominee;
     }
 
     @Override
     public User getKycDetails(Long accountNumber) {
-        return null;
+
+        Account account = accountRepository.findByAccountNumber(accountNumber).get();
+
+        User user = account.getUser();
+
+        user.setAccountList(null);
+        user.setInvestmentList(null);
+
+        return user;
     }
 
     @Override
     public User updateKyc(KycDto kycDto, Long accountId) {
-        return null;
+
+        Account account = accountRepository.findById(accountId).get();
+
+        User user = account.getUser();
+
+        user.setName(kycDto.getName());
+        user.setAddress(kycDto.getAddress());
+        user.setNumber(kycDto.getNumber());
+        user.setIdentityProof(kycDto.getIdentityProof());
+
+        userRepository.save(user);
+
+        user.setAccountList(null);
+        user.setInvestmentList(null);
+
+        return user;
     }
 
     @Override
