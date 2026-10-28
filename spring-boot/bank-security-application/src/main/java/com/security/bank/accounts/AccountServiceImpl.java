@@ -44,6 +44,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Nominee getNominee(Long accountNumber) {
+
+        Account account = accountRepository.findByAccountNumber(accountNumber).get();
+
+        return account.getNominee();
+    }
+
+    @Override
     public Nominee updateNominee(NomineeDto nomineeDto, Long accountId) {
 
         Account account = accountRepository.findById(accountId).get();
