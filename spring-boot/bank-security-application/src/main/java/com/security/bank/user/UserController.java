@@ -1,6 +1,8 @@
 package com.security.bank.user;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.security.bank.dto.JwtRequest;
 import com.security.bank.dto.JwtResponse;
@@ -21,6 +23,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
     public User registerUser( @RequestBody UserDto userDto) {
 
         return userService.registerUser(userDto);

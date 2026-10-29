@@ -147,6 +147,10 @@ public class AccountServiceImpl implements AccountService {
 
         Nominee nominee = account.getNominee();
 
+        if (nominee == null) {
+            nominee = new Nominee();
+        }
+
         nominee.setRelation(nomineeDto.getRelation());
         nominee.setName(nomineeDto.getName());
         nominee.setAccountNumber(nomineeDto.getAccountNumber());

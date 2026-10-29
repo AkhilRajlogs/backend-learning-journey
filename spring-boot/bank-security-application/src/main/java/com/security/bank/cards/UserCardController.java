@@ -1,6 +1,8 @@
 package com.security.bank.cards;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.security.bank.dto.CardDto;
@@ -23,7 +25,10 @@ public class UserCardController {
     }
 
     @PostMapping("/apply/new")
-    public String applyNewCard( @RequestParam Long accountNumber, @RequestBody CardDto cardDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public String applyNewCard(
+            @RequestParam Long accountNumber,
+            @RequestBody CardDto cardDto) {
 
         return cardService.applyNewCard(accountNumber, cardDto);
     }
