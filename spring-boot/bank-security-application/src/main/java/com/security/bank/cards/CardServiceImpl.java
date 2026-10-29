@@ -41,40 +41,56 @@ public class CardServiceImpl implements CardService {
         return "Card Blocked Successfully";
     }
 
-    @Override
-    public String applyNewCard(Long accountNumber, CardDto cardDto) {
+	@Override
+	public String applyNewCard(Long accountNumber, CardDto cardDto) {
 
-        Account account = accountRepository.findByAccountNumber(accountNumber).get();
+		Account account = accountRepository.findByAccountNumber(accountNumber).get();
 
-        Random random = new Random();
+		if (account.getCard() != null) {
+			throw new RuntimeException("Account with number: " + accountNumber + " already has a card.");
+		}
 
-        Card card = new Card();
+		Random random = new Random();
 
-        card.setCardHolderName(cardDto.getCardHolderName());
+		Card card = new Card();
 
-        card.setCardType(CardType.valueOf(cardDto.getCardType()));
+		card.setCardHolderName(cardDto.getCardHolderName());
+		card.setCardType(CardType.valueOf(cardDto.getCardType()));
+		card.setPin(cardDto.getPin());
+		card.setCardNumber(Math.abs(random.nextLong()));
+		card.setCvv(100 + random.nextInt(900));
+		card.setAllocationDate(new Date());
 
-        card.setPin(cardDto.getPin());
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, 5);
 
-        card.setCardNumber(Math.abs(random.nextLong()));
+		card.setExpiryDate(calendar.getTime());
+		card.setStatus("ACTIVE");
 
-        card.setCvv(100 + random.nextInt(900));
+		switch (card.getCardType()) {
 
-        card.setAllocationDate(new Date());
+		case DEBIT_CLASSIC:
+			card.setDailyLimit(20000);
+			break;
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.YEAR, 5);
+		case DEBIT_GLOBAL:
+			card.setDailyLimit(40000);
+			break;
 
-        card.setExpiryDate(calendar.getTime());
+		case CREDIT_PREMIUM:
+			card.setDailyLimit(50000);
+			break;
 
-        card.setStatus("ACTIVE");
+		case CREDIT_MASTER:
+			card.setDailyLimit(75000);
+			break;
+		}
 
-        account.setCard(card);
+		account.setCard(card);
+		accountRepository.save(account);
 
-        accountRepository.save(account);
-
-        return "Card Applied Successfully";
-    }
+		return "New Card Allocated to account with Number: " + accountNumber;
+	}
 
     @Override
     public Card updateCardSettings(Card card, Long cardNumber) {
