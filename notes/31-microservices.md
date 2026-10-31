@@ -56,3 +56,33 @@ The choice depends on project scope, scalability requirements, team expertise, d
 - **Microservices:** May be beneficial for larger, complex applications requiring independent scalability, technology diversity, and development flexibility.
 
 Some projects begin with a monolithic architecture and gradually move selected components into microservices as requirements grow. Neither architecture is universally suitable; the choice depends on the project's needs.
+
+---
+
+## Principles of Microservices Design
+
+1. **Single Responsibility Principle (SRP):** Each microservice should have one well-defined responsibility or business capability.
+
+2. **Decentralised Data Management:** Each microservice should manage its own database or data store instead of tightly coupling services through a shared database.
+
+3. **API-First Design:** Define clear and consistent APIs that act as contracts for communication between services.
+
+4. **Loose Coupling:** Services should interact through well-defined APIs or messaging systems and remain independently changeable.
+
+5. **Autonomous Development and Deployment:** Teams should be able to develop, test, deploy, and upgrade services independently.
+
+6. **Technology Diversity:** Each service can use the technology stack best suited to its specific requirements.
+
+7. **Resilience and Fault Isolation:** A failure in one service should not cause a system-wide failure. Mechanisms such as circuit breakers and retries help isolate failures.
+
+8. **Event-Driven Architecture:** Services can use events and asynchronous communication to respond to changes within the system.
+
+9. **Scalability and Load Distribution:** Scale individual services according to their workloads for efficient resource utilisation.
+
+10. **Monitoring and Observability:** Use logging, tracking, and tracing to understand service health, performance, and potential issues.
+
+11. **Continuous Integration and Continuous Deployment (CI/CD):** Automate testing, deployment, and updates to support consistent and reliable releases.
+
+12. **Autonomy and Decentralisation:** Service teams should have control over their services' development, deployment, and maintenance.
+
+13. **Polyglot Persistence:** Different microservices can use different data storage technologies based on their individual requirements.
