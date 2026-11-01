@@ -86,3 +86,72 @@ Some projects begin with a monolithic architecture and gradually move selected c
 12. **Autonomy and Decentralisation:** Service teams should have control over their services' development, deployment, and maintenance.
 
 13. **Polyglot Persistence:** Different microservices can use different data storage technologies based on their individual requirements.
+
+---
+
+## Inter-Service Communication
+
+Microservices communicate with each other through APIs or messaging systems. Spring's `RestTemplate` provides a way to communicate with RESTful services by making HTTP requests.
+
+### RestTemplate
+
+`RestTemplate` is a Spring Framework class used to make HTTP requests to other services.
+
+**Key Concepts:**
+
+1. **Dependency and Configuration:** Include the required Spring dependencies and configure a `RestTemplate` bean. It can be customised with options such as timeouts, message converters, and authentication settings.
+
+2. **Making HTTP Requests:** Supports HTTP methods such as GET, POST, PUT, and DELETE. Requests can include URLs, parameters, headers, and request bodies.
+
+3. **Handling Responses:** Returns HTTP responses that can be converted into Java objects using configured message converters.
+
+4. **Error Handling:** Handles HTTP errors such as 4xx and 5xx responses by default. Error handling can also be customised.
+
+### Example: CN Kart Application
+
+Order Service calls Inventory Service to check whether a product is available before placing an order.
+
+```java
+public String placeOrder(OrderRequest orderRequest) {
+    Order order = new Order();
+    order.setOrderNumber(UUID.randomUUID().toString());
+    order.setPrice(orderRequest.getPrice());
+    order.setQuantity(orderRequest.getQuantity());
+    order.setSkuCode(orderRequest.getSkuCode());
+
+    // Check product availability through Inventory Service
+    String resourceUrl =
+        "http://localhost:8083/api/inventory?skuCode={skuCode}&qty={qty}";
+
+    boolean isInStock = Boolean.TRUE.equals(
+        restTemplate.getForEntity(
+            resourceUrl,
+            Boolean.class,
+            orderRequest.getSkuCode(),
+            orderRequest.getQuantity()
+        ).getBody()
+    );
+
+    if (isInStock) {
+        orderRepository.save(order);
+        return "Order Placed";
+    } else {
+        return "Item is not in stock, please try again later";
+    }
+}
+```
+
+**Communication Flow:**
+
+1. Order Service receives an order request.
+2. It calls Inventory Service using `RestTemplate`.
+3. Inventory Service checks the requested product quantity.
+4. If the product is available, Order Service saves the order.
+5. Otherwise, it returns an out-of-stock message.
+
+### Quick Recall
+
+- `RestTemplate` — makes HTTP requests to RESTful services.
+- `getForEntity()` — sends a GET request and returns a `ResponseEntity`.
+- `Boolean.class` — specifies the expected response body type in this example.
+- `getBody()` — retrieves the response body.
