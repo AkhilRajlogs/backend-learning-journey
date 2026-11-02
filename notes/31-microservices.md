@@ -155,3 +155,81 @@ public String placeOrder(OrderRequest orderRequest) {
 - `getForEntity()` — sends a GET request and returns a `ResponseEntity`.
 - `Boolean.class` — specifies the expected response body type in this example.
 - `getBody()` — retrieves the response body.
+
+---
+
+## Service Discovery and Registration
+
+**Eureka** is a service discovery and registration tool developed by Netflix. It allows microservices to register themselves with a central registry and discover other services without hardcoding their network locations.
+
+### How Eureka Works
+
+1. **Eureka Server:** Acts as a central registry, maintaining information about registered services, their instances, and health status.
+2. **Service Registration:** When a microservice starts, it registers details such as its service name, instance ID, host, and port with the Eureka Server.
+3. **Heartbeats and Health Checks:** Registered services periodically send heartbeats to indicate that they are running. Eureka uses this information to maintain service availability details.
+4. **Service Discovery:** A microservice queries Eureka to find the network location of another registered service.
+5. **Load Balancing:** Eureka can work with load balancers such as Netflix Ribbon to distribute requests across multiple service instances.
+6. **High Availability:** Multiple Eureka Server instances can be deployed to improve availability and fault tolerance.
+
+### Example: CN Kart Application
+
+**1. Discovery Server**
+
+Enable Eureka Server in the Spring Boot application:
+
+```java
+@SpringBootApplication
+@EnableEurekaServer
+public class DiscoveryServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(
+            DiscoveryServerApplication.class, args
+        );
+    }
+}
+```
+
+**Discovery Server Configuration (`application.yml`):**
+
+```yaml
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+server:
+  port: 8761
+```
+
+The Discovery Server maintains the service registry and does not register itself as a client in this configuration.
+
+**2. Discovery Client**
+
+Enable Eureka Client in a microservice such as Inventory Service:
+
+```java
+@SpringBootApplication
+@EnableEurekaClient
+public class InventoryApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(InventoryApplication.class, args);
+    }
+}
+```
+
+The Inventory Service registers itself with the Eureka Server so that other services can discover it.
+
+### Quick Recall
+
+- **Eureka Server** — maintains the service registry.
+- **Eureka Client** — registers with the server and discovers other services.
+- **Service Registration** — adds a service instance to the registry.
+- **Heartbeats** — indicate that a registered service is still running.
+- **Service Discovery** — obtains the network location of another service.
+- **Load Balancing** — distributes requests across service instances.
