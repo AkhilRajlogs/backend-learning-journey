@@ -233,3 +233,68 @@ The Inventory Service registers itself with the Eureka Server so that other serv
 - **Heartbeats** — indicate that a registered service is still running.
 - **Service Discovery** — obtains the network location of another service.
 - **Load Balancing** — distributes requests across service instances.
+
+---
+
+## Circuit Breaker – Hystrix
+
+**Hystrix** is a Netflix library that helps build resilient microservices by handling failures and latency in distributed systems. It prevents failures in one service from cascading to other services.
+
+### Circuit Breaker Pattern
+
+The circuit breaker monitors calls to an external service and changes its state based on failures:
+
+1. **Closed:** Requests are allowed to pass through to the service. Failures are monitored.
+2. **Open:** When failures cross a configured threshold, requests are blocked temporarily, and a fallback method is executed.
+3. **Half-Open:** After a configured waiting period, a limited number of requests are allowed to test whether the service has recovered.
+
+### Key Features
+
+- **Fallback Mechanism:** Provides an alternative response when a service call fails.
+- **Metrics and Monitoring:** Tracks failures, request volume, and response times.
+- **Configurable Thresholds:** Controls when the circuit breaker opens and how long it remains open.
+- **Request Caching:** Avoids repeated execution of identical requests.
+- **Request Collapsing:** Combines multiple requests into a single request to reduce load.
+- **Concurrency Control:** Limits concurrent requests to protect services from overload.
+
+### Example: CN Kart Application
+
+Hystrix can be used in the Order Service to handle failures when placing an order through an external service.
+
+```java
+@HystrixCommand(fallbackMethod = "fallbackPlaceOrder")
+public String placeOrder() {
+    // Logic to place an order
+    return "Order Placed";
+}
+
+public String fallbackPlaceOrder() {
+    return "Service is Not available";
+}
+```
+
+If the service call fails or the circuit breaker is open, Hystrix executes the fallback method instead of allowing the failure to propagate.
+
+### Important Configuration Parameters
+
+- **Error Threshold Percentage:** Failure percentage at which the circuit breaker opens.
+- **Request Volume Threshold:** Minimum number of requests required before evaluating the failure percentage.
+- **Sleep Window:** Time the circuit breaker remains open before allowing test requests.
+
+### Benefits
+
+- Prevents cascading failures across microservices.
+- Improves application resilience and user experience.
+- Provides fallback responses during service failures.
+- Helps monitor and manage service reliability.
+
+**Note:** The lecture mentions that Hystrix has been deprecated and points to Resilience4j and Spring Cloud alternatives.
+
+### Quick Recall
+
+- **Closed:** Requests pass through.
+- **Open:** Requests are blocked; fallback is executed.
+- **Half-Open:** Test requests check whether the service has recovered.
+- **Fallback:** Alternative response during failure.
+- **Thresholds:** Determine when the circuit breaker opens.
+- **Purpose:** Prevent cascading failures.
