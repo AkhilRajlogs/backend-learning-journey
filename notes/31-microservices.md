@@ -298,3 +298,88 @@ If the service call fails or the circuit breaker is open, Hystrix executes the f
 - **Fallback:** Alternative response during failure.
 - **Thresholds:** Determine when the circuit breaker opens.
 - **Purpose:** Prevent cascading failures.
+
+---
+
+## Feign Client
+
+**Feign Client** is a declarative HTTP client that simplifies communication between microservices. It allows one service to call another service's REST APIs by defining an interface with appropriate annotations.
+
+### Key Concepts
+
+- **Declarative Communication:** Define HTTP calls through an interface rather than writing request-handling code manually.
+- **Feign Client Interface:** Uses annotations to specify the target service and REST endpoint.
+- **Service Discovery Integration:** Can work with Eureka to locate service instances.
+- **Load Balancing:** Can distribute requests across available service instances when integrated with a load-balancing mechanism.
+
+### Example: CN Kart Application
+
+The Order Service can use a Feign Client to communicate with the Inventory Service.
+
+**1. Enable Feign Clients**
+
+```java
+@SpringBootApplication
+@EnableFeignClients
+public class OrderServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(
+            OrderServiceApplication.class, args
+        );
+    }
+}
+```
+
+**2. Create the Feign Client Interface**
+
+```java
+@FeignClient(name = "inventory-service")
+public interface InventoryClient {
+
+    @GetMapping("/api/inventory")
+    Boolean isInStock(
+        @RequestParam String skuCode,
+        @RequestParam Integer qty
+    );
+}
+```
+
+**3. Use the Client in Order Service**
+
+```java
+@RestController
+public class OrderController {
+
+    private final InventoryClient inventoryClient;
+
+    public OrderController(InventoryClient inventoryClient) {
+        this.inventoryClient = inventoryClient;
+    }
+
+    @GetMapping("/place-order")
+    public String placeOrder(
+        @RequestParam String skuCode,
+        @RequestParam Integer qty
+    ) {
+        Boolean inStock =
+            inventoryClient.isInStock(skuCode, qty);
+
+        if (Boolean.TRUE.equals(inStock)) {
+            return "Order Placed";
+        }
+
+        return "Product is Out of Stock";
+    }
+}
+```
+
+The Feign Client uses the service name `inventory-service` to communicate with the Inventory Service. With service discovery configured, the service location does not need to be hardcoded.
+
+### Quick Recall
+
+- **Feign Client:** Declarative HTTP client for inter-service communication.
+- **`@FeignClient`:** Defines the target service.
+- **`@EnableFeignClients`:** Enables Feign Client scanning.
+- **HTTP Mapping Annotations:** Define the REST endpoint and request parameters.
+- **Advantage:** Reduces boilerplate code compared with manually creating HTTP requests.
