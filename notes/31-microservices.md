@@ -383,3 +383,39 @@ The Feign Client uses the service name `inventory-service` to communicate with t
 - **`@EnableFeignClients`:** Enables Feign Client scanning.
 - **HTTP Mapping Annotations:** Define the REST endpoint and request parameters.
 - **Advantage:** Reduces boilerplate code compared with manually creating HTTP requests.
+
+---
+
+## API Gateway
+
+An **API Gateway** acts as a single entry point for client requests in a microservices architecture. It receives incoming requests and routes them to the appropriate microservices.
+
+Instead of clients communicating directly with multiple services, they interact through the API Gateway.
+
+### Key Responsibilities
+
+- **Request Routing:** Directs incoming requests to the appropriate microservice.
+- **Authentication and Security:** Handles authentication and applies security policies.
+- **Load Balancing:** Distributes requests across available service instances.
+- **Request Aggregation:** Combines responses from multiple services into a single response.
+- **Caching:** Stores frequently requested data to improve response times.
+- **Rate Limiting:** Controls the number of requests to protect services from excessive traffic.
+- **Monitoring and Analytics:** Tracks API usage and performance.
+- **Versioning:** Supports different versions of APIs.
+- **Response Transformation:** Modifies responses before returning them to clients.
+- **Logging and Tracing:** Helps track requests across microservices.
+
+### Benefits
+
+- Provides a unified entry point for clients.
+- Reduces direct exposure of internal microservices.
+- Centralizes common concerns such as security and routing.
+- Simplifies client-side communication.
+
+### Quick Recall
+
+- **API Gateway:** Entry point for client requests.
+- **Routing:** Forwards requests to the appropriate service.
+- **Aggregation:** Combines responses from multiple services.
+- **Rate Limiting:** Controls incoming request volume.
+- **Security:** Centralizes authentication and security policies.
