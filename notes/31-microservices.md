@@ -22,6 +22,7 @@ A monolithic application is built as a single, unified codebase in which all com
 - **Debugging:** Troubleshooting can be easier because components are closely connected.
 - **Scaling Challenges:** The entire application must be scaled, even when only one component needs additional resources.
 - **Technology Stack:** All components generally use the same technology stack.
+- **Development Speed:** Initial development can be faster because there is no need to manage communication between separate services.
 
 ### Microservices Architecture
 
@@ -225,6 +226,8 @@ public class InventoryApplication {
 
 The Inventory Service registers itself with the Eureka Server so that other services can discover it.
 
+Other service discovery tools include **Consul** and **ZooKeeper**, which provide similar functionalities.
+
 ### Quick Recall
 
 - **Eureka Server** — maintains the service registry.
@@ -252,24 +255,31 @@ The circuit breaker monitors calls to an external service and changes its state 
 
 - **Fallback Mechanism:** Provides an alternative response when a service call fails.
 - **Metrics and Monitoring:** Tracks failures, request volume, and response times.
-- **Configurable Thresholds:** Controls when the circuit breaker opens and how long it remains open.
+- **Dynamic Thresholds:** Hystrix adjusts thresholds based on real-time metrics to adapt to changing service conditions.
 - **Request Caching:** Avoids repeated execution of identical requests.
 - **Request Collapsing:** Combines multiple requests into a single request to reduce load.
 - **Concurrency Control:** Limits concurrent requests to protect services from overload.
 
 ### Example: CN Kart Application
 
-Hystrix can be used in the Order Service to handle failures when placing an order through an external service.
+Hystrix can wrap external service calls in the Order Service to provide circuit-breaking and fallback behaviour.
 
 ```java
-@HystrixCommand(fallbackMethod = "fallbackPlaceOrder")
-public String placeOrder() {
-    // Logic to place an order
-    return "Order Placed";
-}
+public class OrderController {
 
-public String fallbackPlaceOrder() {
-    return "Service is Not available";
+    private final OrderService orderService;
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @HystrixCommand(fallbackMethod = "fallbackPlaceOrder")
+    public String placeOrder(@RequestBody OrderRequest orderRequest) {
+        log.info("Placing Order");
+        return orderService.placeOrder(orderRequest);
+    }
+
+    public String fallbackPlaceOrder(@RequestBody OrderRequest orderRequest) {
+        return "Service is Not available";
+    }
 }
 ```
 
@@ -287,6 +297,7 @@ If the service call fails or the circuit breaker is open, Hystrix executes the f
 - Improves application resilience and user experience.
 - Provides fallback responses during service failures.
 - Helps monitor and manage service reliability.
+- **Operational Insights:** Hystrix metrics help monitor service health and performance, supporting troubleshooting.
 
 **Note:** The lecture mentions that Hystrix has been deprecated and points to Resilience4j and Spring Cloud alternatives.
 
@@ -314,36 +325,55 @@ If the service call fails or the circuit breaker is open, Hystrix executes the f
 
 ### Example: CN Kart Application
 
-The Order Service can use a Feign Client to communicate with the Inventory Service.
+The Inventory Service exposes an endpoint to check product availability. The Order Service uses a Feign Client interface to call this endpoint.
 
-**1. Enable Feign Clients**
+**1. Inventory Controller**
 
 ```java
-@SpringBootApplication
-@EnableFeignClients
-public class OrderServiceApplication {
+@RestController
+@RequestMapping("/api/inventory")
+@RequiredArgsConstructor
+@Slf4j
+public class InventoryController {
 
-    public static void main(String[] args) {
-        SpringApplication.run(
-            OrderServiceApplication.class, args
-        );
+    private final InventoryService inventoryService;
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public boolean isInStock(
+        @RequestParam Long skuCode,
+        @RequestParam Integer qty
+    ) {
+        log.info("Received inventory check request for skuCode: {}", skuCode);
+        return inventoryService.isInStock(skuCode, qty);
     }
 }
 ```
 
-**2. Create the Feign Client Interface**
+**2. Feign Client in Order Service**
 
 ```java
-@FeignClient(name = "inventory-service")
-public interface InventoryClient {
+@FeignClient(name = "INVENTORY-SERVICE")
+public interface InventoryService {
 
-    @GetMapping("/api/inventory")
-    Boolean isInStock(
-        @RequestParam String skuCode,
+    @GetMapping("/api/inventory?skuCode={skuCode}&qty={qty}")
+    public boolean isInStock(
+        @RequestParam Long skuCode,
         @RequestParam Integer qty
     );
 }
 ```
+
+The Feign Client uses the service name `INVENTORY-SERVICE` to communicate with the Inventory Service. It abstracts the HTTP communication and integrates with Spring Cloud components such as Eureka and Ribbon.
+
+### Quick Recall
+
+- **Feign Client:** Declarative HTTP client for inter-service communication.
+- **`@FeignClient`:** Defines the target service.
+- **`@GetMapping`:** Specifies the REST endpoint.
+- **Eureka Integration:** Supports service discovery.
+- **Ribbon Integration:** Supports load balancing.
+- **Advantage:** Reduces boilerplate code and simplifies API communication.
 
 **3. Use the Client in Order Service**
 
@@ -395,15 +425,17 @@ Instead of clients communicating directly with multiple services, they interact 
 ### Key Responsibilities
 
 - **Request Routing:** Directs incoming requests to the appropriate microservice.
-- **Authentication and Security:** Handles authentication and applies security policies.
+- **Authentication and Security:** Centralises authentication, authorisation, and encryption to protect services from unauthorised access.
 - **Load Balancing:** Distributes requests across available service instances.
 - **Request Aggregation:** Combines responses from multiple services into a single response.
 - **Caching:** Stores frequently requested data to improve response times.
-- **Rate Limiting:** Controls the number of requests to protect services from excessive traffic.
+- **Rate Limiting and Quotas:** Controls incoming request rates and quotas to prevent abuse and ensure fair usage.
 - **Monitoring and Analytics:** Tracks API usage and performance.
 - **Versioning:** Supports different versions of APIs.
 - **Response Transformation:** Modifies responses before returning them to clients.
 - **Logging and Tracing:** Helps track requests across microservices.
+- **Simplified Client Code:** Hides the complexities of communication with multiple services, allowing clients to interact through a single gateway.
+- **Microservices Independence:** Shields clients from internal service changes, allowing services to be added, removed, or replaced without affecting clients.
 
 ### Benefits
 
