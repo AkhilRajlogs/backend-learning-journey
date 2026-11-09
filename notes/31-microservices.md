@@ -122,7 +122,7 @@ public String placeOrder(OrderRequest orderRequest) {
 
     // Check product availability through Inventory Service
     String resourceUrl =
-        "http://localhost:8083/api/inventory?skuCode={skuCode}&qty={qty}";
+    "http://localhost:8083/api/inventory?skuCode={skuCode}&qty={qty}";
 
     boolean isInStock = Boolean.TRUE.equals(
         restTemplate.getForEntity(
@@ -374,45 +374,6 @@ The Feign Client uses the service name `INVENTORY-SERVICE` to communicate with t
 - **Eureka Integration:** Supports service discovery.
 - **Ribbon Integration:** Supports load balancing.
 - **Advantage:** Reduces boilerplate code and simplifies API communication.
-
-**3. Use the Client in Order Service**
-
-```java
-@RestController
-public class OrderController {
-
-    private final InventoryClient inventoryClient;
-
-    public OrderController(InventoryClient inventoryClient) {
-        this.inventoryClient = inventoryClient;
-    }
-
-    @GetMapping("/place-order")
-    public String placeOrder(
-        @RequestParam String skuCode,
-        @RequestParam Integer qty
-    ) {
-        Boolean inStock =
-            inventoryClient.isInStock(skuCode, qty);
-
-        if (Boolean.TRUE.equals(inStock)) {
-            return "Order Placed";
-        }
-
-        return "Product is Out of Stock";
-    }
-}
-```
-
-The Feign Client uses the service name `inventory-service` to communicate with the Inventory Service. With service discovery configured, the service location does not need to be hardcoded.
-
-### Quick Recall
-
-- **Feign Client:** Declarative HTTP client for inter-service communication.
-- **`@FeignClient`:** Defines the target service.
-- **`@EnableFeignClients`:** Enables Feign Client scanning.
-- **HTTP Mapping Annotations:** Define the REST endpoint and request parameters.
-- **Advantage:** Reduces boilerplate code compared with manually creating HTTP requests.
 
 ---
 
