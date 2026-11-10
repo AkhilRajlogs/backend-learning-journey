@@ -4,42 +4,41 @@ This folder contains small demonstration programs illustrating the behavior and 
 
 The goal of these examples is to understand:
 
-- internal behavior of common collections
-- ordering characteristics
-- performance implications
-- typical usage patterns
+- Internal behavior of common collections
+- Ordering characteristics
+- Performance implications
+- Typical usage patterns
 
 ---
 
 ## Implementations Covered
 
-Lists
-
+### Lists
+- ArrayListDemo
 - LinkedListDemo
 - ListPolymorphismDemo
 
-Sets
-
+### Sets
 - HashSetDemo
 - LinkedHashSetDemo
 - TreeSetDemo
 
-Maps
-
+### Maps
 - HashMapDemo
 - SimpleHashMap
 
-Sorting
-
+### Sorting
 - ComparableDemo
 - ComparatorDemo
 
-Queues
-
+### Queues
 - QueueDemo
 - PriorityQueueDemo
 - ArrayDequeDemo
 - LinkedListQueueDemo
+
+### Performance
+- PerformanceComparison
 
 ---
 
