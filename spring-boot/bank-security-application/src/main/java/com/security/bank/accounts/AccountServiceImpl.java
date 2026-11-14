@@ -1,6 +1,7 @@
 package com.security.bank.accounts;
 
 import java.util.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public Account createAccount(AccountDto accountDto, Long userId) {
 
         User user = userRepository.findById(userId).get();
@@ -115,6 +117,13 @@ public class AccountServiceImpl implements AccountService {
 
             break;
         }
+
+
+        if (user.getAccountList() == null) {
+            user.setAccountList(new ArrayList<>());
+        }
+
+        user.getAccountList().add(account);
 
         return accountRepository.save(account);
     }

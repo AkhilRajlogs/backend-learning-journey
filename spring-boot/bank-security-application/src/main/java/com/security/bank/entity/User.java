@@ -51,7 +51,7 @@ public class User implements UserDetails {
 
     private String identityProof;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Role roles;
 
     @JsonIgnore
