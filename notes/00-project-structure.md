@@ -33,7 +33,8 @@ backend-learning-journey/
 │
 ├── spring-boot/
 │   ├── hello-api/
-│   └── task-manager-api/
+│   ├── task-manager-api/
+│   └── bank-security-application/
 │
 ├── sql-practice/
 │   └── 01-basic-queries.sql
