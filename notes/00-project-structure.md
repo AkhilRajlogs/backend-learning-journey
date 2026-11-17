@@ -40,8 +40,7 @@ backend-learning-journey/
 │   └── 01-basic-queries.sql
 │
 ├── .gitignore
-├── README.md
-└── TRACKER.md
+└── README.md
 ```
 
 `TRACKER.md` is a local progress tracker and is not tracked in Git.
@@ -97,11 +96,15 @@ Currently contains array-related problem-solving practice.
 ```text
 dsa/
 └── arrays/
+    ├── contains-duplicate.md
     ├── two-sum.md
     └── TwoSum.java
 ```
 
-The Two Sum problem includes a Markdown explanation and Java implementation.
+The array practice section includes:
+
+- Two Sum — problem explanation and Java implementation.
+- Contains Duplicate — problem explanation and approach.
 
 Additional DSA topics and implementations will be added as the course progresses.
 
@@ -311,6 +314,62 @@ Features:
 - PostgreSQL integration
 - Layered application architecture
 
+### 4.3 Bank Security Application
+
+`spring-boot/bank-security-application/`
+
+```text
+bank-security-application/
+├── .mvn/
+│   └── wrapper/
+│
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/security/bank/
+│       │       ├── accounts/
+│       │       ├── admin/
+│       │       ├── cards/
+│       │       ├── config/
+│       │       ├── dto/
+│       │       ├── entity/
+│       │       ├── investments/
+│       │       ├── jwt/
+│       │       ├── repository/
+│       │       ├── security/
+│       │       ├── service/
+│       │       ├── user/
+│       │       └── BankApplication.java
+│       │
+│       └── resources/
+│
+├── .gitignore
+├── BANK_SECURITY_TRACKER.md
+├── mvnw
+├── mvnw.cmd
+├── pom.xml
+└── README.md
+```
+
+A banking backend application developed to practise Spring Boot application development and security-related concepts.
+
+The project is organized into feature-based packages:
+
+- `accounts/` — account-related operations
+- `admin/` — administrative operations
+- `cards/` — card management
+- `config/` — application configuration
+- `dto/` — data transfer objects
+- `entity/` — JPA entities and domain models
+- `investments/` — investment-related operations
+- `jwt/` — JWT authentication components
+- `repository/` — data access layer
+- `security/` — Spring Security configuration and support
+- `service/` — service interfaces and shared service components
+- `user/` — user-related operations
+
+The application uses a layered, feature-oriented package structure with separate controllers, services, repositories, DTOs, and entities.
+
 ---
 
 ## 5. SQL Practice
@@ -324,7 +383,7 @@ sql-practice/
 └── 01-basic-queries.sql
 ```
 
-Used for practicing SQL queries and database fundamentals.
+Used for practising SQL queries and database fundamentals.
 
 Additional SQL exercises will be added as learning progresses.
 
@@ -348,7 +407,6 @@ Future additions may include:
 
 - Advanced DSA implementations
 - Additional LeetCode solutions
-- Bank Security Application
 - Further backend projects
 - Additional interview preparation material
 
